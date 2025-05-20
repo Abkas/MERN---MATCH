@@ -1,0 +1,36 @@
+{
+  "name": "matchpoint",
+  "version": "1.0.0",
+  "description": "trying to make it",
+  "homepage": "https://github.com/Abkas/MATCHPOINT#readme",
+  "bugs": {
+    "url": "https://github.com/Abkas/MATCHPOINT/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Abkas/MATCHPOINT.git"
+  },
+  "license": "ISC",
+  "author": "abhishek magar",
+  "type": "module",
+  "main": "index.js",
+  "scripts": {
+    "dev": "nodemon -r dotenv/config --experimental-json-modules src/index.js"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.10",
+    "prettier": "^3.5.3"
+  },
+  "dependencies": {
+    "bcrypt": "^5.1.1",
+    "cloudinary": "^2.6.1",
+    "cookie-parser": "^1.4.7",
+    "cors": "^2.8.5",
+    "dotenv": "^16.5.0",
+    "express": "^5.1.0",
+    "jsonwebtoken": "^9.0.2",
+    "mongoose": "^8.14.1",
+    "mongoose-aggregate-paginate-v2": "^1.1.4",
+    "multer": "^1.4.5-lts.2"
+  }
+}

@@ -1,0 +1,695 @@
+/* Reset and Base Styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Inter', sans-serif;
+}
+
+.body {
+    background-color: #f5f5f5;
+    color: #333;
+    width: 100vw;
+}
+
+/* Header */
+.nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 0;
+    max-width: 1200px; /* Set your desired max width */
+    margin: 0 auto; /* Center the navbar horizontally */
+    position: relative;
+    z-index: 10;
+}
+
+.logo img {
+    height: 50px;
+}
+
+.navLinks {
+    display: flex;
+    list-style: none;
+    margin: 0; /* Remove auto margin to prevent pushing items */
+}
+
+.navLinks li {
+    margin: 0 20px;
+}
+
+.navLinks a {
+    text-decoration: none;
+    color: #000;
+    font-weight: 500;
+    font-size: 16px;
+    transition: color 0.3s;
+    position: relative;
+}
+
+.navLinks a.active::after {
+    content: '';
+    position: absolute;
+    bottom: -5px;
+    left: 0;
+    width: 100%;
+    height: 2px;
+    background-color: #4169e1;
+}
+
+.navLinks a:hover {
+    color: #4169e1;
+}
+
+.navIcons {
+    display: flex;
+    gap: 20px;
+    color: #e0e0e0;
+}
+
+.notification, .profile {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background-color: #0d0d0d;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+}
+
+.notification img, .profile img {
+    width: 20px;
+    height: 20px;
+}
+/* Main Content */
+main {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0px;
+}
+
+/* Search Section */
+.searchSection {
+    margin-bottom: 30px;
+    padding: 0px;
+}
+
+.searchBar {
+    display: flex;
+    margin-bottom: 20px;
+}
+
+.searchInput {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    background-color: #fff;
+    border: 1px solid #e0e0e0;
+    border-radius: 30px;
+    padding: 0 15px;
+    margin-right: 10px;
+}
+
+.searchInput svg {
+    margin-right: 10px;
+    color: #666;
+}
+
+.searchInput input {
+    flex: 1;
+    border: none;
+    outline: none;
+    padding: 12px 0;
+    font-size: 16px;
+}
+
+.searchBtn {
+    background-color: #7cc0f5;
+    color: #fff;
+    border: none;
+    border-radius: 30px;
+    padding: 0 30px;
+    font-size: 16px;
+    font-weight: 500;
+    cursor: pointer;
+}
+
+/* Filters */
+.filters h2 {
+    font-size: 20px;
+    margin-bottom: 20px;
+    font-weight: 600;
+}
+
+.filterSliders {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    margin-bottom: 20px;
+}
+
+.filterGroup {
+    flex: 1;
+    min-width: 250px;
+}
+
+.filterGroup label {
+    display: block;
+    margin-bottom: 10px;
+    font-weight: 500;
+}
+
+.sliderContainer {
+    width: 100%;
+}
+
+.sliderTrack {
+    position: relative;
+    height: 6px;
+    background-color: #e0e0e0;
+    border-radius: 3px;
+    margin-bottom: 10px;
+}
+
+.sliderFill {
+    position: absolute;
+    height: 100%;
+    background-color: #7cc0f5;
+    border-radius: 3px;
+}
+
+.slider {
+    position: absolute;
+    top: -5px;
+    width: 100%;
+    height: 16px;
+    -webkit-appearance: none;
+    appearance: none;
+    background: transparent;
+    outline: none;
+    margin: 0;
+}
+
+.slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    background: white;
+    border: 1px solid #ccc;
+    cursor: pointer;
+}
+
+.sliderLabels {
+    display: flex;
+    justify-content: space-between;
+}
+
+.sliderLabels span {
+    font-size: 12px;
+    color: #666;
+}
+
+.findNowBtn {
+    background-color: #4169e1;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    padding: 12px 30px;
+    font-size: 16px;
+    font-weight: 500;
+    cursor: pointer;
+}
+
+/* Available Futsal */
+.availableFutsal {
+    margin-bottom: 30px;
+    padding: 0px;
+
+}
+
+.availableFutsal h2 {
+    font-size: 20px;
+    margin-bottom: 20px;
+    font-weight: 600;
+}
+
+.filterOptions {
+    display: flex;
+    gap: 15px;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+}
+
+.filterDropdown {
+    position: relative;
+}
+
+.dropdownBtn {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    background-color: #f0f0f0;
+    border: none;
+    border-radius: 20px;
+    padding: 8px 15px;
+    font-size: 14px;
+    cursor: pointer;
+}
+
+.filterDropdown.active .dropdownBtn {
+    background-color: #4169e1;
+    color: #fff;
+}
+
+/* Futsal Venue */
+.futsalVenue {
+    background-color: #fff;
+    border-radius: 10px;
+    margin-bottom: 20px;
+    overflow: hidden;
+}
+
+.venueHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 20px;
+    background-color: #f9f9f9;
+    flex-wrap: wrap;
+}
+
+.venueName {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: none;
+    border: none;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.venueInfo {
+    display: flex;
+    gap: 15px;
+    flex-wrap: wrap;
+}
+
+.gamesPending, .priceInfo, .nextGame {
+    background-color: #f0f0f0;
+    padding: 5px 10px;
+    border-radius: 15px;
+    font-size: 12px;
+}
+
+.dateNavigation {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 10px;
+    background-color: #f9f9f9;
+    border-top: 1px solid #e0e0e0;
+    border-bottom: 1px solid #e0e0e0;
+}
+
+.prevDate, .nextDate {
+    background: none;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 30px;
+    height: 30px;
+}
+
+/* Time Slots */
+.timeSlots {
+    padding: 15px;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+thead {
+    background-color: #f5f5f5;
+}
+
+th {
+    padding: 10px;
+    text-align: left;
+    font-weight: 600;
+    font-size: 14px;
+    color: #666;
+}
+
+td {
+    padding: 15px 10px;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+.playersCircles {
+    display: flex;
+    gap: 5px;
+}
+
+.playerCircle {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    border: 1px solid #4CAF50;
+    display: inline-block;
+}
+
+.playerCircle.filled {
+    background-color: #4CAF50;
+}
+
+.price {
+    font-weight: 600;
+}
+
+.team {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.joinNowBtn {
+    background-color: #e8f5e9;
+    color: #4CAF50;
+    border: none;
+    border-radius: 20px;
+    padding: 8px 15px;
+    font-size: 14px;
+    cursor: pointer;
+}
+
+.teamInfo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.teamCaptain {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    background-color: #e0e0e0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 600;
+    color: #fff;
+    background-color: #4CAF50;
+}
+
+.teamCaptain.pink {
+    background-color: #e91e63;
+}
+
+.teamCaptain.blue {
+    background-color: #2196f3;
+}
+
+.teamName {
+    font-weight: 500;
+}
+
+.teamMembers {
+    color: #666;
+    font-size: 14px;
+}
+
+/* Futsal Venue List */
+.futsalVenueList {
+    margin-top: 20px;
+}
+
+.venueItem {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px;
+    background-color: #fff;
+    border-radius: 30px;
+    margin-bottom: 10px;
+    flex-wrap: wrap;
+}
+
+/* Register Match */
+.registerMatch {
+    background-color: #fff;
+    border-radius: 10px;
+    padding: 20px;
+    margin-bottom: 30px;
+}
+
+.registerMatch h2 {
+    font-size: 20px;
+    margin-bottom: 20px;
+    font-weight: 600;
+}
+
+.formGroup {
+    margin-bottom: 20px;
+}
+
+.formGroup label {
+    display: block;
+    margin-bottom: 10px;
+    font-weight: 500;
+}
+
+.selectedVenues, .selectedDates {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    align-items: center;
+}
+
+.venueChip, .dateChip {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    background-color: #f0f0f0;
+    border-radius: 20px;
+    padding: 8px 15px;
+    font-size: 14px;
+}
+
+.addVenueBtn, .addDateBtn {
+    background-color: #f0f0f0;
+    border: none;
+    border-radius: 20px;
+    padding: 8px 15px;
+    font-size: 14px;
+    cursor: pointer;
+}
+
+.editBtn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 30px;
+    height: 30px;
+}
+
+.registerBtn {
+    background-color: #4169e1;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    padding: 12px 30px;
+    font-size: 16px;
+    font-weight: 500;
+    cursor: pointer;
+}
+
+/* Footer */
+.footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 30px;
+    background-color: #f9f9f9;
+    border-top: 1px solid #e0e0e0;
+}
+
+.footerLinks {
+    display: flex;
+    gap: 20px;
+}
+
+.footerLinks a {
+    color: #666;
+    text-decoration: none;
+    font-size: 14px;
+}
+
+.footerSocial {
+    display: flex;
+    gap: 15px;
+}
+
+.footerSocial a {
+    color: #666;
+}
+
+/* Media Queries */
+@media (min-width: 748px) and (max-width: 832px) {
+    .filterSliders {
+        flex-direction: column;
+        gap: 15px;
+    }
+    .filterGroup {
+        width: 100%;
+    }
+    .venueHeader, .venueInfo {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+    }
+    .venueInfo {
+        margin-top: 10px;
+    }
+    .team {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+    }
+    .joinNowBtn {
+        align-self: flex-start;
+    }
+    .footer {
+        flex-direction: column;
+        gap: 15px;
+    }
+}
+
+@media (min-width: 453px) and (max-width: 745px) {
+    .header {
+        padding: 10px 15px;
+    }
+    .logo img {
+        height: 30px;
+    }
+    .navLinks li {
+        margin: 0 10px;
+    }
+    .navLinks a {
+        font-size: 14px;
+    }
+    .searchBar {
+        flex-direction: column;
+        gap: 10px;
+    }
+    .searchInput {
+        margin-right: 0;
+        margin-bottom: 10px;
+    }
+    .filterSliders {
+        flex-direction: column;
+        gap: 15px;
+    }
+    .filterGroup {
+        width: 100%;
+    }
+    .venueHeader, .venueInfo {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+    }
+    .venueInfo {
+        margin-top: 10px;
+    }
+    table {
+        display: block;
+        overflow-x: auto;
+    }
+    .team {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+    }
+    .joinNowBtn {
+        align-self: flex-start;
+    }
+    .footer {
+        flex-direction: column;
+        gap: 15px;
+    }
+}
+
+@media (max-width: 452px) {
+    .header {
+        padding: 10px;
+    }
+    .logo img {
+        height: 25px;
+    }
+    .navLinks li {
+        margin: 0 5px;
+    }
+    .navLinks a {
+        font-size: 12px;
+    }
+    .userActions {
+        gap: 10px;
+    }
+    .notification, .profileIcon {
+        width: 35px;
+        height: 35px;
+    }
+    main {
+        padding: 15px;
+    }
+    .searchBar {
+        flex-direction: column;
+        gap: 10px;
+    }
+    .searchInput {
+        margin-right: 0;
+        margin-bottom: 10px;
+    }
+    .filterSliders {
+        flex-direction: column;
+        gap: 15px;
+    }
+    .filterGroup {
+        width: 100%;
+    }
+    .venueHeader, .venueInfo {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+    }
+    .venueInfo {
+        margin-top: 10px;
+    }
+    table {
+        display: block;
+        overflow-x: auto;
+    }
+    .team {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+    }
+    .joinNowBtn {
+        align-self: flex-start;
+    }
+    .footerLinks {
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 15px;
+    }
+}

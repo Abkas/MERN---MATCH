@@ -1,0 +1,396 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Inter', sans-serif;
+}
+
+body {
+    background-color: #ffffff;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+}
+
+.container {
+    width: 100%;
+    max-width: 1200px;
+    padding: 20px;
+    border: 1px solid #4682b4;
+    border-radius: 5px;
+}
+
+.signupCard {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 40px;
+}
+
+.logoSection {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.logoCircle {
+    width: 300px;
+    height: 300px;
+    border-radius: 50%;
+    border: 1px solid #4682b4;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+}
+
+.logoCircle img {
+    width: 80%;
+    height: auto;
+}
+
+.formSection {
+    flex: 1;
+    padding: 0 20px;
+}
+
+h1 {
+    color: #1a1a4e;
+    font-size: 36px;
+    margin-bottom: 30px;
+    font-weight: 700;
+}
+
+.formGroup {
+    margin-bottom: 20px;
+}
+
+input[type="text"],
+input[type="email"],
+input[type="password"] {
+    width: 100%;
+    padding: 15px;
+    border: 1px solid #e0e0e0;
+    border-radius: 30px;
+    font-size: 16px;
+    outline: none;
+    color: #1a1a4e;
+}
+
+.checkboxGroup {
+    display: flex;
+    align-items: center;
+}
+
+.checkboxGroup input {
+    margin-right: 10px;
+    width: 18px;
+    height: 18px;
+    accent-color: #5cd3c2;
+}
+
+.checkboxGroup label {
+    color: #888;
+    font-size: 14px;
+}
+
+.signupBtn {
+    width: 100%;
+    padding: 15px;
+    background-color: #5cd3c2;
+    color: white;
+    border: none;
+    border-radius: 30px;
+    font-size: 18px;
+    font-weight: 600;
+    cursor: pointer;
+    margin-top: 10px;
+}
+
+.toggleGroup {
+    display: flex;
+    align-items: center;
+    margin-bottom: 20px;
+    gap: 15px;
+}
+
+.toggleLabel {
+    font-weight: 500;
+    color: #1a1a4e;
+    margin-right: 10px;
+}
+
+.toggleSwitch {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
+.toggleOption {
+    background: #f0f0f0;
+    border-radius: 20px;
+    padding: 8px 18px;
+    color: black;
+    font-size: 15px;
+    cursor: pointer;
+    border: 1px solid #e0e0e0;
+    transition: background 0.2s, color 0.2s, border 0.2s;
+}
+
+input[type="radio"] {
+    display: none;
+}
+
+input[type="radio"]:checked + :global(.toggleOption),
+input[type="radio"]:checked + .toggleOption {
+    background: #007bff;
+    color: #fff;
+    border: 1px solid #007bff;
+    transition: background 0.2s, color 0.2s, border 0.2s;
+}
+
+.socialLogin {
+    margin-top: 20px;
+    text-align: center;
+}
+
+socialLogin p {
+    color: #888;
+    margin-bottom: 15px;
+    font-size: 14px;
+}
+
+.socialIcons {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+}
+
+.socialIcon {
+    display: inline-block;
+}
+
+.socialIcon img {
+    width: 34px;
+    height: 24px;
+    opacity: 0.6;
+    transition: opacity 0.3s;
+}
+
+.socialIcon:hover img {
+    opacity: 1;
+}
+
+.loginLink {
+    margin-top: 20px;
+    text-align: center;
+}
+
+.loginLink   p {
+    color: #888;
+    font-size: 14px;
+}
+
+.loginLink  a {
+    color: #5cd3c2;
+    text-decoration: none;
+    font-weight: 600;
+}
+
+footer {
+    padding-top: 20px;
+}
+
+.footerLinks {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.footerLinks a {
+    color: #333;
+    text-decoration: none;
+    font-size: 14px;
+}
+
+.divider {
+    color: #888;
+}
+
+.copyright {
+    color: #333;
+    font-size: 14px;
+}
+    
+
+/* Media Queries */
+@media (min-width: 748px) and (max-width: 832px) {
+    .container {
+        max-width: 800px;
+    }
+    
+    .signupCard {
+        flex-direction: column;
+    }
+    
+    .logoSection {
+        margin-bottom: 30px;
+    }
+
+    .logoCircle {
+        width: 250px;
+        height: 250px;
+    }
+
+    .formSection {
+        width: 100%;
+        padding: 0;
+    }
+    
+    h1 {
+        text-align: center;
+        font-size: 32px;
+    }
+
+    .formGroup {
+        max-width: 500px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    .socialLogin, .loginLink {
+        max-width: 500px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+}
+
+@media (min-width: 453px) and (max-width: 745px) {
+    .container {
+        max-width: 700px;
+    }
+    
+    .signupCard {
+        flex-direction: column;
+    }
+    
+    .logoSection {
+        margin-bottom: 30px;
+    }
+
+    .logoCircle {
+        width: 200px;
+        height: 200px;
+    }
+
+    .formSection {
+        width: 100%;
+        padding: 0;
+    }
+    
+    h1 {
+        text-align: center;
+        font-size: 28px;
+    }
+    
+    .formGroup {
+        max-width: 400px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+    
+    input[type="email"],
+    input[type="password"] {
+        padding: 12px;
+    }
+    
+    .signupBtn {
+        padding: 12px;
+        font-size: 16px;
+    }
+    
+    .socialLogin, .loginLink {
+        max-width: 400px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    .footerLinks   {
+        flex-direction: column;
+        gap: 5px;
+    }
+    
+    .divider {
+        display: none;
+    }
+}
+
+@media (max-width: 452px) {
+    .container {
+        padding: 10px;
+    }
+    
+    .signupCard {
+        flex-direction: column;
+    }
+
+    .logoSection {
+        margin-bottom: 20px;
+    }
+    
+    .logoCircle {
+        width: 150px;
+        height: 150px;
+    }
+
+    .formSection {
+        width: 100%;
+        padding: 0;
+    }
+    
+    h1 {
+        text-align: center;
+        font-size: 24px;
+        margin-bottom: 20px;
+    }
+    
+    .formGroup {
+        margin-bottom: 15px;
+    }
+    
+    input[type="email"],
+    input[type="password"] {
+        padding: 10px;
+        font-size: 14px;
+    }
+    
+    .checkbox label {
+        font-size: 12px;
+    }
+    
+    .signupBtn {
+        padding: 10px;
+        font-size: 14px;
+    }
+
+    .socialLogin p, .loginLink p {
+        font-size: 12px;
+    }
+    
+    .footerLinks {
+        flex-direction: column;
+        gap: 5px;
+    }
+    
+    .footerLinks a, .copyright {
+        font-size: 12px;
+    }
+    
+    .divider {
+        display: none;
+    }
+}

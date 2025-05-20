@@ -1,0 +1,523 @@
+/* Base styles and variables */
+:root {
+  --primary: #10b981;
+  --primary-dark: #059669;
+  --secondary: #3b82f6;
+  --secondary-dark: #2563eb;
+  --text-primary: #1f2937;
+  --text-secondary: #4b5563;
+  --text-light: #9ca3af;
+  --bg-light: #f9fafb;
+  --bg-white: #ffffff;
+  --bg-dark: #111827;
+  --border-light: #e5e7eb;
+  --border-dark: #d1d5db;
+  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  --shadow-md: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  --radius-sm: 0.25rem;
+  --radius: 0.5rem;
+  --radius-lg: 0.75rem;
+  --sidebar-width: 250px;
+}
+
+/* Body */
+.body {
+  min-height: 100vh;
+  background-color: var(--bg-light);
+  color: var(--text-primary);
+  line-height: 1.5;
+  font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Open Sans",
+    "Helvetica Neue", sans-serif;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Header */
+.body header {
+  background-color: var(--bg-white);
+  box-shadow: var(--shadow-sm);
+  padding: 1rem 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: sticky;
+  top: 0;
+  width: 100vw;
+  z-index: 100;
+}
+
+.logo img {
+  height: 40px;
+  width: auto;
+}
+
+.body header nav ul {
+  display: flex;
+  gap: 2rem;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.body header nav ul li a {
+  font-weight: 500;
+  color: var(--text-primary);
+  position: relative;
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.body header nav ul li a:hover {
+  color: var(--primary);
+}
+
+.body header nav ul li a::after {
+  content: "";
+  position: absolute;
+  bottom: -5px;
+  left: 0;
+  width: 0;
+  height: 2px;
+  background-color: var(--primary);
+  transition: width 0.3s ease;
+}
+
+.body header nav ul li a:hover::after {
+  width: 100%;
+}
+
+/* User Actions */
+.userActions {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+.userActions a {
+  color: var(--text-secondary);
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.userActions a:hover {
+  color: var(--primary);
+}
+
+.notification {
+  position: relative;
+}
+
+.notification::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 8px;
+  height: 8px;
+  background-color: var(--primary);
+  border-radius: 50%;
+  border: 2px solid var(--bg-white);
+}
+
+.profileIcon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Container */
+.container {
+  display: flex;
+  flex: 1;
+  position: relative;
+}
+
+/* Sidebar - Fixed on the left */
+.sidebar {
+  width: var(--sidebar-width);
+  background-color: var(--bg-white);
+  box-shadow: var(--shadow);
+  padding: 1.5rem 0;
+  height: calc(100vh - 73px); /* Adjust based on your header height */
+  position: fixed;
+  top: 73px; /* Adjust based on your header height */
+  left: 0;
+  overflow-y: auto;
+  z-index: 90;
+}
+
+.sidebarMenu {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.sidebarMenu li a {
+  display: block;
+  padding: 0.75rem 1.5rem;
+  color: var(--text-secondary);
+  font-weight: 500;
+  border-left: 4px solid transparent;
+  transition: all 0.2s ease;
+  text-decoration: none;
+}
+
+.sidebarMenu li a:hover {
+  background-color: rgba(16, 185, 129, 0.1);
+  color: var(--primary);
+  border-left-color: var(--primary);
+}
+
+.sidebarMenu li a.active {
+  background-color: rgba(16, 185, 129, 0.15);
+  color: var(--primary);
+  border-left-color: var(--primary);
+  font-weight: 600;
+  position: relative;
+}
+
+.sidebarMenu li button {
+  display: block;
+  padding: 0.75rem 1.5rem;
+  color: var(--text-secondary);
+  font-weight: 500;
+  border-left: 4px solid transparent;
+  transition: all 0.2s ease;
+  text-decoration: none;
+  width: 100%;
+}
+
+.sidebarMenu li button:hover {
+  background-color: rgba(16, 185, 129, 0.1);
+  color: var(--primary);
+  border-left-color: var(--primary);
+}
+
+.sidebarMenu li button.active {
+  background-color: rgba(16, 185, 129, 0.15);
+  color: var(--primary);
+  border-left-color: var(--primary);
+  font-weight: 600;
+  position: relative;
+}
+
+/* Enhanced active state with indicator */
+.sidebarMenu li button.active::before {
+  content: "";
+  position: absolute;
+  left: -4px; /* Align with the border */
+  top: 0;
+  height: 100%;
+  width: 4px;
+  background-color: var(--primary);
+}
+
+.logoutBtn {
+  margin-top: 2rem;
+  color: #ef4444 !important;
+}
+
+.logoutBtn:hover {
+  background-color: rgba(239, 68, 68, 0.1) !important;
+  border-left-color: #ef4444 !important;
+}
+
+/* Main Content - Always on the right of sidebar */
+.container main {
+  flex: 1;
+  padding: 2rem;
+  margin-left: var(--sidebar-width);
+  width: calc(100% - var(--sidebar-width));
+}
+
+.profileHeaderRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+}
+
+.profileHeaderRow h1 {
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin: 0;
+}
+
+.updateAccountBtn {
+  background-color: var(--primary);
+  color: white;
+  border: none;
+  padding: 0.6rem 1.25rem;
+  border-radius: var(--radius);
+  font-weight: 500;
+  transition: background-color 0.2s ease;
+  cursor: pointer;
+}
+
+.updateAccountBtn:hover {
+  background-color: var(--primary-dark);
+}
+
+/* Profile Card */
+.profileCard {
+  background-color: var(--bg-white);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 2rem;
+  margin-bottom: 2rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.profileImage {
+  margin-bottom: 1.5rem;
+}
+
+.circlePlaceholder {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  background-color: var(--primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: 3rem;
+  font-weight: 600;
+  position: relative;
+  overflow: hidden;
+}
+
+.circlePlaceholder::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 40%;
+  background-color: rgba(0, 0, 0, 0.2);
+}
+
+.profileCard h2 {
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+  color: var(--text-primary);
+}
+
+.activeStatus {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 1.5rem;
+  color: var(--text-secondary);
+  font-size: 0.875rem;
+}
+
+.dot {
+  width: 8px;
+  height: 8px;
+  background-color: var(--primary);
+  border-radius: 50%;
+  display: inline-block;
+}
+
+.reviewsSection {
+  width: 100%;
+  margin: 1.5rem 0;
+  padding: 1.5rem;
+  background-color: var(--bg-light);
+  border-radius: var(--radius);
+}
+
+.reviewsSection h3 {
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin-bottom: 1rem;
+  color: var(--text-primary);
+}
+
+.reviewItem {
+  padding: 0.75rem;
+  border-radius: var(--radius-sm);
+  background-color: var(--bg-white);
+  margin-bottom: 0.75rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  text-align: left;
+  box-shadow: var(--shadow-sm);
+}
+
+.reviewPlayer {
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.reviewComment {
+  flex: 1;
+  color: var(--text-secondary);
+}
+
+.reviewRating {
+  color: #f59e0b;
+  font-weight: 600;
+}
+
+.bio {
+  color: var(--text-secondary);
+  max-width: 600px;
+  line-height: 1.6;
+  margin: 0;
+}
+
+/* Personal Info Card */
+.personalInfoCard {
+  background-color: var(--bg-white);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 2rem;
+}
+
+.cardHeader {
+  margin-bottom: 1.5rem;
+  border-bottom: 1px solid var(--border-light);
+  padding-bottom: 1rem;
+}
+
+.cardHeader h3 {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin: 0;
+}
+
+.infoRow {
+  display: flex;
+  margin-bottom: 1rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid var(--border-light);
+}
+
+.infoRow:last-child {
+  border-bottom: none;
+  margin-bottom: 0;
+  padding-bottom: 0;
+}
+
+.infoLabel {
+  width: 150px;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.infoValue {
+  flex: 1;
+  color: var(--text-secondary);
+}
+
+/* Responsive Design - Keeping sidebar fixed */
+@media (max-width: 1024px) {
+  .container main {
+    padding: 1.5rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .body header {
+    padding: 1rem;
+  }
+
+  .body header nav ul {
+    gap: 1rem;
+  }
+
+  /* Sidebar remains fixed but smaller */
+  :root {
+    --sidebar-width: 200px;
+  }
+
+  .sidebarMenu li a {
+    padding: 0.75rem 1rem;
+  }
+
+  .profileHeaderRow {
+    flex-direction: column;
+    gap: 1rem;
+    align-items: flex-start;
+  }
+
+  .infoRow {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .infoLabel {
+    width: 100%;
+  }
+}
+
+@media (max-width: 640px) {
+  /* For very small screens, we'll use a mobile-friendly approach */
+  .body header {
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .body header nav ul {
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  /* Sidebar becomes a drawer that can be toggled */
+  :root {
+    --sidebar-width: 180px;
+  }
+
+  .sidebar {
+    transform: translateX(-100%);
+    transition: transform 0.3s ease;
+  }
+
+  .sidebar.open {
+    transform: translateX(0);
+  }
+
+  /* When sidebar is closed, main content takes full width */
+  .container main {
+    margin-left: 0;
+    width: 100%;
+    padding: 1rem;
+  }
+
+  /* When sidebar is open, main content shifts */
+  .sidebar.open + main {
+    margin-left: var(--sidebar-width);
+    width: calc(100% - var(--sidebar-width));
+  }
+
+  .profileCard {
+    padding: 1.5rem 1rem;
+  }
+
+  .personalInfoCard {
+    padding: 1.5rem 1rem;
+  }
+
+  .circlePlaceholder {
+    width: 100px;
+    height: 100px;
+    font-size: 2.5rem;
+  }
+}

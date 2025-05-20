@@ -1,0 +1,4 @@
+{
+    "terminal.integrated.suggest.enabled": true,
+    "liveServer.settings.multiRootWorkspaceName": "Backend"
+}

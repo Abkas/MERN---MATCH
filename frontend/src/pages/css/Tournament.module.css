@@ -1,0 +1,512 @@
+/* Reset and base styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Arial, sans-serif;
+}
+
+.body {
+    background-color: #f5f5f5;
+    color: #333;
+    line-height: 1.6;
+    width: 100vw;
+}
+
+.nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 0;
+    max-width: 1200px; /* Set your desired max width */
+    margin: 0 auto; /* Center the navbar horizontally */
+    position: relative;
+    z-index: 10;
+}
+
+.logo img {
+    height: 50px;
+}
+
+.navLinks {
+    display: flex;
+    list-style: none;
+    margin: 0; /* Remove auto margin to prevent pushing items */
+}
+
+.navLinks li {
+    margin: 0 20px;
+}
+
+.navLinks a {
+    text-decoration: none;
+    color: #000;
+    font-weight: 500;
+    font-size: 16px;
+    transition: color 0.3s;
+    position: relative;
+}
+
+.navLinks a.active::after {
+    content: '';
+    position: absolute;
+    bottom: -5px;
+    left: 0;
+    width: 100%;
+    height: 2px;
+    background-color: #4169e1;
+}
+
+.navLinks a:hover {
+    color: #4169e1;
+}
+
+.navIcons {
+    display: flex;
+    gap: 20px;
+    color: #e0e0e0;
+}
+
+.notification, .profile {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background-color: #0d0d0d;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+}
+
+.notification img, .profile img {
+    width: 20px;
+    height: 20px;
+}
+/* Hero section */
+.hero {
+    display: flex;
+    padding: 50px 30px;
+    background-color: #f9f9f9;
+    position: relative;
+}
+
+.heroContent {
+    flex: 1;
+    max-width: 600px;
+}
+
+.hero h1 {
+    font-size: 2.5rem;
+    color: #3b5998;
+    margin-bottom: 30px;
+    line-height: 1.2;
+}
+
+.searchContainer {
+    display: flex;
+    margin-bottom: 20px;
+    position: relative;
+}
+
+.searchContainer input {
+    width: 100%;
+    padding: 12px 20px;
+    border: 1px solid #ddd;
+    border-radius: 25px;
+    font-size: 1rem;
+}
+
+.filterBtn {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    color: #777;
+    cursor: pointer;
+    font-size: 1rem;
+}
+
+.actionButtons {
+    display: flex;
+    gap: 15px;
+}
+
+.findBtn, .hostBtn {
+    padding: 12px 25px;
+    border: none;
+    border-radius: 25px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.findBtn {
+    background-color: #00ffcc;
+    color: #333;
+}
+
+.hostBtn {
+    background-color: #8a2be2;
+    color: white;
+}
+
+.heroImage {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.heroImage img {
+    max-width: 100%;
+    height: auto;
+}
+
+/* Tournament section */
+.tournamentsSection {
+    padding: 40px 30px;
+}
+
+.tournamentsSection h2 {
+    font-size: 1.8rem;
+    margin-bottom: 25px;
+    color: #333;
+}
+
+.tournamentCards {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 50px;
+    margin-bottom: 30px;
+}
+
+.tournamentCard {
+    background-color: #fff;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease;
+}
+
+.tournamentCard:hover {
+    transform: translateY(-5px);
+}
+
+.cardImage {
+    position: relative;
+}
+
+.cardImage img {
+    width: 100%;
+    height: 150px;
+    object-fit: cover;
+    gap: 50px;
+}
+
+.location {
+    position: absolute;
+    bottom: 10px;
+    left: 10px;
+    background-color: rgba(255, 255, 255, 0.8);
+    padding: 5px 10px;
+    border-radius: 15px;
+    font-size: 0.9rem;
+    font-weight: 600;
+}
+
+.cardDetails {
+    padding: 15px;
+}
+
+.dateTime, .organizer {
+    margin-bottom: 10px;
+    font-size: 0.9rem;
+    color: #666;
+}
+
+.participants {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.avatars {
+    display: flex;
+}
+
+.avatar {
+    width: 25px;
+    height: 25px;
+    border-radius: 50%;
+    margin-right: -10px;
+    border: 2px solid #fff;
+}
+
+.joined {
+    font-size: 0.9rem;
+    color: #666;
+}
+
+.price {
+    font-weight: 700;
+    color: #333;
+    text-align: right;
+}
+
+.seeMoreContainer {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+}
+
+.seeMoreBtn {
+    padding: 8px 25px;
+    background-color: transparent;
+    border: 1px solid #ddd;
+    border-radius: 20px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.seeMoreBtn:hover {
+    background-color: #f5f5f5;
+}
+
+/* Stats section */
+.statsSection {
+    padding: 60px 30px;
+    text-align: center;
+    background-color: #fff;
+}
+
+.statsSection h2 {
+    font-size: 1.8rem;
+    margin-bottom: 40px;
+    color: #333;
+}
+
+.statsContainer {
+    display: flex;
+    justify-content: space-around;
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.statItem h3 {
+    font-size: 2.5rem;
+    font-weight: 800;
+    margin-bottom: 10px;
+    position: relative;
+    display: inline-block;
+}
+
+.statItem h3::after {
+    content: '';
+    position: absolute;
+    bottom: 5px;
+    left: 0;
+    width: 100%;
+    height: 5px;
+    background-color: #f0f0f0;
+    z-index: -1;
+}
+
+.statItem p {
+    font-size: 1.2rem;
+    color: #666;
+}
+
+/* Popular section */
+.popularSection {
+    background-color: #1a1a1a;
+    color: #fff;
+}
+
+.popularSection h2 {
+    color: #fff;
+}
+
+.popularSection .tournamentCard {
+    background-color: #2a2a2a;
+}
+
+.popularSection .location {
+    background-color: rgba(0, 0, 0, 0.7);
+    color: #fff;
+}
+
+.popularSection .dateTime, 
+.popularSection .organizer,
+.popularSection .joined {
+    color: #bbb;
+}
+
+.popularSection .price {
+    color: #fff;
+}
+
+.popularSection .seeMoreBtn {
+    border-color: #444;
+    color: #fff;
+}
+
+.popularSection .seeMoreBtn:hover {
+    background-color: #333;
+}
+
+/* How to join section */
+.howToJoin {
+    padding: 60px 30px;
+    text-align: center;
+    background-color: #f9f9f9;
+}
+
+.howToJoin h2 {
+    font-size: 1.8rem;
+    margin-bottom: 40px;
+    position: relative;
+    display: inline-block;
+}
+
+.howToJoin h2::after {
+    content: '';
+    position: absolute;
+    bottom: -10px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 100px;
+    height: 3px;
+    background-color: #3b5998;
+}
+
+.stepsContainer {
+    display: flex;
+    justify-content: space-around;
+    flex-wrap: wrap;
+    max-width: 1200px;
+    margin: 0 auto;
+    gap: 30px;
+}
+
+.step {
+    flex: 1;
+    min-width: 250px;
+    padding: 30px 20px;
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+.stepIcon {
+    font-size: 2rem;
+    margin-bottom: 20px;
+    color: #3b5998;
+}
+
+.step h3 {
+    margin-bottom: 15px;
+    font-size: 1.3rem;
+}
+
+.step p {
+    color: #666;
+    font-size: 0.95rem;
+}
+
+/* Footer */
+.footer {
+    padding: 30px;
+    background-color: #fff;
+    border-top: 1px solid #eee;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.footerLinks {
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
+}
+
+.footerLinks a {
+    color: #666;
+    text-decoration: none;
+    font-size: 0.9rem;
+}
+
+.socialLinks {
+    display: flex;
+    gap: 15px;
+}
+
+.socialLinks a {
+    color: #666;
+    font-size: 1.2rem;
+}
+
+/* Responsive styles for the specified breakpoints */
+@media (min-width: 453px) and (max-width: 745px) {
+    .header {
+        padding: 15px 20px;
+    }
+    .navLinks li {
+        margin: 0 10px;
+    }
+    .hero {
+        flex-direction: column;
+        padding: 30px 20px;
+    }
+    .heroContent {
+        max-width: 100%;
+        margin-bottom: 30px;
+    }
+    .hero h1 {
+        font-size: 2rem;
+    }
+    .tournamentCards {
+        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    }
+    .statsContainer {
+        flex-direction: column;
+        gap: 30px;
+    }
+    .stepsContainer {
+        flex-direction: column;
+        align-items: center;
+    }
+    .step {
+        width: 100%;
+        max-width: 350px;
+    }
+}
+
+@media (min-width: 748px) and (max-width: 832px) {
+    .hero {
+        padding: 40px 25px;
+    }
+    .hero h1 {
+        font-size: 2.2rem;
+    }
+    .tournamentCards {
+        grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    }
+    .statsContainer {
+        flex-wrap: wrap;
+        gap: 30px;
+    }
+    .statItem {
+        flex: 1;
+        min-width: 200px;
+    }
+    .stepsContainer {
+        gap: 20px;
+    }
+    .step {
+        padding: 25px 15px;
+    }
+}

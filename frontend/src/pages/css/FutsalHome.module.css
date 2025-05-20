@@ -1,0 +1,307 @@
+/* Reset and Base Styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Poppins', sans-serif;
+    overflow-x: hidden;
+    background-color: #ffffff;
+}
+
+.container {
+    position: relative;
+    width: 100vw;
+    min-height: 100vh;
+    overflow: hidden;
+}
+
+/* Navigation Styles */
+nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 0;
+    max-width: 1200px; /* Set your desired max width */
+    margin: 0 auto; /* Center the navbar horizontally */
+    position: relative;
+    z-index: 10;
+}
+
+.logo img {
+    height: 50px;
+}
+
+.navLinks {
+    display: flex;
+    list-style: none;
+    margin: 0; /* Remove auto margin to prevent pushing items */
+}
+
+.navLinks li {
+    margin: 0 20px;
+}
+
+.navLinks a {
+    text-decoration: none;
+    color: #000;
+    font-weight: 500;
+    font-size: 16px;
+    transition: color 0.3s;
+    position: relative;
+}
+
+.navLinks a.active::after {
+    content: '';
+    position: absolute;
+    bottom: -5px;
+    left: 0;
+    width: 100%;
+    height: 2px;
+    background-color: #4169e1;
+}
+
+.navLinks a:hover {
+    color: #4169e1;
+}
+
+.navIcons {
+    display: flex;
+    gap: 20px;
+    color: #e0e0e0;
+}
+
+.notification, .profile {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background-color: #0d0d0d;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+}
+
+.notification img, .profile img {
+    width: 20px;
+    height: 20px;
+}
+
+/* Social Media Sidebar */
+.socialSidebar {
+    position: fixed;
+    left: 30px;
+    top: 50%;
+    transform: translateY(-50%);
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    z-index: 10;
+}
+
+.socialIcon {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background-color: #fff;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: all 0.3s ease;
+}
+
+.sociaIicon:hover {
+    transform: scale(1.1);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.socialIcon img {
+    width: 20px;
+    height: 20px;
+}
+
+/* Main Content */
+.mainContent {
+    position: relative;
+    width: 100%;
+    height: calc(100vh - 80px);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+}
+
+.contentWrapper {
+    position: relative;
+    width: 100%;
+    max-width: 1400px;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 0 50px;
+}
+
+.futsalText {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    display: flex;
+    gap: 60px;
+    z-index: 4;
+}
+
+.futsalText span {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 160px;
+    font-weight: bold;
+    color: #0066FF;
+    line-height: 1;
+    letter-spacing: 5px;
+}
+
+.playersIllustration {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    width: 800px;
+    z-index: 1;
+    mix-blend-mode: multiply;
+}
+
+.playersIllustration img {
+    width: 100%;
+    height: auto;
+}
+
+.taisaLogo {
+    position: absolute;
+    top: 20%;
+    right: 15%;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 48px;
+    color: #000;
+    z-index: 5;
+}
+
+.blueCurve {
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 35%;
+    height: 100%;
+    background: linear-gradient(135deg, #0066FF 0%, #87CEFA 100%);
+    border-radius: 0 0 0 100%;
+    z-index: 3;
+    opacity: 0.9;
+}
+
+/* Footer */
+.footer {
+    position: absolute;
+    bottom: 30px;
+    width: 100%;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    padding: 0 50px;
+    z-index: 10;
+}
+
+.quickStartButton button {
+    background-color: #0066FF;
+    color: white;
+    border: none;
+    padding: 12px 30px;
+    border-radius: 30px;
+    font-size: 16px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+}
+
+.quickStartButton button img {
+    width: 24px;
+    height: 24px;
+}
+
+/* Responsive Design */
+@media (max-width: 1200px) {
+    .futsaltext {
+        gap: 45px;
+    }
+    .futsalText span {
+        font-size: 140px;
+        letter-spacing: 4px;
+    }
+    .playersIllustration {
+        width: 700px;
+    }
+}
+
+@media (max-width: 992px) {
+    .futsalText {
+        gap: 35px;
+    }
+    .futsalText span {
+        font-size: 120px;
+        letter-spacing: 3px;
+    }
+    .playersIllustration {
+        width: 600px;
+    }
+    .taisaLogo {
+        font-size: 36px;
+    }
+}
+
+@media (max-width: 768px) {
+    .futsalText {
+        gap: 25px;
+    }
+    .futsalText span {
+        font-size: 90px;
+        letter-spacing: 2px;
+    }
+    .playersIllustration {
+        width: 500px;
+    }
+    .socialSidebar {
+        left: 15px;
+    }
+    .blueCurve {
+        width: 45%;
+    }
+}
+
+@media (max-width: 576px) {
+    .futsalText {
+        gap: 15px;
+    }
+    .futsalText span {
+        font-size: 60px;
+        letter-spacing: 1px;
+    }
+    .playersIllustration {
+        width: 400px;
+    }
+    .taisaLogo {
+        font-size: 28px;
+        right: 10%;
+    }
+    .footer {
+        flex-direction: column;
+        gap: 20px;
+        padding: 0 20px 20px;
+    }
+}
+
