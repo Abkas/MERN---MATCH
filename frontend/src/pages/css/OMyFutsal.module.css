@@ -87,49 +87,6 @@
   width: 100%;
 }
 
-/* User Actions */
-.userActions {
-  display: flex;
-  align-items: center;
-  gap: 1.5rem;
-}
-
-.userActions a {
-  color: var(--text-secondary);
-  position: relative;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  text-decoration: none;
-  transition: color 0.2s ease;
-}
-
-.userActions a:hover {
-  color: var(--primary);
-}
-
-.notification {
-  position: relative;
-}
-
-.notification::after {
-  content: "";
-  position: absolute;
-  top: 0;
-  right: 0;
-  width: 8px;
-  height: 8px;
-  background-color: var(--primary);
-  border-radius: 50%;
-  border: 2px solid var(--bg-white);
-}
-
-.profileIcon {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
 /* Container */
 .container {
   display: flex;
@@ -183,6 +140,7 @@
   font-weight: 600;
   position: relative;
 }
+
 .sidebarMenu li button {
   display: block;
   padding: 0.75rem 1.5rem;
@@ -207,6 +165,7 @@
   font-weight: 600;
   position: relative;
 }
+
 /* Enhanced active state with indicator */
 .sidebarMenu li a.active::before {
   content: "";
@@ -234,6 +193,113 @@
   padding: 2rem;
   margin-left: var(--sidebar-width);
   width: calc(100% - var(--sidebar-width));
+}
+
+/* Futsal Profile Styles */
+.mainHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+}
+
+.updateProfileBtn {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background-color: var(--primary);
+  color: white;
+  border: none;
+  border-radius: var(--radius);
+  padding: 0.5rem 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.updateProfileBtn:hover {
+  background-color: var(--primary-dark);
+}
+
+.futsalProfile {
+  background-color: var(--bg-white);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  overflow: hidden;
+}
+
+.futsalInfo {
+  padding: 1.5rem;
+  border-bottom: 1px solid var(--border-light);
+  position: relative;
+}
+
+.futsalName {
+  font-size: 2rem;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.verifiedBadge {
+  color: var(--primary);
+}
+
+.futsalMeta {
+  display: flex;
+  gap: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.location,
+.hours {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: var(--text-secondary);
+  font-size: 0.875rem;
+}
+
+.aboutSection {
+  margin-bottom: 2rem;
+}
+
+.aboutSection h2 {
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin-bottom: 0.75rem;
+}
+
+.aboutSection p {
+  color: var(--text-secondary);
+  line-height: 1.6;
+}
+
+.loading {
+  text-align: center;
+  padding: 2rem;
+  color: var(--text-secondary);
+}
+
+.error {
+  text-align: center;
+  padding: 2rem;
+  color: #ef4444;
+}
+
+.empty {
+  text-align: center;
+  padding: 2rem;
+  background-color: var(--bg-white);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+}
+
+.empty h3 {
+  color: var(--text-secondary);
+  margin-bottom: 1.5rem;
 }
 
 /* Responsive Design - Keeping sidebar fixed */
@@ -302,113 +368,26 @@
   }
 }
 
-/* Futsal Profile Styles */
-.mainHeader {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 1.5rem;
-}
-
-.updateProfileBtn {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  background-color: var(--primary);
-  color: white;
-  border: none;
-  border-radius: var(--radius);
-  padding: 0.5rem 1rem;
-  font-weight: 500;
-  cursor: pointer;
-  transition: background-color 0.2s ease;
-}
-
-.updateProfileBtn:hover {
-  background-color: var(--primary-dark);
-}
-
-.futsalProfile {
-  background-color: var(--bg-white);
-  border-radius: var(--radius);
-  box-shadow: var(--shadow);
-  overflow: hidden;
-}
-
-.bannerImage {
+.imagePlaceholder {
   width: 100%;
-  height: 300px;
-  overflow: hidden;
-  position: relative;
-}
-
-.bannerImage img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-
-.futsalInfo {
-  padding: 1.5rem;
-  border-bottom: 1px solid var(--border-light);
-  position: relative;
-}
-
-.futsalName {
-  font-size: 2rem;
-  font-weight: 700;
-  margin-bottom: 0.5rem;
+  height: 200px;
+  background-color: var(--bg-light);
+  border-radius: var(--radius);
   display: flex;
   align-items: center;
-  gap: 0.5rem;
-}
-
-.verifiedBadge {
-  color: var(--primary);
-}
-
-.futsalMeta {
-  display: flex;
-  gap: 1.5rem;
+  justify-content: center;
   margin-bottom: 1.5rem;
 }
 
-.location,
-.hours {
+.placeholderText {
+  color: var(--text-secondary);
+  font-style: italic;
+}
+
+.createFutsalBtn {
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  color: var(--text-secondary);
-  font-size: 0.875rem;
-}
-
-.futsalStats {
-  display: flex;
-  gap: 2rem;
-  margin-bottom: 1.5rem;
-}
-
-.statItem {
-  display: flex;
-  flex-direction: column;
-}
-
-.statValue {
-  font-size: 1.5rem;
-  font-weight: 700;
-  color: var(--text-primary);
-}
-
-.statLabel {
-  font-size: 0.875rem;
-  color: var(--text-secondary);
-}
-
-.joinButton {
-  margin-bottom: 0.5rem;
-}
-
-.joinButton button {
   background-color: var(--primary);
   color: white;
   border: none;
@@ -417,224 +396,101 @@
   font-weight: 500;
   cursor: pointer;
   transition: background-color 0.2s ease;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.5rem;
+  margin: 1rem 0;
 }
 
-.joinButton button:hover {
+.createFutsalBtn:hover {
   background-color: var(--primary-dark);
 }
 
-.futsalContent {
-  padding: 1.5rem;
-}
-
-.aboutSection {
-  margin-bottom: 2rem;
-}
-
-.aboutSection h2 {
-  font-size: 1.25rem;
-  font-weight: 600;
-  margin-bottom: 0.75rem;
-}
-
-.aboutSection p {
-  color: var(--text-secondary);
-  line-height: 1.6;
-}
-
-.facilitiesSection {
-  margin-bottom: 2rem;
-  background-color: #f0fdf4;
+.blueprintNote {
+  margin: 2rem 0;
+  padding: 1rem;
+  background-color: var(--bg-light);
   border-radius: var(--radius);
-  padding: 1.5rem;
+  text-align: center;
 }
 
-.facilitiesList {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-  gap: 1rem;
+.blueprintNote p {
+  color: var(--text-secondary);
+  font-style: italic;
 }
 
-.facilitiesList li {
+.statsSection {
+  display: flex;
+  gap: 2rem;
+  margin: 1.5rem 0;
+  padding: 1rem;
+  background-color: var(--bg-light);
+  border-radius: var(--radius);
+}
+
+.statItem {
   display: flex;
   align-items: center;
   gap: 0.5rem;
+  color: var(--text-secondary);
 }
 
-.checkIcon {
-  color: var(--primary);
-  flex-shrink: 0;
+.facilitiesSection {
+  margin: 1.5rem 0;
+}
+
+.facilitiesList {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+}
+
+.facilityTag {
+  padding: 0.25rem 0.75rem;
+  background-color: var(--bg-light);
+  color: var(--text-secondary);
+  border-radius: 9999px;
+  font-size: 0.875rem;
 }
 
 .ownerSection {
-  margin-bottom: 2rem;
-  background-color: #1f2937;
-  color: white;
+  margin: 1.5rem 0;
+  padding: 1rem;
+  background-color: var(--bg-light);
   border-radius: var(--radius);
-  padding: 1.5rem;
-}
-
-.ownerSection h2 {
-  font-size: 1.25rem;
-  font-weight: 600;
-  margin-bottom: 1rem;
-  color: white;
-}
-
-.ownerProfile {
-  display: flex;
-  gap: 1.5rem;
-}
-
-.ownerImage {
-  width: 120px;
-  height: 120px;
-  border-radius: 50%;
-  overflow: hidden;
-  flex-shrink: 0;
-}
-
-.ownerImage img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-
-.ownerInfo {
-  flex: 1;
 }
 
 .ownerInfo h3 {
   font-size: 1.125rem;
   font-weight: 600;
   margin-bottom: 0.5rem;
+  color: var(--text-primary);
 }
 
 .ownerInfo p {
-  color: #d1d5db;
-  margin-bottom: 1rem;
-  font-size: 0.875rem;
+  color: var(--text-secondary);
   line-height: 1.6;
 }
 
-.ownerContact {
-  display: flex;
-  flex-direction: column;
-  gap: 0.75rem;
-}
-
-.phoneNumber {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  color: #d1d5db;
-  font-size: 0.875rem;
-}
-
-.ownerActions {
-  display: flex;
-  gap: 1rem;
-  margin-top: 0.5rem;
-}
-
-.addFriendBtn,
-.messageBtn {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  padding: 0.5rem 1rem;
-  border-radius: var(--radius);
-  font-size: 0.875rem;
-  font-weight: 500;
-  cursor: pointer;
-  transition: all 0.2s ease;
-}
-
-.addFriendBtn {
-  background-color: #06b6d4;
-  color: white;
-  border: none;
-}
-
-.addFriendBtn:hover {
-  background-color: #0891b2;
-}
-
-.messageBtn {
-  background-color: transparent;
-  color: white;
-  border: 1px solid #4b5563;
-}
-
-.messageBtn:hover {
-  background-color: rgba(255, 255, 255, 0.1);
-}
-
-.locationSection {
-  margin-bottom: 1rem;
-}
-
-.locationSection h2 {
-  font-size: 1.25rem;
-  font-weight: 600;
-  margin-bottom: 0.75rem;
+.mapSection {
+  margin: 1.5rem 0;
 }
 
 .mapContainer {
-  width: 100%;
-  height: 300px;
+  margin-top: 0.5rem;
   border-radius: var(--radius);
   overflow: hidden;
-  margin-bottom: 0.75rem;
+  background-color: var(--bg-light);
 }
 
-.mapImage {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-
-.mapAddress {
+.mapPlaceholder {
+  height: 300px;
   display: flex;
+  flex-direction: column;
   align-items: center;
-  gap: 0.5rem;
+  justify-content: center;
   color: var(--text-secondary);
-  font-size: 0.875rem;
+  gap: 1rem;
 }
 
-/* Responsive adjustments for futsal profile */
-@media (max-width: 768px) {
-  .ownerProfile {
-    flex-direction: column;
-    align-items: center;
-    text-align: center;
-  }
-
-  .ownerContact {
-    align-items: center;
-  }
-
-  .ownerActions {
-    justify-content: center;
-  }
-
-  .facilitiesList {
-    grid-template-columns: 1fr;
-  }
-
-  .futsalMeta {
-    flex-direction: column;
-    gap: 0.75rem;
-  }
-
-  .futsalStats {
-    justify-content: space-around;
-  }
+.mapPlaceholder p {
+  font-style: italic;
 }

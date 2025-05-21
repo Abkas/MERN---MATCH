@@ -4,7 +4,7 @@ import styles from '../pages/css/UploadPage.module.css';
 import { useAuthStore } from '../store/useAuthStore'; 
 
 const UpdateProfile = () => {
-    const { authUser, updatePlayerProfile , isUpdatingProfile} = useAuthStore();
+    const { authUser, updatePlayerProfile, isUpdatingProfile} = useAuthStore();
     const navigate = useNavigate();
 
     const [formData, setFormData] = useState({

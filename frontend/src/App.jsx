@@ -16,6 +16,9 @@ import PUpcomingMatches from "./pages/Player-profile/PUpcomingMatchesPage"
 import FutsalHome from "./pages/FutsalHome"
 import QuickFindFutsalPage from "./pages/QuickFindFutsalPage"
 import TournamentPage from "./pages/TournamentPage"
+import BookFutsal from "./pages/BookFutsal"
+
+import FutsalDetails from './pages/FutsalDetails'
 
 import UpdateProfile from "./components/updatePage"
 
@@ -24,6 +27,7 @@ import OHistory from "./pages/organizer-profile/OHistory"
 import OMyFutsal from "./pages/organizer-profile/OMyFutsal"
 import OSlotsPage from "./pages/organizer-profile/OSlotsPage"
 
+import UpdateFutsal from "./components/updatefutsal"
 
 
 import { useAuthStore } from "./store/useAuthStore"
@@ -70,13 +74,18 @@ const App = () => {
         <Route path = '/futsalhome' element= {authUser?<FutsalHome />: <Navigate to='/login'/>} />
         <Route path = '/quickmatch' element= {authUser?<QuickFindFutsalPage />: <Navigate to='/login'/>} />
         <Route path = '/tournaments' element= {authUser?<TournamentPage />: <Navigate to='/login'/>} />
+        <Route path = '/bookfutsal' element= {authUser?<BookFutsal />: <Navigate to='/login'/>} />
 
+        <Route path="/futsal/:id" element={authUser?<FutsalDetails />:<Navigate to = '/login'/>} />
+      
         <Route path = '/update-profile' element= {authUser?<UpdateProfile />: <Navigate to='/login'/>} />
 
         <Route path = '/organizer-dashboard' element= {authUser?<ODashboard />: <Navigate to='/login'/>} />
         <Route path = '/organizer-history' element= {authUser?<OHistory />: <Navigate to='/login'/>} />
         <Route path = '/organizer-futsals' element= {authUser?<OMyFutsal />: <Navigate to='/login'/>} />
         <Route path = '/organizer-slots' element= {authUser?<OSlotsPage />: <Navigate to='/login'/>} />
+
+        <Route path = '/update-futsal' element= {authUser?<UpdateFutsal />: <Navigate to='/login'/>} />
 
       </Routes>
 

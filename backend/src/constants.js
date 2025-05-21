@@ -9,5 +9,8 @@ export const GAME_STATUS = {
 export const SLOT_STATUS = {
     AVAILABLE: 'available',
     BOOKED: 'booked',
-    FULL: 'full'
+    FULL: 'full',
+    RESERVED: 'reserved',
+    ENDED: 'ended',
+    NOFULL: 'nofull'
 };

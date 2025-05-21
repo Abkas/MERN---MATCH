@@ -20,14 +20,16 @@ app.use(cookieParser())
 //routes
 import UserRouter from './routes/user.route.js'  
 import GameRouter from './routes/game.route.js'
-import SlotRouter from './routes/slot.route.js'   
+import SlotRouter from './routes/slot.routes.js'   
 import OrganizerRouter from './routes/organizer.route.js'
+import FutsalRouter from './routes/futsal.route.js'
 //routes declaration
 
 app.use('/api/v1/users', UserRouter)
 app.use('/api/v1/games', GameRouter)
 app.use('/api/v1/slots', SlotRouter)
 app.use('/api/v1/organizer', OrganizerRouter)
+app.use('/api/v1/futsals', FutsalRouter)
 
 
 export {app}

@@ -250,14 +250,31 @@ const updateAccountDetails = asyncHandler(async(req, res) =>{
         }
     }
 
-    const updatedUser = await User.findByIdAndUpdate(userId, userUpdate, { new: true })
-
+    // Update player profile if needed
     if (user.role === 'player' && Object.keys(playerUpdate).length > 0 && user.playerProfile) {
         await PlayerProfile.findByIdAndUpdate(user.playerProfile, playerUpdate, { new: true });
     }
 
+    // Update organizer profile if needed
     if (user.role === 'organizer' && Object.keys(organizerUpdate).length > 0 && user.organizerProfile) {
         await OrganizerProfile.findByIdAndUpdate(user.organizerProfile, organizerUpdate, { new: true });
+    }
+
+    // Update user data
+    const updatedUser = await User.findByIdAndUpdate(
+        userId, 
+        userUpdate, 
+        { new: true }
+    ).populate({
+        path: 'playerProfile',
+        populate: {
+            path: 'reviews matchHistory followedFutsals'
+        }
+    }).populate('organizerProfile')
+     .select('-password -refreshToken');
+
+    if (!updatedUser) {
+        throw new ApiError(500, 'Failed to update user data');
     }
 
     return res

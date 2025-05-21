@@ -1,6 +1,7 @@
 import mongoose, {Schema} from 'mongoose'
 import mongooseAggregatePaginate from 'mongoose-aggregate-paginate-v2'
 
+
 const FutsalSchema = new Schema({
     name: { 
         type: String, 
@@ -9,40 +10,38 @@ const FutsalSchema = new Schema({
     location: {
         type: String,
         required: true 
-        },
+    },
     description: {
         type: String 
     },
     organizer: { 
         type: Schema.Types.ObjectId,
         ref: 'User',
-        },
+    },
     OrganizerProfile: {
         type: Schema.Types.ObjectId,
         ref: 'OrganizerProfile' 
     },
     tournaments: [
         {
-        type: Schema.Types.ObjectId,
-        ref: 'Tournament' 
+            type: Schema.Types.ObjectId,
+            ref: 'Tournament' 
         }
     ],
-    slots:[
-        {
+    slots: [{
         type: Schema.Types.ObjectId,
-        ref: 'Slot' 
-        }
-    ],
+        ref: 'Slot'
+    }],
     reviews: [
         {
-        type: Schema.Types.ObjectId,
-        ref: 'Review' 
+            type: Schema.Types.ObjectId,
+            ref: 'Review' 
         }
     ],
     followers: [
         {
-        type: Schema.Types.ObjectId,
-        ref: 'User' 
+            type: Schema.Types.ObjectId,
+            ref: 'User' 
         }
     ],
     ownerDescription: {
@@ -65,6 +64,26 @@ const FutsalSchema = new Schema({
     mapLink: {
         type: String 
     },
+    futsalPhoto:{
+        type: String
+    },
+    price: {
+        type: Number,
+        required: true
+    },
+    rating: {
+        type: Number,
+        default: 0
+    },
+    images: [String],
+    isAwarded: {
+        type: Boolean,
+        default: false
+    },
+    isNew: {
+        type: Boolean,
+        default: true
+    }
 }, { timestamps: true });
 
 FutsalSchema.methods.getFollowers = function () {

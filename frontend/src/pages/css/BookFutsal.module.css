@@ -1,0 +1,1215 @@
+/* Base Styles */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Inter', sans-serif;
+}
+
+.body { 
+  width: 100vw;
+  min-height: 100vh;
+  background-color: #ffffff;
+  color: #333;
+  line-height: 1.6;
+  overflow-x: hidden;
+  position: relative;
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+button {
+  cursor: pointer;
+  border: none;
+  outline: none;
+}
+
+/* Navigation Styles */
+.nav {
+  width: 100vw; 
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 0;
+  max-width: 1200px;
+  margin: 0 auto;
+  position: relative;
+  z-index: 10;
+}
+
+.logo img {
+  height: 50px;
+}
+
+.navLinks {
+  display: flex;
+  list-style: none;
+  margin: 0;
+}
+
+.navLinks li {
+  margin: 0 20px;
+}
+
+.navLinks a {
+  text-decoration: none;
+  color: #000;
+  font-weight: 500;
+  font-size: 16px;
+  transition: color 0.3s;
+  position: relative;
+}
+
+.navLinks a.active::after {
+  content: '';
+  position: absolute;
+  bottom: -5px;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  background-color: #4169e1;
+}
+
+.navLinks a:hover {
+  color: #4169e1;
+}
+
+.navIcons {
+  display: flex;
+  gap: 20px;
+  color: #e0e0e0;
+}
+
+.notification, .profile {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background-color: #0d0d0d;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+}
+
+.notification img, .profile img {
+  width: 20px;
+  height: 20px;
+}
+
+/* Social Media Sidebar */
+.socialSidebar {
+  position: fixed;
+  left: 30px;
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  z-index: 10;
+}
+
+.socialIcon {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background-color: #fff;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  transition: all 0.3s ease;
+}
+
+.socialIcon:hover {
+  transform: scale(1.1);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.socialIcon img {
+  width: 20px;
+  height: 20px;
+}
+
+/* Hero Section */
+.hero {
+  background-color: #f8e1e1;
+  padding: 60px 0;
+  text-align: left;
+}
+
+.hero h1 {
+  font-size: 36px;
+  font-weight: 700;
+  margin-bottom: 5px;
+  color: #333;
+}
+
+.subtitle {
+  font-size: 18px;
+  color: #555;
+  margin-bottom: 30px;
+}
+
+.searchContainer {
+  margin-bottom: 30px;
+}
+
+.searchBox {
+  display: flex;
+  align-items: center;
+  background-color: #fff;
+  border-radius: 30px;
+  padding: 0 15px;
+  max-width: 500px;
+  position: relative;
+  border: 1px solid #ddd;
+}
+
+.searchBox i {
+  color: #777;
+  margin-right: 10px;
+}
+
+.searchBox input {
+  flex: 1;
+  border: none;
+  outline: none;
+  padding: 15px 0;
+  font-size: 16px;
+}
+
+.clearBtn {
+  background: none;
+  border: none;
+  color: #777;
+  cursor: pointer;
+}
+
+.actionButtons {
+  display: flex;
+  gap: 15px;
+  flex-wrap: wrap;
+}
+
+.btnFindTournament {
+  background-color: #5eead4;
+  color: #000;
+  padding: 12px 25px;
+  border-radius: 30px;
+  font-weight: 500;
+  transition: background-color 0.3s;
+}
+
+.btnHostTournament {
+  background-color: #a78bfa;
+  color: #fff;
+  padding: 12px 25px;
+  border-radius: 30px;
+  font-weight: 500;
+  transition: background-color 0.3s;
+}
+
+.btnFindTournament:hover, .btnHostTournament:hover {
+  opacity: 0.9;
+}
+
+/* Section Titles */
+.sectionTitle {
+  font-size: 20px;
+  font-weight: 700;
+  margin-bottom: 30px;
+  color: #333;
+}
+
+.sectionTitleCentered {
+  font-size: 24px;
+  font-weight: 700;
+  margin-bottom: 40px;
+  color: #333;
+  text-align: center;
+}
+
+/* Futsal Near You Section */
+.futsalNearYou {
+  padding: 60px 0;
+}
+
+.futsalCards {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+  gap: 30px;
+  margin-bottom: 40px;
+}
+
+.futsalCard {
+  background-color: #fff;
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  position: relative;
+}
+
+.cardImage {
+  position: relative;
+  height: 200px;
+}
+
+.cardImage img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.awardBadge {
+  position: absolute;
+  bottom: 10px;
+  right: 10px;
+  background-color: #ffd700;
+  width: 40px;
+  height: 40px;
+  border-radius: 5px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: #333;
+}
+
+.newBadge {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background-color: #4169e1;
+  color: #fff;
+  padding: 5px 15px;
+  border-radius: 20px;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.cardContent {
+  padding: 20px;
+}
+
+.cardHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+}
+
+.cardHeader h3 {
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.rating {
+  display: flex;
+  align-items: center;
+}
+
+.rating i {
+  color: #ffd700;
+  margin-right: 5px;
+}
+
+.tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 15px;
+}
+
+.tag {
+  background-color: #f0f0f0;
+  padding: 4px 10px;
+  border-radius: 4px;
+  font-size: 12px;
+  color: #555;
+}
+
+.location, .time, .price {
+  display: flex;
+  align-items: center;
+  margin-bottom: 10px;
+  font-size: 14px;
+}
+
+.location i, .time i, .price i {
+  margin-right: 8px;
+  color: #777;
+  width: 16px;
+}
+
+.cardActions {
+  display: flex;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.btnBook {
+  flex: 1;
+  background-color: #e53e3e;
+  color: #fff;
+  padding: 10px;
+  border-radius: 5px;
+  font-size: 14px;
+  font-weight: 500;
+  transition: background-color 0.3s;
+}
+
+.btnQuickJoin {
+  background-color: #4169e1;
+  color: #fff;
+  padding: 10px 15px;
+  border-radius: 5px;
+  font-size: 14px;
+  font-weight: 500;
+  transition: background-color 0.3s;
+}
+
+.btnBook:hover, .btnQuickJoin:hover {
+  opacity: 0.9;
+}
+
+.seeMore {
+  text-align: center;
+}
+
+.btnSeeMore {
+  background-color: transparent;
+  border: 1px solid #ddd;
+  color: #555;
+  padding: 10px 30px;
+  border-radius: 30px;
+  font-size: 14px;
+  transition: background-color 0.3s;
+}
+
+.btnSeeMore:hover {
+  background-color: #f0f0f0;
+}
+
+/* Quick Join Section */
+.quickJoin {
+  padding: 60px 0;
+  background-color: #f9f9f9;
+}
+
+.venueList {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.venueItem {
+  background-color: #fff;
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.venueHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px 20px;
+  background-color: #f9f9f9;
+  border-bottom: 1px solid #eee;
+}
+
+.venueName {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: none;
+  border: none;
+  font-size: 16px;
+  font-weight: 600;
+  color: #333;
+  cursor: pointer;
+  padding: 0;
+  transition: color 0.2s;
+}
+
+.venueName:hover {
+  color: #2563eb;
+}
+
+.venueInfo {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.infoTag {
+  background-color: #f0f0f0;
+  padding: 5px 10px;
+  border-radius: 15px;
+  font-size: 12px;
+  color: #666;
+}
+
+.venueDetails {
+  padding: 20px;
+}
+
+.dateNavigation {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 20px;
+}
+
+.dateNavigation input[type="date"] {
+  padding: 8px 12px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  font-size: 14px;
+  color: #333;
+  background-color: #fff;
+}
+
+.timeSlots {
+  overflow-x: auto;
+}
+
+.timeSlots table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 10px;
+}
+
+.timeSlots th {
+  background-color: #f8f9fa;
+  padding: 12px;
+  text-align: left;
+  font-weight: 600;
+  color: #495057;
+  border-bottom: 2px solid #e9ecef;
+  white-space: nowrap;
+}
+
+.timeSlots td {
+  padding: 12px;
+  border-bottom: 1px solid #e9ecef;
+  color: #495057;
+  white-space: nowrap;
+}
+
+.timeSlots tr:last-child td {
+  border-bottom: none;
+}
+
+.status {
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 0.9em;
+  font-weight: 500;
+  text-transform: capitalize;
+}
+
+.statusAvailable {
+  background-color: #e8f5e9;
+  color: #2e7d32;
+}
+
+.statusBooked {
+  background-color: #e3f2fd;
+  color: #1976d2;
+}
+
+.statusFull {
+  background-color: #fff3e0;
+  color: #f57c00;
+}
+
+.statusReserved {
+  background-color: #e3f2fd;
+  color: #1976d2;
+}
+
+.statusEnded {
+  background-color: #fbe9e7;
+  color: #d32f2f;
+}
+
+.statusNofull {
+  background-color: #e8f5e9;
+  color: #2e7d32;
+}
+
+.btnJoinNow {
+  background-color: #2563eb;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.btnJoinNow:hover {
+  background-color: #1d4ed8;
+}
+
+.btnJoinNowDisabled {
+  background-color: #9ca3af;
+  cursor: not-allowed;
+  opacity: 0.7;
+}
+
+.btnJoinNowDisabled:hover {
+  background-color: #9ca3af;
+}
+
+.loading {
+  text-align: center;
+  padding: 20px;
+  color: #666;
+  font-size: 16px;
+}
+
+.error {
+  text-align: center;
+  padding: 20px;
+  color: #dc2626;
+  font-size: 16px;
+}
+
+.noSlots {
+  text-align: center;
+  padding: 20px;
+  color: #666;
+  font-size: 16px;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .venueHeader {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+
+  .venueInfo {
+    width: 100%;
+  }
+
+  .timeSlots {
+    margin: 0 -20px;
+  }
+
+  .timeSlots table {
+    min-width: 600px;
+  }
+}
+
+/* Footer */
+.footer {
+  padding: 30px 0;
+  background-color: #f9f9f9;
+  border-top: 1px solid #eee;
+}
+
+.footerLinks {
+  display: flex;
+  gap: 20px;
+}
+
+.footerLinks a {
+  color: #555;
+  font-size: 14px;
+  transition: color 0.3s;
+}
+
+.footerLinks a:hover {
+  color: #333;
+}
+
+.footerSocial {
+  display: flex;
+  gap: 15px;
+}
+
+.footerSocial a {
+  color: #555;
+  font-size: 18px;
+  transition: color 0.3s;
+}
+
+.footerSocial a:hover {
+  color: #333;
+}
+
+/* Media Queries */
+@media (min-width: 748px) and (max-width: 832px) {
+  .futsalCards {
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  }
+  
+  .venueHeader {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  
+  .venueInfo {
+    margin-top: 10px;
+  }
+  
+  .team {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  
+  .btnJoinNow {
+    margin-bottom: 10px;
+  }
+}
+
+@media (min-width: 453px) and (max-width: 745px) {
+  .hero h1 {
+    font-size: 30px;
+  }
+  
+  .subtitle {
+    font-size: 16px;
+  }
+  
+  .futsalCards {
+    grid-template-columns: 1fr;
+  }
+  
+  .venueHeader {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  
+  .venueInfo {
+    margin-top: 10px;
+  }
+  
+  .timeSlots {
+    overflow-x: auto;
+  }
+  
+  .team {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  
+  .btnJoinNow {
+    margin-bottom: 10px;
+  }
+  
+  .steps {
+    grid-template-columns: 1fr;
+    gap: 30px;
+  }
+  
+  .footer .container {
+    flex-direction: column;
+    gap: 20px;
+  }
+}
+
+@media (max-width: 452px) {
+  .nav {
+    padding: 15px;
+  }
+  
+  .logo img {
+    height: 30px;
+  }
+  
+  .navLinks li {
+    margin: 0 8px;
+  }
+  
+  .navLinks a {
+    font-size: 14px;
+  }
+  
+  .hero {
+    padding: 40px 0;
+  }
+  
+  .hero h1 {
+    font-size: 24px;
+  }
+  
+  .subtitle {
+    font-size: 14px;
+  }
+  
+  .searchBox input {
+    padding: 12px 0;
+  }
+  
+  .futsalCards {
+    grid-template-columns: 1fr;
+  }
+  
+  .venueHeader, .venueItem {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  
+  .venueInfo {
+    margin-top: 10px;
+  }
+  
+  .timeSlots {
+    overflow-x: auto;
+  }
+  
+  .team {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  
+  .btnJoinNow {
+    margin-bottom: 10px;
+  }
+  
+  .steps {
+    grid-template-columns: 1fr;
+    gap: 30px;
+  }
+  
+  .footer .container {
+    flex-direction: column;
+    gap: 20px;
+  }
+  
+  .footerLinks {
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+}
+
+.futsalGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 2rem;
+  margin: 2rem 0;
+}
+
+.noFutsals {
+  text-align: center;
+  padding: 2rem;
+  color: #666;
+  font-size: 1.2rem;
+}
+
+/* Modal Styles */
+.modalOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  backdrop-filter: blur(4px);
+}
+
+.modalContent {
+  background-color: white;
+  border-radius: 12px;
+  width: 90%;
+  max-width: 500px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+  animation: modalSlideIn 0.3s ease-out;
+}
+
+@keyframes modalSlideIn {
+  from {
+    transform: translateY(-20px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.modalHeader {
+  padding: 20px;
+  border-bottom: 1px solid #eee;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.modalHeader h3 {
+  margin: 0;
+  font-size: 1.25rem;
+  color: #333;
+}
+
+.closeButton {
+  background: none;
+  border: none;
+  color: #666;
+  cursor: pointer;
+  padding: 4px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.2s;
+}
+
+.closeButton:hover {
+  background-color: #f3f4f6;
+}
+
+.modalBody {
+  padding: 20px;
+}
+
+.slotInfo {
+  text-align: center;
+  margin-bottom: 24px;
+}
+
+.timeSlot {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 8px;
+}
+
+.pricePerSeat {
+  color: #666;
+  font-size: 0.9rem;
+}
+
+.seatSelector {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.seatButton {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: 2px solid #e5e7eb;
+  background: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.seatButton:hover:not(:disabled) {
+  border-color: #2563eb;
+  color: #2563eb;
+}
+
+.seatButton:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.seatCount {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: #333;
+  min-width: 40px;
+  text-align: center;
+}
+
+.totalPrice {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px;
+  background-color: #f8fafc;
+  border-radius: 8px;
+  margin-bottom: 24px;
+}
+
+.totalPrice span {
+  font-size: 1rem;
+  color: #333;
+}
+
+.totalPrice .price {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #2563eb;
+}
+
+.modalFooter {
+  padding: 20px;
+  border-top: 1px solid #eee;
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+}
+
+.cancelButton {
+  padding: 10px 20px;
+  border: 1px solid #e5e7eb;
+  border-radius: 6px;
+  background: white;
+  color: #666;
+  font-weight: 500;
+  transition: all 0.2s;
+}
+
+.cancelButton:hover {
+  background-color: #f3f4f6;
+}
+
+.confirmButton {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 6px;
+  background: #2563eb;
+  color: white;
+  font-weight: 500;
+  transition: background-color 0.2s;
+}
+
+.confirmButton:hover {
+  background-color: #1d4ed8;
+}
+
+.howToJoin {
+  margin: 1rem 0;
+  padding: 1rem;
+  background-color: var(--bg-light);
+  border-radius: var(--radius);
+}
+
+.sectionHeader {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.75rem;
+}
+
+.sectionHeader h4 {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.joinSteps {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.step {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  color: var(--text-secondary);
+  font-size: 0.875rem;
+}
+
+.stepNumber {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.5rem;
+  height: 1.5rem;
+  background-color: var(--primary);
+  color: white;
+  border-radius: 50%;
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+.competeSection {
+  margin: 1rem 0;
+  padding: 1rem;
+  background-color: var(--bg-light);
+  border-radius: var(--radius);
+}
+
+.competeInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  color: var(--text-secondary);
+  font-size: 0.875rem;
+}
+
+.competeStats {
+  font-weight: 500;
+  color: var(--primary);
+}
+
+/* How to Join Section */
+.howToJoinSection {
+  padding: 4rem 0;
+  background-color: #f8fafc;
+}
+
+.howToJoinContent {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 2rem;
+  margin-top: 2rem;
+}
+
+.joinStep {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: 2rem;
+  background-color: white;
+  border-radius: 1rem;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+  transition: transform 0.3s ease;
+}
+
+.joinStep:hover {
+  transform: translateY(-5px);
+}
+
+.stepNumber {
+  width: 3rem;
+  height: 3rem;
+  background-color: #2563eb;
+  color: white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin-bottom: 1rem;
+}
+
+.stepContent h3 {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #1e293b;
+  margin-bottom: 0.5rem;
+}
+
+.stepContent p {
+  color: #64748b;
+  line-height: 1.5;
+}
+
+/* Compete Section */
+.competeSection {
+  padding: 4rem 0;
+  background-color: white;
+}
+
+.competeContent {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 4rem;
+  margin-top: 2rem;
+  align-items: center;
+}
+
+.competeInfo h3 {
+  font-size: 2rem;
+  font-weight: 700;
+  color: #1e293b;
+  margin-bottom: 1rem;
+}
+
+.competeInfo p {
+  color: #64748b;
+  font-size: 1.125rem;
+  margin-bottom: 2rem;
+  line-height: 1.6;
+}
+
+.competeFeatures {
+  list-style: none;
+  padding: 0;
+}
+
+.competeFeatures li {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  color: #475569;
+  margin-bottom: 1rem;
+  font-size: 1.125rem;
+}
+
+.competeFeatures li::before {
+  content: "✓";
+  color: #2563eb;
+  font-weight: bold;
+}
+
+.competeStats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 2rem;
+  text-align: center;
+}
+
+.statItem {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.statNumber {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: #2563eb;
+}
+
+.statLabel {
+  color: #64748b;
+  font-size: 1.125rem;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .howToJoinContent {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+
+  .competeContent {
+    grid-template-columns: 1fr;
+    gap: 2rem;
+  }
+
+  .competeStats {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1rem;
+  }
+
+  .statNumber {
+    font-size: 2rem;
+  }
+
+  .statLabel {
+    font-size: 1rem;
+  }
+}

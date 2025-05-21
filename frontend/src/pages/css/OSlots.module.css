@@ -301,3 +301,454 @@
     width: calc(100% - var(--sidebar-width));
   }
 }
+
+.mainContent {
+  padding: 2rem;
+  flex: 1;
+}
+
+.slotsHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+}
+
+.slotsHeader h1 {
+  font-size: 1.8rem;
+  color: #333;
+}
+
+.dateSelector {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: #f8f9fa;
+  padding: 0.5rem 1rem;
+  border-radius: 0.5rem;
+  border: 1px solid #e9ecef;
+}
+
+.dateInput {
+  border: none;
+  background: transparent;
+  font-size: 1rem;
+  color: #495057;
+  outline: none;
+}
+
+.addSlotBtn {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: #2563eb;
+  color: white;
+  padding: 0.75rem 1.5rem;
+  border-radius: 0.5rem;
+  border: none;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.addSlotBtn:hover {
+  background: #1d4ed8;
+}
+
+.slotsTable {
+  background: white;
+  border-radius: 0.5rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+}
+
+.slotsTable table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.slotsTable th {
+  background: #f8f9fa;
+  padding: 1rem;
+  text-align: left;
+  font-weight: 600;
+  color: #495057;
+  border-bottom: 2px solid #e9ecef;
+  white-space: nowrap;
+  display: table-cell;
+  vertical-align: middle;
+}
+
+.slotsTable th svg {
+  display: inline-block;
+  vertical-align: middle;
+  margin-right: 0.5rem;
+}
+
+.slotsTable td {
+  padding: 1rem;
+  border-bottom: 1px solid #e9ecef;
+  color: #495057;
+  white-space: nowrap;
+  vertical-align: middle;
+}
+
+.slotsTable tr:last-child td {
+  border-bottom: none;
+}
+
+.status {
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 0.9em;
+  font-weight: 500;
+  text-transform: capitalize;
+}
+
+.statusReserved {
+  background-color: #e3f2fd;
+  color: #1976d2;
+}
+
+.statusEnded {
+  background-color: #fbe9e7;
+  color: #d32f2f;
+}
+
+.statusNofull {
+  background-color: #e8f5e9;
+  color: #2e7d32;
+}
+
+.statusFull {
+  background-color: #fff3e0;
+  color: #f57c00;
+}
+
+.editInput {
+  width: 80px;
+  padding: 4px 8px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 0.9em;
+}
+
+.editSelect {
+  padding: 4px 8px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 0.9em;
+  background-color: white;
+}
+
+.editActions {
+  display: flex;
+  gap: 8px;
+}
+
+.saveBtn {
+  background-color: #4caf50;
+  color: white;
+  border: none;
+  padding: 4px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.9em;
+}
+
+.saveBtn:hover {
+  background-color: #388e3c;
+}
+
+.cancelBtn {
+  background-color: #f44336;
+  color: white;
+  border: none;
+  padding: 4px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.9em;
+}
+
+.cancelBtn:hover {
+  background-color: #d32f2f;
+}
+
+.actions {
+  display: flex;
+  gap: 8px;
+}
+
+.editBtn {
+  background-color: #2196f3;
+  color: white;
+  border: none;
+  padding: 4px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.9em;
+}
+
+.editBtn:hover {
+  background-color: #1976d2;
+}
+
+.deleteBtn {
+  background-color: #f44336;
+  color: white;
+  border: none;
+  padding: 4px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.9em;
+}
+
+.deleteBtn:hover {
+  background-color: #d32f2f;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .slotsHeader {
+    flex-direction: column;
+    gap: 1rem;
+    align-items: flex-start;
+  }
+
+  .slotsTable {
+    overflow-x: auto;
+  }
+
+  .slotsTable table {
+    min-width: 600px;
+  }
+}
+
+.slotsTable input,
+.slotsTable select {
+  width: 100%;
+  padding: 0.5rem;
+  border: 1px solid #e5e7eb;
+  border-radius: 0.375rem;
+  font-size: 0.875rem;
+  color: #495057;
+  background: white;
+}
+
+.slotsTable input:focus,
+.slotsTable select:focus {
+  outline: none;
+  border-color: #2563eb;
+  box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.1);
+}
+
+.slotsTable input[type="number"] {
+  width: 80px;
+}
+
+.slotsTable select {
+  width: 120px;
+  cursor: pointer;
+}
+
+.loading {
+  text-align: center;
+  padding: 1rem;
+  color: #4b5563;
+  font-size: 0.875rem;
+}
+
+.error {
+  background: #fee2e2;
+  color: #dc2626;
+  padding: 1rem;
+  border-radius: 0.5rem;
+  margin-bottom: 1rem;
+  font-size: 0.875rem;
+}
+
+.addSlotForm {
+  background: white;
+  border-radius: 12px;
+  padding: 24px;
+  margin: 20px 0;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20px;
+  max-width: 800px;
+  margin: 20px auto;
+}
+
+.formGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.formGroup label {
+  font-weight: 500;
+  color: #333;
+  font-size: 0.9rem;
+}
+
+.timeInput {
+  padding: 10px 12px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  font-size: 1rem;
+  width: 100%;
+  transition: border-color 0.2s;
+}
+
+.timeInput:focus {
+  border-color: #4a90e2;
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(74, 144, 226, 0.2);
+}
+
+.numberInput {
+  padding: 10px 12px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  font-size: 1rem;
+  width: 100%;
+  transition: border-color 0.2s;
+}
+
+.numberInput:focus {
+  border-color: #4a90e2;
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(74, 144, 226, 0.2);
+}
+
+.selectInput {
+  padding: 10px 12px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  font-size: 1rem;
+  width: 100%;
+  background-color: white;
+  cursor: pointer;
+  transition: border-color 0.2s;
+}
+
+.selectInput:focus {
+  border-color: #4a90e2;
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(74, 144, 226, 0.2);
+}
+
+.formActions {
+  grid-column: 1 / -1;
+  display: flex;
+  gap: 12px;
+  justify-content: flex-end;
+  margin-top: 12px;
+}
+
+.saveButton {
+  background-color: #4a90e2;
+  color: white;
+  border: none;
+  padding: 12px 24px;
+  border-radius: 6px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.saveButton:hover {
+  background-color: #357abd;
+}
+
+.cancelButton {
+  background-color: #f5f5f5;
+  color: #333;
+  border: 1px solid #ddd;
+  padding: 12px 24px;
+  border-radius: 6px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.cancelButton:hover {
+  background-color: #e5e5e5;
+}
+
+/* Add a title to the form */
+.addSlotForm::before {
+  content: 'Add New Slot';
+  grid-column: 1 / -1;
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 8px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid #eee;
+}
+
+/* Add icons to the form fields */
+.formGroup {
+  position: relative;
+}
+
+.formGroup label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.formGroup label::before {
+  font-size: 1.1rem;
+  color: #666;
+}
+
+.formGroup:nth-child(1) label::before {
+  content: '🕒';
+}
+
+.formGroup:nth-child(2) label::before {
+  content: '🕒';
+}
+
+.formGroup:nth-child(3) label::before {
+  content: '👥';
+}
+
+.formGroup:nth-child(4) label::before {
+  content: '💰';
+}
+
+.formGroup:nth-child(5) label::before {
+  content: '📊';
+}
+
+.resetButton {
+  background-color: #dc2626;
+  color: white;
+  padding: 8px 16px;
+  border: none;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  margin-left: 12px;
+}
+
+.resetButton:hover {
+  background-color: #b91c1c;
+}
+
+.resetButton:disabled {
+  background-color: #9ca3af;
+  cursor: not-allowed;
+}
+
+.dateNavigation {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}

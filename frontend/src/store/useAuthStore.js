@@ -7,7 +7,9 @@ export const useAuthStore =create((set)  => ({
     isSigningUp: false,
     isLoggingIn: false,
     isUpdatingProfile: false,
+
     isCreatingFutsal: false,
+    isUpdatingFutsal: false,
 
     isCheckingAuth: true,
 
@@ -61,13 +63,31 @@ export const useAuthStore =create((set)  => ({
         }
     },
 
-    updatePlayerProfile: async(data) =>{
+    updatePlayerProfile: async(data) => {
         set({isUpdatingProfile: true})
         try {
-            await axiosInstance.patch('/users/update-account', data) 
-            toast.success('Profile updated successfully')
+            // If data is a string (message), it means it's a direct update from current-user endpoint
+            if (typeof data === 'string') {
+                // Don't update the state if it's just a message
+                return
+            }
+
+            // If data is an object, it's a profile update
+            const response = await axiosInstance.patch('/users/update-account', data)
+            if (response.data.success) {
+                // Keep the existing authUser data and update with new data
+                set((state) => ({
+                    authUser: {
+                        ...state.authUser,
+                        ...response.data.data
+                    }
+                }))
+                toast.success('Profile updated successfully')
+            } else {
+                throw new Error(response.data.message || 'Failed to update profile')
+            }
         } catch (error) {
-            set({isUpdatingProfile: false})
+            console.error('Profile update error:', error)
             toast.error(error.response?.data?.message || 'Error updating profile')
         } finally {
             set({isUpdatingProfile: false})
@@ -92,12 +112,28 @@ export const useAuthStore =create((set)  => ({
         set({isFetchingFutsals: true})
         try {
             const res = await axiosInstance.get('/organizer/organizer-futsals')
+            toast.success('Futsals fetched successfully')
             return res.data
         } catch (error) {
             set({isFetchingFutsals: false})
             toast.error(error.response?.data?.message || 'Error fetching futsals')
         } finally {
             set({isFetchingFutsals: false})
+        }
+    },
+
+    updateFutsalPage: async (futsalId, data) => {
+        set({isUpdatingFutsal: true})
+        try {
+            const res = await axiosInstance.patch(`/organizer/update-futsal/${futsalId}`, data)
+            toast.success('Futsal updated successfully')
+            return res.data
+        } catch (error) {
+            set({isUpdatingFutsal: false})
+            toast.error(error.response?.data?.message || 'Error updating futsal')
+            throw error
+        } finally {
+            set({isUpdatingFutsal: false})
         }
     },
     
