@@ -233,13 +233,11 @@ const updateAccountDetails = asyncHandler(async(req, res) =>{
     const playerUpdate = {}
     const organizerUpdate = {}
 
-    // Fetch user to check role
     const user = await User.findById(userId);
     if (!user) {
         throw new ApiError(404, 'User not found');
     }
 
-    // Only use playerFields if user is player, organizerFields if organizer
     for (const key in updateData) {
         if (userFields.includes(key)) {
             userUpdate[key] = updateData[key];
@@ -250,17 +248,14 @@ const updateAccountDetails = asyncHandler(async(req, res) =>{
         }
     }
 
-    // Update player profile if needed
     if (user.role === 'player' && Object.keys(playerUpdate).length > 0 && user.playerProfile) {
         await PlayerProfile.findByIdAndUpdate(user.playerProfile, playerUpdate, { new: true });
     }
 
-    // Update organizer profile if needed
     if (user.role === 'organizer' && Object.keys(organizerUpdate).length > 0 && user.organizerProfile) {
         await OrganizerProfile.findByIdAndUpdate(user.organizerProfile, organizerUpdate, { new: true });
     }
 
-    // Update user data
     const updatedUser = await User.findByIdAndUpdate(
         userId, 
         userUpdate, 

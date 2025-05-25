@@ -89,7 +89,6 @@ const HowItWorksPage = () => {
                 <li><i className="fas fa-paper-plane"></i> Schedule gaming sessions based on your availability</li>
                 <li><i className="fas fa-paper-plane"></i> Build your reputation with reviews and ratings</li>
               </ul>
-              <button className={styles.ctaButton}>Sign Up as a Player</button>
             </div>
             <div className={`${styles.column} ${styles.organizersColumn}`}>
               <h3>For Organizers</h3>
@@ -104,7 +103,6 @@ const HowItWorksPage = () => {
                 <li><i className="fas fa-paper-plane"></i> Schedule gaming sessions based on your availability</li>
                 <li><i className="fas fa-paper-plane"></i> Build your reputation as a trusted organizer</li>
               </ul>
-              <button className={styles.ctaButton}>Sign Up as a Organizer</button>
             </div>
           </div>
         </section>

@@ -36,7 +36,7 @@
 //         console.error('JWT verification error:', error); // Log actual error for debugging
 //         throw new ApiError(401, 'Invalid access token');
 //     }
-// })
+// })a
 
 import jwt from "jsonwebtoken";
 import {User} from '../models/user.model.js'

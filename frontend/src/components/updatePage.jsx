@@ -21,7 +21,7 @@ const UpdateProfile = () => {
 
     useEffect(() => {
         if (isUpdatingProfile) {
-          // Only navigate after update is done (isUpdatingProfile goes false after update)
+
           navigate('/player-profile');
         }
       }, [isUpdatingProfile, navigate])
@@ -33,7 +33,7 @@ const UpdateProfile = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        // Only send fields that are not empty
+
         let data = {};
         Object.entries(formData).forEach(([key, value]) => {
             if (value !== '' && value !== undefined && value !== null) {

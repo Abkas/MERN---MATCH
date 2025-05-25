@@ -199,17 +199,17 @@ section {
 
 .btnOutline {
     background: transparent;
-    border: 2px solid var(--primary-color);
-    color: var(--primary-color);
+    border: 2px solid var(--light-gray);
+    color: var(--light-gray);
 }
 
 .btnOutline:hover {
-    background: var(--primary-color);
+    background: var(--light-colors);
     color: white;
 }
 
 .btnFilled {
-    background: var(--primary-color);
+    background: var(--light-gray);
     color: white;
 }
 
@@ -315,7 +315,7 @@ section {
 
 .teamCard:hover {
     transform: translateY(-5px);
-    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 10px 25px rgba(253, 253, 253, 0.1);
 }
 
 .memberImage {
@@ -473,7 +473,7 @@ section {
 }
 
 .workCard {
-    background: var(--light-gray);
+    background: var(--gray-color);
     border-radius: 10px;
     padding: 2rem;
     height: 300px;
@@ -485,35 +485,42 @@ section {
 
 .workCard:hover {
     transform: translateY(-5px);
+    
 }
 
 .workCard h3 {
-    color: var(--dark-color);
+    color: var(--light-color);
     margin-bottom: 1rem;
+    
 }
 
 .workCard p {
-    color: var(--gray-color);
+    color: var(--light-color);
     margin-bottom: 1.5rem;
+    
 }
 
 .workCard.purple {
     background: var(--secondary-color);
     color: white;
+    
 }
 
 .workCard.purple h3, .workCard.purple p {
     color: white;
+    
 }
 
 .workCard.purple .btn-outline {
     border-color: white;
     color: white;
+    
 }
 
 .workCard   .purple .btn-outline:hover {
     background: white;
     color: var(--secondary-color);
+    
 }
 
 .workCard.imageCard {
@@ -524,6 +531,7 @@ section {
     color: white;
     padding: 0;
     overflow: hidden;
+    
 }
 
 .cardOverlay {
@@ -541,17 +549,9 @@ section {
 
 .cardOverlay h3, .cardOverlay p {
     color: white;
+    
 }
 
-.cardOverlay .btnOutline {
-    border-color: white;
-    color: white;
-}
-
-.cardOverlay .btnOutline:hover {
-    background: white;
-    color: var(--dark-color);
-}
 
 /* Footer */
 footer {
@@ -705,4 +705,4 @@ footer {
     .teamGrid {
         grid-template-columns: 1fr;
     }
-}
+} 

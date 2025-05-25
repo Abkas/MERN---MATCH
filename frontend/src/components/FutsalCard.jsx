@@ -11,12 +11,12 @@ const FutsalCard = ({ futsal }) => {
   };
 
   const handleBookNow = (e) => {
-    e.stopPropagation(); // Prevent card click when clicking button
+    e.stopPropagation();
     navigate(`/book-futsal/${futsal._id}`);
   };
 
   const handleQuickJoin = (e) => {
-    e.stopPropagation(); // Prevent card click when clicking button
+    e.stopPropagation(); 
     navigate(`/quick-join/${futsal._id}`);
   };
 

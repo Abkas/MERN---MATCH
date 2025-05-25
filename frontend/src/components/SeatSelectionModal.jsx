@@ -18,11 +18,9 @@ const SeatSelectionModal = ({ isOpen, onClose, slot, onConfirm }) => {
     const maxPlayers = slot?.maxPlayers || 10;
     const availableSlots = maxPlayers - currentPlayers;
     
-    // Allow increasing players up to available slots
     if (increment > 0 && newPlayers <= availableSlots) {
       setPlayers(newPlayers);
     }
-    // Allow decreasing players down to 1
     else if (increment < 0 && newPlayers >= 1) {
       setPlayers(newPlayers);
     }

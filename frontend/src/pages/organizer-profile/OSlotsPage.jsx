@@ -25,7 +25,7 @@ const OSlotsPage = () => {
     status: 'available'
   });
 
-  // Fetch futsal data
+
   const fetchFutsalData = async () => {
     try {
       console.log('Fetching futsal data for user:', authUser._id);
@@ -33,7 +33,7 @@ const OSlotsPage = () => {
       console.log('Futsal data response:', response.data);
       
       if (response.data.success && response.data.message && response.data.message.length > 0) {
-        const futsal = response.data.message[0]; // Get the first futsal
+        const futsal = response.data.message[0]; 
         console.log('Found futsal:', futsal);
         setFutsalData(futsal);
         return futsal._id;

@@ -23,7 +23,6 @@ const QuickJoinSection = ({ futsal }) => {
       });
 
       if (response.data.success) {
-        // Sort slots by time
         const sortedSlots = response.data.message.sort((a, b) => {
           const timeA = a.time.split('-')[0];
           const timeB = b.time.split('-')[0];
@@ -60,7 +59,7 @@ const QuickJoinSection = ({ futsal }) => {
       });
       if (response.data.success) {
         toast.success('Successfully joined the slot!');
-        fetchSlots(); // Refresh slots after joining
+        fetchSlots(); 
       } else {
         toast.error(response.data.message || 'Failed to join slot');
       }

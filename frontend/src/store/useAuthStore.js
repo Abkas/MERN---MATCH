@@ -66,16 +66,11 @@ export const useAuthStore =create((set)  => ({
     updatePlayerProfile: async(data) => {
         set({isUpdatingProfile: true})
         try {
-            // If data is a string (message), it means it's a direct update from current-user endpoint
             if (typeof data === 'string') {
-                // Don't update the state if it's just a message
                 return
             }
-
-            // If data is an object, it's a profile update
             const response = await axiosInstance.patch('/users/update-account', data)
             if (response.data.success) {
-                // Keep the existing authUser data and update with new data
                 set((state) => ({
                     authUser: {
                         ...state.authUser,

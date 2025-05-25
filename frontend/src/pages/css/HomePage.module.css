@@ -28,7 +28,7 @@ body {
 
 .heroBg {
   position: absolute;
-  top: 0;
+  top: 70px;
   left: 0;
   width: 100%;      /* changed from 100vw */
   height: 100%;
@@ -45,12 +45,13 @@ body {
 
 
 .navbar {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 20px 50px;
-    width: 100%;
-    position: relative;
+    display: flex
+    ;
+        justify-content: space-between;
+        align-items: center;
+        padding: 5px 50px;
+        width: 100%;
+        position: relative;
 }
 
 .logo {
@@ -75,7 +76,7 @@ body {
 
 .navLinks a {
     text-decoration: none;
-    color: white;
+    color: rgb(15, 15, 15);
     font-weight: 500;
     font-size: 16px;
     position: relative;
@@ -113,7 +114,7 @@ body {
 }
 
 .profileLink {
-    color: #fff;
+    color: #060606;
     font-size: 20px;
     margin-right: 10px;
     text-decoration: none;
@@ -122,7 +123,7 @@ body {
 .btnLogout {
     background: transparent;
     border: none;
-    color: #fff;
+    color: #030303;
     font-size: 16px;
     cursor: pointer;
     display: flex;
@@ -491,7 +492,6 @@ h2 {
 .btnMoreTestimonials:hover {
     background-color: #e0e0e0;
 }
-
 /* Footer */
 footer {
     padding: 40px 50px;
@@ -522,13 +522,13 @@ footer {
     gap: 15px;
 }
 
-.footer-social a {
+.footerSocial a {
     color: #666;
     font-size: 18px;
     transition: color 0.3s ease;
 }
 
-.footer-social a:hover {
+.footerSocial a:hover {
     color: #4CAF50;
 }
 .socialLinks {
