@@ -150,23 +150,6 @@ const SignUpPage = () => {
                   <>Create an Account</>
                 )}
               </button>
-              <div className={styles.socialLogin}>
-                <p>OR</p>
-                <div className={styles.socialIcons}>
-                  <a href="#" className={styles.socialIcon}>
-                    <img src="/signup/OR-icon.png" alt="OR" />
-                  </a>
-                  <a href="#" className={styles.socialIcon}>
-                    <img src="/signup/facebook-icon.png" alt="Facebook" />
-                  </a>
-                  <a href="#" className={styles.socialIcon}>
-                    <img src="/signup/twitter-icon.png" alt="Twitter" />
-                  </a>
-                  <a href="#" className={styles.socialIcon}>
-                    <img src="/signup/google-icon.png" alt="Google" />
-                  </a>
-                </div>
-              </div>
               <div className={styles.loginLink}>
                 <p>Do you have an Account? <Link to='/login'>Sign In</Link></p>
               </div>

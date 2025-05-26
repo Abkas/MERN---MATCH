@@ -6,11 +6,12 @@ import { useAuthStore } from '../../store/useAuthStore'
 import { useEffect, useState } from "react"
 
 const OMyFutsal = () => {
-  const { logOut, fetchFutsals } = useAuthStore()
+  const { logOut, fetchFutsals, deleteFutsal } = useAuthStore()
   const navigate = useNavigate()
   const [futsals, setFutsals] = useState([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
+  const [currentFutsalIdx, setCurrentFutsalIdx] = useState(0);
 
   useEffect(() => {
     const getFutsals = async () => {
@@ -42,105 +43,78 @@ const OMyFutsal = () => {
     navigate('/update-futsal', { state: { isCreating: false, futsalId } })
   }
 
-  const renderFutsalBlueprint = (futsal = {}) => (
-    <div className={styles.futsalProfile}>
-      <div className={styles.futsalInfo}>
-        {/* Image Placeholder */}
-        <div className={styles.imagePlaceholder}>
-          <div className={styles.placeholderText}>Futsal Image</div>
-        </div>
+  const handlePrevFutsal = () => {
+    setCurrentFutsalIdx((prev) => (prev === 0 ? futsals.length - 1 : prev - 1));
+  };
+  const handleNextFutsal = () => {
+    setCurrentFutsalIdx((prev) => (prev === futsals.length - 1 ? 0 : prev + 1));
+  };
 
-        <h1 className={styles.futsalName}>
-          {futsal.name || "Futsal Name"} <CheckCircle className={styles.verifiedBadge} size={20} />
-        </h1>
-        
-        {/* Basic Information */}
-        <div className={styles.futsalMeta}>
-          <div className={styles.location}>
-            <MapPin size={16} />
-            <span>{futsal.location || "Location"}</span>
-          </div>
-          <div className={styles.hours}>
-            <Clock size={16} />
-            <span>{futsal.openingHours || "Opening Hours"}</span>
-          </div>
-          <div className={styles.phone}>
-            <Phone size={16} />
-            <span>{futsal.phoneNumber || "Phone Number"}</span>
-          </div>
-        </div>
+  useEffect(() => {
+    if (currentFutsalIdx >= futsals.length) setCurrentFutsalIdx(0);
+  }, [futsals, currentFutsalIdx]);
 
-        {/* About Section */}
-        <div className={styles.aboutSection}>
-          <h2>About Us:</h2>
-          <p>{futsal.description || "Description about your futsal"}</p>
-        </div>
+  // Add delete handler
+  const handleDeleteFutsal = async (futsalId) => {
+    if (!window.confirm('Are you sure you want to delete this futsal? This action cannot be undone.')) return;
+    try {
+      await deleteFutsal(futsalId);
+      setFutsals(futsals.filter(f => f._id !== futsalId));
+    } catch (err) {
+      // error toast handled in store
+    }
+  }
 
-        {/* Stats Section */}
-        <div className={styles.statsSection}>
-          <div className={styles.statItem}>
-            <Users size={20} />
-            <span>Followers: {futsal.followers?.length || 0}</span>
-          </div>
-          <div className={styles.statItem}>
-            <Star size={20} />
-            <span>Reviews: {futsal.reviews?.length || 0}</span>
-          </div>
-          <div className={styles.statItem}>
-            <Calendar size={20} />
-            <span>Games: {futsal.gamesOrganized || 0}</span>
-          </div>
-        </div>
-
-        {/* Facilities Section */}
-        <div className={styles.facilitiesSection}>
-          <h2>Facilities:</h2>
-          <div className={styles.facilitiesList}>
-            {futsal.plusPoints?.length > 0 ? (
-              futsal.plusPoints.map((facility, index) => (
-                <span key={`facility-${futsal._id}-${index}`} className={styles.facilityTag}>{facility}</span>
-              ))
-            ) : (
+    const renderFutsalCard = (futsal = {}) => (
+    <div className={styles.futsalCard} key={futsal._id || Math.random()}>
+      <div className={styles.cardImageSection}>
+        <img
+          src={futsal.futsalPhoto || '/default-futsal.jpg'}
+          alt={futsal.name || 'Futsal'}
+          className={styles.futsalImage}
+        />
+      </div>
+      <div className={styles.cardContentSection}>
+        <div className={styles.cardHeaderRow}>
+          <h2 className={styles.futsalName}>{futsal.name || 'Futsal Name'} {futsal.isAwarded && <CheckCircle className={styles.verifiedBadge} size={18} />}</h2>
+          <div className={styles.cardActions}>
+            {futsal._id && (
               <>
-                <span key="default-facility-1" className={styles.facilityTag}>Parking</span>
-                <span key="default-facility-2" className={styles.facilityTag}>Changing Rooms</span>
-                <span key="default-facility-3" className={styles.facilityTag}>Refreshments</span>
+                <button className={styles.editBtn} onClick={() => handleUpdateFutsal(futsal._id)} title="Edit Futsal">
+                  <Edit size={16} />
+                </button>
+                <button className={styles.deleteFutsalBtn} onClick={() => handleDeleteFutsal(futsal._id)} title="Delete Futsal">
+                  Delete
+                </button>
               </>
             )}
           </div>
         </div>
-
-        {/* Owner Information */}
-        <div className={styles.ownerSection}>
-          <h2>Owner Information:</h2>
-          <div className={styles.ownerInfo}>
-            <h3>{futsal.ownerName || "Owner Name"}</h3>
-            <p>{futsal.ownerDescription || "Owner description"}</p>
-          </div>
+        <div className={styles.metaRow}>
+          <span><MapPin size={14}/> {futsal.location || 'Location'}</span>
+          <span><Clock size={14}/> {futsal.openingHours || 'Opening Hours'}</span>
+          <span><Phone size={14}/> {futsal.phoneNumber || 'Phone'}</span>
         </div>
-
-        {/* Map Section */}
-        <div className={styles.mapSection}>
-          <h2>Location:</h2>
-          <div className={styles.mapContainer}>
-            {futsal.mapLink ? (
-              <iframe 
-                src={futsal.mapLink}
-                width="100%" 
-                height="300" 
-                style={{ border: 0 }} 
-                allowFullScreen="" 
-                loading="lazy"
-                title="Futsal Location"
-              />
-            ) : (
-              <div className={styles.mapPlaceholder}>
-                <Map size={48} />
-                <p>Map location will be displayed here</p>
-              </div>
-            )}
-          </div>
+        <div className={styles.statsRow}>
+          <span><Users size={14}/> {futsal.followers?.length || 0} Followers</span>
+          <span><Star size={14}/> {futsal.reviews?.length || 0} Reviews</span>
+          <span><Calendar size={14}/> {futsal.gamesOrganized || 0} Games</span>
         </div>
+        <div className={styles.facilitiesRow}>
+          {futsal.plusPoints?.length > 0 ? futsal.plusPoints.map((facility, idx) => (
+            <span key={facility + idx} className={styles.facilityTag}>{facility}</span>
+          )) : <span className={styles.facilityTag}>No facilities listed</span>}
+        </div>
+        <div className={styles.aboutRow}>
+          <strong>About:</strong> {futsal.description || 'No description provided.'}
+        </div>
+        <div className={styles.ownerRow}>
+          <strong>Owner:</strong> {futsal.ownerName || 'Owner Name'}<br/>
+          <span className={styles.ownerDesc}>{futsal.ownerDescription || 'No owner description.'}</span>
+        </div>
+        {futsal.mapLink && (
+          <div className={styles.mapPreview}><iframe src={futsal.mapLink} width="100%" height="120" style={{border:0}} allowFullScreen loading="lazy" title="Futsal Map"/></div>
+        )}
       </div>
     </div>
   )
@@ -162,7 +136,6 @@ const OMyFutsal = () => {
           </ul>
         </nav>
       </header>
-
       <div className={styles.container}>
         <aside className={styles.sidebar}>
           <ul className={styles.sidebarMenu}>
@@ -178,20 +151,13 @@ const OMyFutsal = () => {
             </li>
           </ul>
         </aside>
-
         <main>
           <div className={styles.mainHeader}>
             <h1>My Futsal</h1>
-            {futsals.length > 0 && (
-              <button 
-                className={styles.updateProfileBtn}
-                onClick={() => handleUpdateFutsal(futsals[0]._id)}
-              >
-                <Edit size={16} /> Update Futsal
-              </button>
-            )}
+            <button className={styles.createFutsalBtn} onClick={handleCreateFutsal}>
+              <Plus size={16} /> Create New Futsal
+            </button>
           </div>
-
           {loading ? (
             <div className={styles.loading}>Loading futsal data...</div>
           ) : error ? (
@@ -199,19 +165,26 @@ const OMyFutsal = () => {
           ) : futsals.length === 0 ? (
             <div className={styles.empty}>
               <h3>No futsal found for your organizer profile.</h3>
-              <button 
-                className={styles.createFutsalBtn}
-                onClick={handleCreateFutsal}
-              >
-                <Plus size={16} /> Create New Futsal
-              </button>
               <div className={styles.blueprintNote}>
                 <p>This is how your futsal profile will look:</p>
               </div>
-              {renderFutsalBlueprint({})}
+              {renderFutsalCard({})}
             </div>
           ) : (
-            futsals.map(renderFutsalBlueprint)
+            <div className={styles.futsalSliderWrapper}>
+              {futsals.length > 1 && (
+                <button className={styles.arrowBtn} onClick={handlePrevFutsal} title="Previous Futsal">&#8592;</button>
+              )}
+              {renderFutsalCard(futsals[currentFutsalIdx])}
+              {futsals.length > 1 && (
+                <button className={styles.arrowBtn} onClick={handleNextFutsal} title="Next Futsal">&#8594;</button>
+              )}
+              <div className={styles.futsalSliderIndicator}>
+                {futsals.map((_, idx) => (
+                  <span key={idx} className={idx === currentFutsalIdx ? styles.activeDot : styles.dot}></span>
+                ))}
+              </div>
+            </div>
           )}
         </main>
       </div>

@@ -102,23 +102,6 @@ const [formData, setFormData] = React.useState({
                 Log In
               </>)}
             </button>
-            <div className={styles.socialLogin}>
-              <p>OR</p>
-              <div className={styles.socialIcons}>
-                <a href="#" className={styles.socialIcon}>
-                  <img src="/signup/OR-icon.png" alt="OR" />
-                </a>
-                <a href="#" className={styles.socialIcon}>
-                  <img src="/signup/facebook-icon.png" alt="Facebook" />
-                </a>
-                <a href="#" className={styles.socialIcon}>
-                  <img src="/signup/twitter-icon.png" alt="Twitter" />
-                </a>
-                <a href="#" className={styles.socialIcon}>
-                  <img src="/signup/google-icon.png" alt="Google" />
-                </a>
-              </div>
-            </div>
             <div className={styles.loginLink}>
               <p>Don't have an account?
                 <Link to= '/signup'>Sign Up 

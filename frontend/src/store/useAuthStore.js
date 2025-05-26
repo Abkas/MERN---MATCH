@@ -131,5 +131,16 @@ export const useAuthStore =create((set)  => ({
             set({isUpdatingFutsal: false})
         }
     },
+
+    deleteFutsal: async (futsalId) => {
+        try {
+            const res = await axiosInstance.delete(`/organizer/delete-futsal/${futsalId}`);
+            toast.success('Futsal deleted successfully');
+            return res.data;
+        } catch (error) {
+            toast.error(error.response?.data?.message || 'Error deleting futsal');
+            throw error;
+        }
+    },
     
 }) )
