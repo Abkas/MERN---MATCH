@@ -22,7 +22,7 @@ const TournamentPage = () => {
                     <img src="/FUTSALHOME/notification-icon.png" alt="Notifications" />
                   </div>
                   <div className={styles.profile}>
-                    <Link to="/player-profile"><img src="/FUTSALHOME/profile-icon.png" alt="Profile" /></Link>
+                    <Link to="/profile"><img src="/FUTSALHOME/profile-icon.png" alt="Profile" /></Link>
                   </div>
                 </div>
               </nav>

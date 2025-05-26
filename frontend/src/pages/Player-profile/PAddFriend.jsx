@@ -70,7 +70,7 @@ const PAddFriend = () => {
         <aside className={styles.sidebar}>
           <ul className={styles.sidebarMenu}>
             <li><Link to="/player-dashboard">Dashboard</Link></li>
-            <li><Link to="/player-profile">Profile</Link></li>
+            <li><Link to="/profile">Profile</Link></li>
             <li><Link to="/player-addfriend" className={styles.active}>Add Friends</Link></li>
             <li><Link to="/player-history">History</Link></li>
             <li>

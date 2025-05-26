@@ -1,7 +1,7 @@
 import {Route, Routes ,Navigate} from "react-router-dom"
 
 import HomePage from "./pages/HomePage"
-import PProfilePage from "./pages/Player-profile/PProfilePage"
+import Linkprofile from "./pages/Player-profile/Linkprofile"
 import SignUpPage from "./pages/SignUpPage"
 import LogInPage from "./pages/LogInPage"
 import AboutUsPage from "./pages/AboutUsPage"
@@ -28,7 +28,8 @@ import OMyFutsal from "./pages/organizer-profile/OMyFutsal"
 import OSlotsPage from "./pages/organizer-profile/OSlotsPage"
 
 import UpdateFutsal from "./components/updatefutsal"
-
+import OrganizerProfile from "./pages/organizer-profile/OrganizerProfile"
+import OrganizerUpdateProfile from "./pages/organizer-profile/OrganizerUpdateProfile"
 
 import { useAuthStore } from "./store/useAuthStore"
 import { useEffect } from "react"
@@ -65,7 +66,7 @@ const App = () => {
         <Route path = '/how-it-works'  element= { authUser? <HowItWorks />:<Navigate to = 'login'/>} />
 
 
-        <Route path = '/player-profile'  element= {authUser?<PProfilePage />: <Navigate to='/login'/>} />
+        {/* <Route path = '/player-profile'  element= {authUser?<PProfilePage />: <Navigate to='/login'/>} /> */}
         <Route path = '/player-dashboard'  element= {authUser?<PDashboardPage />: <Navigate to='/login'/>} />
         <Route path = '/player-addfriend'  element= {authUser?<PAddFriend />: <Navigate to='/login'/>} />
         <Route path = '/player-history'  element= {authUser?<PHistoryPage />: <Navigate to='/login'/>} />
@@ -86,7 +87,9 @@ const App = () => {
         <Route path = '/organizer-slots' element= {authUser?<OSlotsPage />: <Navigate to='/login'/>} />
 
         <Route path = '/update-futsal' element= {authUser?<UpdateFutsal />: <Navigate to='/login'/>} />
-
+        <Route path="/profile" element={<Linkprofile />} />
+        <Route path="/organizer-profile/:id" element={authUser ? <OrganizerProfile /> : <Navigate to="/login" />} />
+        <Route path="/organizer-update-profile" element={authUser ? <OrganizerUpdateProfile /> : <Navigate to="/login" />} />
       </Routes>
 
       <Toaster />

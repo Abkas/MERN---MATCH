@@ -140,7 +140,7 @@ const OMyFutsal = () => {
         <aside className={styles.sidebar}>
           <ul className={styles.sidebarMenu}>
             <li><Link to="/organizer-dashboard">Dashboard</Link></li>
-            <li><Link to="/player-profile">Profile</Link></li>
+            <li><Link to="/profile">Profile</Link></li>
             <li><Link to="/organizer-futsals" className={styles.active}>My Futsal</Link></li>
             <li><Link to="/organizer-history">History</Link></li>
             <li><Link to="/organizer-slots">Manage Slots</Link></li>

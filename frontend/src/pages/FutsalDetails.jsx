@@ -249,7 +249,7 @@ const FutsalDetails = () => {
             <img src="/FUTSALHOME/notification-icon.png" alt="Notifications" style={{ height: 32 }} />
           </div>
           <div className={styles.profile}>
-            <Link to="/player-profile"><img src="/FUTSALHOME/profile-icon.png" alt="Profile" style={{ height: 32, borderRadius: '50%' }} /></Link>
+            <Link to="/profile"><img src="/FUTSALHOME/profile-icon.png" alt="Profile" style={{ height: 32, borderRadius: '50%' }} /></Link>
           </div>
         </div>
       </nav>

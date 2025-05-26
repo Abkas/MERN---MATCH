@@ -32,7 +32,7 @@ const HomePage = () => {
           <Link to="/how-it-works">How It Works</Link>
           </div>
           <div className={styles.navProfileLogout}>
-            <Link to="/player-profile" title="Profile" className={styles.profileLink}>
+            <Link to="/profile" title="Profile" className={styles.profileLink}>
               <User size={28} style={{ verticalAlign: 'middle' }} />
             </Link>
             <button className={styles.btnLogout} onClick={handleLogout}>

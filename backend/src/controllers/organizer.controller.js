@@ -172,10 +172,110 @@ const getFutsalsByOrganizer = asyncHandler(async (req, res) => {
         .json(new ApiResponse(201, newTournament, 'Tournament created successfully'))
 })
 
+ // Get organizer profile by user id
+const getOrganizerProfileById = asyncHandler(async (req, res) => {
+    const { id } = req.params;
+    const organizerProfile = await OrganizerProfile.findOne({ user: id })
+        .populate({
+            path: 'futsals',
+            populate: { path: 'slots' }
+        });
+    if (!organizerProfile) {
+        throw new ApiError(404, 'Organizer profile not found');
+    }
+    return res.status(200).json(new ApiResponse(200, organizerProfile, 'Organizer profile fetched successfully'));
+});
+
+// Get current organizer profile (from JWT)
+const getCurrentOrganizerProfile = asyncHandler(async (req, res) => {
+    const userId = req.user._id;
+    const organizerProfile = await OrganizerProfile.findOne({ user: userId })
+        .populate({
+            path: 'futsals',
+            populate: { path: 'slots' }
+        });
+    if (!organizerProfile) {
+        throw new ApiError(404, 'Organizer profile not found');
+    }
+    return res.status(200).json(new ApiResponse(200, organizerProfile, 'Current organizer profile fetched successfully'));
+});
+
+// PATCH /api/v1/organizer/profile
+const updateOrganizerProfile = asyncHandler(async (req, res) => {
+    const userId = req.user._id;
+    const { name, phone, email, bio, additionalInfo, awards } = req.body;
+
+    // Handle avatar upload (update User.avatar)
+    let avatar;
+    if (req.file) {
+        avatar = req.file.path || req.file.location;
+    }
+
+    // Update User fields if provided
+    const userUpdates = {};
+    if (name) userUpdates.name = name;
+    if (phone) userUpdates.phone = phone;
+    if (email) userUpdates.email = email;
+    if (avatar) userUpdates.avatar = avatar;
+    if (Object.keys(userUpdates).length > 0) {
+        await User.findByIdAndUpdate(userId, userUpdates);
+    }
+
+    // Update OrganizerProfile fields if provided
+    let organizerProfile = await OrganizerProfile.findOne({ user: userId });
+    if (!organizerProfile) {
+        organizerProfile = new OrganizerProfile({ user: userId });
+    }
+    if (bio !== undefined) organizerProfile.bio = bio;
+    if (additionalInfo !== undefined) organizerProfile.additionalInfo = additionalInfo;
+    if (awards !== undefined) organizerProfile.awards = awards;
+    await organizerProfile.save();
+
+    return res.status(200).json(new ApiResponse(200, organizerProfile, 'Organizer profile updated successfully'));
+});
+
+// PATCH /api/v1/organizer/profile/:id
+const updateOrganizerProfileById = asyncHandler(async (req, res) => {
+    const { id } = req.params;
+    const { name, phone, email, bio, additionalInfo, awards } = req.body;
+
+    // Handle avatar upload (update User.avatar)
+    let avatar;
+    if (req.file) {
+        avatar = req.file.path || req.file.location;
+    }
+
+    // Update User fields if provided
+    const userUpdates = {};
+    if (name) userUpdates.name = name;
+    if (phone) userUpdates.phone = phone;
+    if (email) userUpdates.email = email;
+    if (avatar) userUpdates.avatar = avatar;
+    if (Object.keys(userUpdates).length > 0) {
+        await User.findByIdAndUpdate(id, userUpdates);
+    }
+
+    // Update OrganizerProfile fields if provided
+    let organizerProfile = await OrganizerProfile.findOne({ user: id });
+    if (!organizerProfile) {
+        organizerProfile = new OrganizerProfile({ user: id });
+    }
+    if (bio !== undefined) organizerProfile.bio = bio;
+    if (additionalInfo !== undefined) organizerProfile.additionalInfo = additionalInfo;
+    if (awards !== undefined) organizerProfile.awards = awards;
+    await organizerProfile.save();
+
+    return res.status(200).json(new ApiResponse(200, organizerProfile, 'Organizer profile updated successfully'));
+});
+
 export {
     createFutsal,
     getFutsalsByOrganizer,
     updateFutsal,
     deleteFutsal,
     createTournament,
-}
+    getOrganizerProfileById,
+    getCurrentOrganizerProfile,
+    updateOrganizerProfile,
+    updateOrganizerProfileById,
+};

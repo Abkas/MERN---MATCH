@@ -281,7 +281,7 @@ const OSlotsPage = () => {
         <aside className={styles.sidebar}>
           <ul className={styles.sidebarMenu}>
             <li><Link to="/organizer-dashboard">Dashboard</Link></li>
-            <li><Link to="/player-profile">Profile</Link></li>
+            <li><Link to="/profile">Profile</Link></li>
             <li><Link to="/organizer-futsals">My Futsal</Link></li>
             <li><Link to="/organizer-history">History</Link></li>
             <li><Link to="/organizer-slots" className={styles.active}>Manage Slots</Link></li>

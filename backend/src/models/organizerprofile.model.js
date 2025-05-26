@@ -22,6 +22,14 @@ const OrganizerProfileSchema = new Schema({
     ref: 'Futsal' 
     }
   ],
+  additionalInfo: {
+    type: String,
+    default: ''
+  },
+  awards: {
+    type: String,
+    default: ''
+  },
   
 }, { timestamps: true });
 

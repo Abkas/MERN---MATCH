@@ -1,0 +1,176 @@
+@import '../css/OMyFutsal.module.css';
+
+.container {
+  display: flex;
+  flex-direction: row;
+  min-height: 100vh;
+  background: #f7f8fa;
+}
+
+.sidebar {
+  width: 260px;
+  background: #ffffff;
+  color: #fff;
+  padding: 2rem 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  box-shadow: 2px 0 8px rgba(0,0,0,0.04);
+}
+
+.profileMain {
+  flex: 1;
+  padding: 2.5rem 3rem;
+  background: #fff;
+  border-radius: 16px;
+  margin: 2rem;
+  box-shadow: 0 2px 16px rgba(35,41,70,0.07);
+}
+
+.profileHeader {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.avatar {
+  width: 90px;
+  height: 90px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 3px solid #eebbc3;
+}
+
+.profileInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.profileName {
+  font-size: 2rem;
+  font-weight: 700;
+  color: #232946;
+}
+
+.profileRole {
+  font-size: 1.1rem;
+  color: #eebbc3;
+  font-weight: 500;
+}
+
+.profileDetails {
+  margin-top: 1.5rem;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
+}
+
+.detailItem {
+  background: #f7f8fa;
+  padding: 1.2rem 1.5rem;
+  border-radius: 10px;
+  box-shadow: 0 1px 4px rgba(35,41,70,0.04);
+  font-size: 1.05rem;
+  color: #232946;
+}
+
+/* Blueprint card for not set up state */
+.blueprintCard {
+  background: var(--bg-white);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow);
+  padding: 2.5rem 2rem;
+  margin: 2rem auto;
+  max-width: 420px;
+  text-align: center;
+  color: var(--text-primary);
+}
+.blueprintCard h2 {
+  font-size: 1.7rem;
+  margin-bottom: 0.5rem;
+  color: var(--primary);
+}
+.blueprintCard p {
+  color: var(--text-secondary);
+  margin-bottom: 1rem;
+}
+.blueprintIllustration {
+  margin: 1.5rem 0 1rem 0;
+}
+.blueprintIllustration img {
+  max-width: 120px;
+  opacity: 0.3;
+}
+.updateAccountBtn {
+  background: var(--primary);
+  color: #fff;
+  border: none;
+  border-radius: var(--radius);
+  padding: 0.7rem 1.5rem;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  margin-top: 1rem;
+  transition: background 0.2s;
+}
+.updateAccountBtn:hover {
+  background: var(--primary-dark);
+}
+
+/* Large styles for organizer profile preview */
+.blueprintLarge {
+  max-width: 900px;
+  min-height: 600px;
+  padding: 3.5rem 3rem 3rem 3rem;
+  margin: 3rem auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  box-shadow: 0 8px 32px rgba(35,41,70,0.13);
+}
+.profileCardLarge {
+  max-width: 600px;
+  min-height: 320px;
+  margin: 2rem auto 2.5rem auto;
+  padding: 2.5rem 2rem;
+  font-size: 1.15rem;
+  border-radius: 18px;
+  box-shadow: 0 4px 24px rgba(35,41,70,0.09);
+}
+.personalInfoCardLarge {
+  max-width: 600px;
+  min-height: 220px;
+  margin: 2rem auto 2.5rem auto;
+  padding: 2rem 1.5rem;
+  font-size: 1.13rem;
+  border-radius: 16px;
+  box-shadow: 0 2px 12px rgba(35,41,70,0.07);
+}
+@media (max-width: 1100px) {
+  .blueprintLarge, .profileCardLarge, .personalInfoCardLarge {
+    max-width: 98vw;
+    padding: 1.5rem 0.5rem;
+  }
+}
+
+@media (max-width: 900px) {
+  .container {
+    flex-direction: column;
+  }
+  .sidebar {
+    width: 100%;
+    flex-direction: row;
+    gap: 1rem;
+    padding: 1rem;
+  }
+  .profileMain {
+    margin: 1rem;
+    padding: 1.2rem;
+  }
+  .profileDetails {
+    grid-template-columns: 1fr;
+  }
+}

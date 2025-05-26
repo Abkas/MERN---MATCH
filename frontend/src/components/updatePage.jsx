@@ -22,7 +22,7 @@ const UpdateProfile = () => {
     useEffect(() => {
         if (isUpdatingProfile) {
 
-          navigate('/player-profile');
+          navigate('/profile');
         }
       }, [isUpdatingProfile, navigate])
 
@@ -109,7 +109,7 @@ const UpdateProfile = () => {
             </div>
 
             <div className={styles.formActions}>
-              <Link to="/player-profile" className={styles.btn + ' ' + styles.btnSecondary}>Cancel</Link>
+              <Link to="/profile" className={styles.btn + ' ' + styles.btnSecondary}>Cancel</Link>
               <button type="submit" className={styles.btn + ' ' + styles.btnPrimary}>Update Profile</button>
             </div>
           </form>
