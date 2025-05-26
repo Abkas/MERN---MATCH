@@ -5,6 +5,7 @@ import styles from './css/FutsalDetails.module.css'
 import { axiosInstance } from '../lib/axios'
 import { Calendar, ChevronDown, ChevronUp, Clock, Users, DollarSign } from 'lucide-react'
 import SeatSelectionModal from '../components/SeatSelectionModal'
+import { getSlotTimeStatus } from '../utils/slotTimeStatus'
 
 const FutsalDetails = () => {
   const { id } = useParams();
@@ -324,27 +325,44 @@ const FutsalDetails = () => {
                       </tr>
                     </thead>
                     <tbody>
-                      {slots.map((slot) => (
-                        <tr key={slot._id}>
-                          <td>{slot.time}</td>
-                          <td>{slot.currentPlayers || 0}/{slot.maxPlayers}</td>
-                          <td>₹{slot.price}</td>
-                          <td>
-                            <span className={`${styles.status} ${styles[`status${slot.status.charAt(0).toUpperCase() + slot.status.slice(1)}`]}`}>
-                              {slot.status}
-                            </span>
-                          </td>
-                          <td>
-                            <button 
-                              className={`${styles.btnJoinNow} ${slot.status !== 'available' ? styles.btnJoinNowDisabled : ''}`}
-                              onClick={() => slot.status === 'available' && handleJoinNow(slot)}
-                              disabled={slot.status !== 'available'}
-                            >
-                              Join Now
-                            </button>
-                          </td>
-                        </tr>
-                      ))}
+                      {slots.map((slot) => {
+                        const timeStatus = getSlotTimeStatus(slot, selectedDate);
+                        let statusLabel = '';
+                        let statusClass = '';
+                        if (timeStatus === 'ended') {
+                          statusLabel = 'Ended';
+                          statusClass = styles.statusEnded;
+                        } else if (timeStatus === 'playing') {
+                          statusLabel = 'Playing';
+                          statusClass = styles.statusPlaying;
+                        } else if (timeStatus === 'soon') {
+                          statusLabel = 'Starting Soon';
+                          statusClass = styles.statusSoon;
+                        } else {
+                          statusLabel = slot.status;
+                          statusClass = styles[`status${slot.status.charAt(0).toUpperCase() + slot.status.slice(1)}`] || '';
+                        }
+                        const canJoin = timeStatus === 'upcoming' && slot.status === 'available';
+                        return (
+                          <tr key={slot._id}>
+                            <td>{slot.time}</td>
+                            <td>{slot.currentPlayers || 0}/{slot.maxPlayers}</td>
+                            <td>₹{slot.price}</td>
+                            <td>
+                              <span className={`${styles.status} ${statusClass}`}>{statusLabel}</span>
+                            </td>
+                            <td>
+                              <button
+                                className={`${styles.btnJoinNow} ${!canJoin ? styles.btnJoinNowDisabled : ''}`}
+                                onClick={() => canJoin && handleJoinNow(slot)}
+                                disabled={!canJoin}
+                              >
+                                Join Now
+                              </button>
+                            </td>
+                          </tr>
+                        );
+                      })}
                     </tbody>
                   </table>
                 </div>

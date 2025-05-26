@@ -5,6 +5,7 @@ import { LogOut, User, Clock, Users, DollarSign, MapPin } from 'lucide-react'
 import { useAuthStore } from '../../store/useAuthStore'
 import { axiosInstance } from '../../lib/axios'
 import toast from 'react-hot-toast'
+import { getSlotTimeStatus } from '../../utils/slotTimeStatus'
 
 const PUpcomingMatchesPage = () => {
     const { logOut } = useAuthStore()
@@ -113,48 +114,64 @@ const PUpcomingMatchesPage = () => {
                         </div>
                     ) : (
                         <div className={styles.matchesGrid}>
-                            {joinedSlots.map((slot) => (
-                                <div key={slot._id} className={styles.matchCard}>
-                                    <div className={styles.matchHeader}>
-                                        <h3>{slot.futsal.name}</h3>
-                                        <span className={`${styles.status} ${styles[`status${slot.status}`]}`}>
-                                            {slot.status}
-                                        </span>
+                            {joinedSlots.map((slot) => {
+                                const timeStatus = getSlotTimeStatus(slot, slot.date);
+                                let statusLabel = '';
+                                let statusClass = '';
+                                if (timeStatus === 'ended') {
+                                    statusLabel = 'Ended';
+                                    statusClass = styles.statusEnded;
+                                } else if (timeStatus === 'playing') {
+                                    statusLabel = 'Playing';
+                                    statusClass = styles.statusPlaying;
+                                } else if (timeStatus === 'soon') {
+                                    statusLabel = 'Starting Soon';
+                                    statusClass = styles.statusSoon;
+                                } else {
+                                    statusLabel = slot.status;
+                                    statusClass = styles[`status${slot.status.charAt(0).toUpperCase() + slot.status.slice(1)}`] || '';
+                                }
+                                return (
+                                    <div key={slot._id} className={styles.matchCard}>
+                                        <div className={styles.matchHeader}>
+                                            <h3>{slot.futsal.name}</h3>
+                                            <span className={`${styles.status} ${statusClass}`}>{statusLabel}</span>
+                                        </div>
+                                        <div className={styles.matchDetails}>
+                                            <div className={styles.detailItem}>
+                                                <Clock size={16} />
+                                                <span>{slot.time}</span>
+                                            </div>
+                                            <div className={styles.detailItem}>
+                                                <Users size={16} />
+                                                <span>{slot.currentPlayers}/{slot.maxPlayers} Players</span>
+                                            </div>
+                                            <div className={styles.detailItem}>
+                                                <DollarSign size={16} />
+                                                <span>₹{slot.price} per player</span>
+                                            </div>
+                                            <div className={styles.detailItem}>
+                                                <MapPin size={16} />
+                                                <span>{slot.futsal.location}</span>
+                                            </div>
+                                        </div>
+                                        <div className={styles.matchActions}>
+                                            <button 
+                                                className={styles.viewDetailsBtn}
+                                                onClick={() => navigate(`/futsal/${slot.futsal._id}`)}
+                                            >
+                                                View Details
+                                            </button>
+                                            <button 
+                                                className={styles.cancelBtn}
+                                                onClick={() => handleCancelBooking(slot._id)}
+                                            >
+                                                Cancel Booking
+                                            </button>
+                                        </div>
                                     </div>
-                                    <div className={styles.matchDetails}>
-                                        <div className={styles.detailItem}>
-                                            <Clock size={16} />
-                                            <span>{slot.time}</span>
-                                        </div>
-                                        <div className={styles.detailItem}>
-                                            <Users size={16} />
-                                            <span>{slot.currentPlayers}/{slot.maxPlayers} Players</span>
-                                        </div>
-                                        <div className={styles.detailItem}>
-                                            <DollarSign size={16} />
-                                            <span>₹{slot.price} per player</span>
-                                        </div>
-                                        <div className={styles.detailItem}>
-                                            <MapPin size={16} />
-                                            <span>{slot.futsal.location}</span>
-                                        </div>
-                                    </div>
-                                    <div className={styles.matchActions}>
-                                        <button 
-                                            className={styles.viewDetailsBtn}
-                                            onClick={() => navigate(`/futsal/${slot.futsal._id}`)}
-                                        >
-                                            View Details
-                                        </button>
-                                        <button 
-                                            className={styles.cancelBtn}
-                                            onClick={() => handleCancelBooking(slot._id)}
-                                        >
-                                            Cancel Booking
-                                        </button>
-                                    </div>
-                                </div>
-                            ))}
+                                );
+                            })}
                         </div>
                     )}
                 </main>

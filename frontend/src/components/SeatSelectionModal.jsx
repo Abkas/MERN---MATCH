@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { X, Plus, Minus } from 'lucide-react';
+import { getSlotTimeStatus } from '../utils/slotTimeStatus';
 import styles from '../pages/css/BookFutsal.module.css';
 
 const SeatSelectionModal = ({ isOpen, onClose, slot, onConfirm }) => {
@@ -36,6 +37,9 @@ const SeatSelectionModal = ({ isOpen, onClose, slot, onConfirm }) => {
   const currentPlayers = slot?.currentPlayers || 0;
   const maxPlayers = slot?.maxPlayers || 10;
   const availableSlots = maxPlayers - currentPlayers;
+  const slotDate = slot?.date;
+  const timeStatus = getSlotTimeStatus(slot, slotDate);
+  const canBook = timeStatus === 'upcoming';
 
   return (
     <div className={styles.modalOverlay} onClick={onClose}>
@@ -84,13 +88,20 @@ const SeatSelectionModal = ({ isOpen, onClose, slot, onConfirm }) => {
           <button className={styles.cancelButton} onClick={onClose}>
             Cancel
           </button>
-          <button className={styles.confirmButton} onClick={handleConfirm}>
+          <button className={styles.confirmButton} onClick={handleConfirm} disabled={!canBook}>
             Confirm Booking
           </button>
         </div>
+        {!canBook && (
+          <div style={{ color: '#d32f2f', marginTop: 8, textAlign: 'center', fontWeight: 500 }}>
+            {timeStatus === 'ended' && 'This slot has ended.'}
+            {timeStatus === 'playing' && 'This slot is currently playing.'}
+            {timeStatus === 'soon' && 'This slot is starting soon. Please try another slot.'}
+          </div>
+        )}
       </div>
     </div>
   );
 };
 
-export default SeatSelectionModal; 
+export default SeatSelectionModal;

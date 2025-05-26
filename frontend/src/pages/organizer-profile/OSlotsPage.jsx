@@ -240,6 +240,23 @@ const OSlotsPage = () => {
     setEditingSlot(prev => ({ ...prev, [field]: value }));
   };
 
+  // Helper to get slot status based on time
+  const getSlotTimeStatus = (slot) => {
+    if (!slot || !slot.time) return null;
+    const [start, end] = slot.time.split('-');
+    const slotDate = selectedDate;
+    const now = new Date();
+    const startDate = new Date(`${slotDate}T${start}`);
+    const endDate = new Date(`${slotDate}T${end}`);
+    // If slot ended
+    if (now > endDate) return 'ended';
+    // If slot is ongoing
+    if (now >= startDate && now <= endDate) return 'playing';
+    // If within 10 minutes before start
+    if (startDate - now <= 10 * 60 * 1000 && startDate > now) return 'soon';
+    return 'upcoming';
+  };
+
   // UI rendering
   return (
     <div className={styles.body}>
@@ -371,71 +388,90 @@ const OSlotsPage = () => {
                       </tr>
                     </thead>
                     <tbody>
-                      {slots.map((slot, index) => (
-                        <tr key={slot._id || `${selectedDate}-${slot.time}-${index}`}>
-                          <td>{slot.time}</td>
-                          <td>
-                            {editingSlot?._id === slot._id ? (
-                              <input
-                                type="number"
-                                min="1"
-                                max="20"
-                                value={editingSlot.maxPlayers}
-                                onChange={(e) => handleEditChange('maxPlayers', parseInt(e.target.value))}
-                                className={styles.editInput}
-                              />
-                            ) : (
-                              slot.maxPlayers
-                            )}
-                          </td>
-                          <td>
-                            {editingSlot?._id === slot._id ? (
-                              <input
-                                type="number"
-                                min="0"
-                                value={editingSlot.price}
-                                onChange={(e) => handleEditChange('price', parseInt(e.target.value))}
-                                className={styles.editInput}
-                              />
-                            ) : (
-                              `₹${slot.price}`
-                            )}
-                          </td>
-                          <td>
-                            {editingSlot?._id === slot._id ? (
-                              <select
-                                value={editingSlot.status}
-                                onChange={(e) => handleEditChange('status', e.target.value)}
-                                className={styles.editSelect}
-                              >
-                                <option value="available">Available</option>
-                                <option value="booked">Booked</option>
-                                <option value="full">Full</option>
-                                <option value="reserved">Reserved</option>
-                                <option value="ended">Ended</option>
-                                <option value="nofull">No Full</option>
-                              </select>
-                            ) : (
-                              <span className={`${styles.status} ${styles[`status${slot.status.charAt(0).toUpperCase() + slot.status.slice(1)}`]}`}>
-                                {slot.status}
-                              </span>
-                            )}
-                          </td>
-                          <td>
-                            {editingSlot?._id === slot._id ? (
-                              <div className={styles.editActions}>
-                                <button className={styles.saveBtn} onClick={handleEditSave}>Save</button>
-                                <button className={styles.cancelBtn} onClick={handleEditCancel}>Cancel</button>
-                              </div>
-                            ) : (
-                              <div className={styles.actions}>
-                                <button className={styles.editBtn} onClick={() => handleEditStart(slot)}>Edit</button>
-                                <button className={styles.deleteBtn} onClick={() => handleDeleteSlot(slot._id)}>Delete</button>
-                              </div>
-                            )}
-                          </td>
-                        </tr>
-                      ))}
+                      {slots.map((slot, index) => {
+                        const timeStatus = getSlotTimeStatus(slot);
+                        return (
+                          <tr key={slot._id || `${selectedDate}-${slot.time}-${index}`}>
+                            <td>{slot.time}</td>
+                            <td>
+                              {editingSlot?._id === slot._id ? (
+                                <input
+                                  type="number"
+                                  min="1"
+                                  max="20"
+                                  value={editingSlot.maxPlayers}
+                                  onChange={(e) => handleEditChange('maxPlayers', parseInt(e.target.value))}
+                                  className={styles.editInput}
+                                />
+                              ) : (
+                                slot.maxPlayers
+                              )}
+                            </td>
+                            <td>
+                              {editingSlot?._id === slot._id ? (
+                                <input
+                                  type="number"
+                                  min="0"
+                                  value={editingSlot.price}
+                                  onChange={(e) => handleEditChange('price', parseInt(e.target.value))}
+                                  className={styles.editInput}
+                                />
+                              ) : (
+                                `₹${slot.price}`
+                              )}
+                            </td>
+                            <td>
+                              {/* Show time-based status tag */}
+                              {timeStatus === 'ended' && (
+                                <span className={`${styles.status} ${styles.statusEnded}`}>Ended</span>
+                              )}
+                              {timeStatus === 'playing' && (
+                                <span className={`${styles.status} ${styles.statusPlaying}`}>Playing</span>
+                              )}
+                              {timeStatus === 'soon' && (
+                                <span className={`${styles.status} ${styles.statusSoon}`}>Starting Soon</span>
+                              )}
+                              {timeStatus === 'upcoming' && (
+                                editingSlot?._id === slot._id ? (
+                                  <select
+                                    value={editingSlot.status}
+                                    onChange={(e) => handleEditChange('status', e.target.value)}
+                                    className={styles.editSelect}
+                                  >
+                                    <option value="available">Available</option>
+                                    <option value="booked">Booked</option>
+                                    <option value="full">Full</option>
+                                    <option value="reserved">Reserved</option>
+                                    <option value="ended">Ended</option>
+                                    <option value="nofull">No Full</option>
+                                  </select>
+                                ) : (
+                                  <span className={`${styles.status} ${styles[`status${slot.status.charAt(0).toUpperCase() + slot.status.slice(1)}`]}`}>{slot.status}</span>
+                                )
+                              )}
+                            </td>
+                            <td>
+                              {editingSlot?._id === slot._id ? (
+                                <div className={styles.editActions}>
+                                  <button className={styles.saveBtn} onClick={handleEditSave}>Save</button>
+                                  <button className={styles.cancelBtn} onClick={handleEditCancel}>Cancel</button>
+                                </div>
+                              ) : (
+                                <div className={styles.actions}>
+                                  <button
+                                    className={styles.editBtn}
+                                    onClick={() => handleEditStart(slot)}
+                                  >Edit</button>
+                                  <button
+                                    className={styles.deleteBtn}
+                                    onClick={() => handleDeleteSlot(slot._id)}
+                                  >Delete</button>
+                                </div>
+                              )}
+                            </td>
+                          </tr>
+                        );
+                      })}
                     </tbody>
                   </table>
                 </div>

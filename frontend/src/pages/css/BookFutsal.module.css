@@ -546,6 +546,16 @@ button {
   color: #2e7d32;
 }
 
+.statusPlaying {
+  background-color: #fffde7;
+  color: #fbc02d;
+}
+
+.statusSoon {
+  background-color: #e3f2fd;
+  color: #0288d1;
+}
+
 .btnJoinNow {
   background-color: #2563eb;
   color: white;
