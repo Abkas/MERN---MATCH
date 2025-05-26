@@ -68,7 +68,9 @@ const FutsalDetails = () => {
             name: futsalData.ownerName || 'Unknown Owner',
             image: futsalData.organizer?.profilePicture || '/default-owner.png',
             bio: futsalData.ownerDescription || 'No bio available',
-            phone: futsalData.organizer?.phone || 'Contact not available'
+            phone: futsalData.organizer?.phone || 'Contact not available',
+            email: futsalData.organizer?.email || 'Email not available',
+            additionalInfo: futsalData.organizer?.additionalInfo || 'No additional info',
           },
           mapImage: futsalData.mapLink || '/default-map.png',
           verified: futsalData.isAwarded || false,
@@ -229,11 +231,11 @@ const FutsalDetails = () => {
   console.log('Rendering futsal data:', futsalData);
 
   return (
-    <div>
-      <nav className={styles.nav}>
+    <div className={styles.futsalDetailsPage} style={{ background: '#f7fafd', minHeight: '100vh' }}>
+      <nav className={styles.nav} style={{ background: '#fff', boxShadow: '0 2px 12px #2563eb11', borderBottom: '1.5px solid #e3e8f0' }}>
         <div className={styles.logo}>
           <Link to="/">
-            <img src="/firstpage/logo.png" alt="match-logo" />
+            <img src="/firstpage/logo.png" alt="match-logo" style={{ height: 48 }} />
           </Link>
         </div>
         <ul className={styles.navLinks}>
@@ -244,56 +246,89 @@ const FutsalDetails = () => {
         </ul>
         <div className={styles.navIcons}>
           <div className={styles.notification}>
-            <img src="/FUTSALHOME/notification-icon.png" alt="Notifications" />
+            <img src="/FUTSALHOME/notification-icon.png" alt="Notifications" style={{ height: 32 }} />
           </div>
           <div className={styles.profile}>
-            <Link to="/player-profile"><img src="/FUTSALHOME/profile-icon.png" alt="Profile" /></Link>
+            <Link to="/player-profile"><img src="/FUTSALHOME/profile-icon.png" alt="Profile" style={{ height: 32, borderRadius: '50%' }} /></Link>
           </div>
         </div>
       </nav>
 
       <main>
-        <section 
-          className={styles.venueHero} 
-          style={{ 
-            backgroundImage: futsalData.image ? `url(${futsalData.image})` : 'none',
-            backgroundColor: !futsalData.image ? '#f0f0f0' : 'transparent'
-          }}
-        >
-          <div className={styles.venueHeader}>
-            <h1>
+        {/* HERO SECTION */}
+        <section className={styles.venueHero} style={{
+          position: 'relative',
+          minHeight: 320,
+          borderRadius: '0 0 2.5rem 2.5rem',
+          boxShadow: '0 8px 32px #2563eb22',
+          marginBottom: 32,
+          overflow: 'hidden',
+          display: 'flex',
+          alignItems: 'flex-end',
+          justifyContent: 'flex-start',
+          background: '#e3e8f0',
+          marginLeft: 0, // Ensure no left margin
+          width: '100%' // Ensure full width
+        }}>
+          <img
+            src={futsalData.image}
+            alt={futsalData.name}
+            style={{
+              width: '100%',
+              height: 320,
+              objectFit: 'cover',
+              objectPosition: 'center',
+              display: 'block',
+              position: 'absolute',
+              top: 0,
+              left: 0,
+              zIndex: 1
+            }}
+            onError={e => { e.target.onerror = null; e.target.src = '/default-futsal.jpg'; }}
+          />
+          <div style={{
+            position: 'absolute',
+            top: 0,
+            left: 0,
+            width: '100%',
+            height: '100%',
+            background: 'linear-gradient(120deg, #2563ebcc 0%, #43a047cc 100%)',
+            zIndex: 2
+          }} />
+          <div style={{
+            position: 'relative',
+            zIndex: 3,
+            padding: '2.5rem 3rem',
+            width: '100%',
+            color: '#fff',
+            borderRadius: '0 0 2.5rem 2.5rem',
+            background: 'none'
+          }}>
+            <h1 style={{ fontSize: 36, fontWeight: 800, marginBottom: 8, letterSpacing: 1 }}>
               {futsalData.name}
-              {futsalData.verified && <i className="fas fa-check-circle verified"></i>}
+              {futsalData.verified && <i className="fas fa-check-circle verified" style={{ color: '#fbc02d', marginLeft: 10, fontSize: 28 }}></i>}
             </h1>
-            <div className={styles.venueInfo}>
-              <div className={styles.location}>
-                <i className="fas fa-map-marker-alt"></i>
-                <span>{futsalData.location}</span>
-              </div>
-              <div className={styles.hours}>
-                <i className="far fa-clock"></i>
-                <span>{futsalData.openingHours}</span>
-              </div>
+            <div style={{ display: 'flex', gap: 32, alignItems: 'center', marginBottom: 10 }}>
+              <span style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 18 }}>
+                <i className="fas fa-map-marker-alt" style={{ color: '#fff' }}></i> {futsalData.location}
+              </span>
+              <span style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 18 }}>
+                <i className="far fa-clock" style={{ color: '#fff' }}></i> {futsalData.openingHours}
+              </span>
             </div>
-            <div className={styles.venueStats}>
-              <div className={styles.stat}>
-                <span className={styles.statValue}>
-                  {futsalData.totalMatches}+ Matches
-                </span>
-              </div>
-              <div className={styles.stat}>
-                <span className={styles.statValue}>
-                  {futsalData.totalTournaments}+ Tournaments
-                </span>
-              </div>
+            <div style={{ display: 'flex', gap: 24, marginTop: 10 }}>
+              <span style={{ fontWeight: 700, fontSize: 18, color: '#fff' }}>{futsalData.totalMatches}+ Matches</span>
+              <span style={{ fontWeight: 700, fontSize: 18, color: '#fff' }}>{futsalData.totalTournaments}+ Tournaments</span>
+              <span style={{ fontWeight: 700, fontSize: 18, color: '#fff' }}>Rating: {futsalData.rating}/5</span>
             </div>
           </div>
         </section>
 
+        {/* BOOKING SECTION */}
         <section className={styles.bookingSection}>
-          <div className={styles.container}>
-            <div className={styles.bookingHeader}>
-              <button className={styles.registerBtn}>
+          <div className={styles.container} style={{ maxWidth: 900, margin: '0 auto', background: '#fff', borderRadius: 18, boxShadow: '0 4px 24px #2563eb11', padding: '2.5rem 2rem', marginBottom: 36, border: '1.5px solid #e3e8f0' }}>
+            <div className={styles.bookingHeader} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 18 }}>
+              <button className={styles.registerBtn} style={{ background: '#43a047', color: '#fff', borderRadius: 8, padding: '10px 24px', fontWeight: 700, fontSize: 16, boxShadow: '0 2px 8px #43a04722', border: 'none', display: 'flex', alignItems: 'center', gap: 8 }}>
                 <i className="fas fa-user-plus"></i> Join / Register Futsal
               </button>
               <div className={styles.dateNavigation}>
@@ -303,6 +338,7 @@ const FutsalDetails = () => {
                   onChange={(e) => setSelectedDate(e.target.value)}
                   min={new Date().toISOString().split('T')[0]}
                   max={new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString().split('T')[0]}
+                  style={{ padding: '8px 16px', borderRadius: 6, border: '1.5px solid #e3e8f0', fontSize: 16 }}
                 />
               </div>
             </div>
@@ -311,17 +347,17 @@ const FutsalDetails = () => {
               {loading ? (
                 <div className={styles.loading}>Loading slots...</div>
               ) : slots.length === 0 ? (
-                <div className={styles.noSlots}>No slots available for this date</div>
+                <div className={styles.noSlots} style={{ color: '#888', fontSize: 18, textAlign: 'center', padding: '2rem 0' }}>No slots available for this date</div>
               ) : (
-                <div className={styles.timeSlots}>
-                  <table>
+                <div className={styles.timeSlots} style={{ marginTop: 18 }}>
+                  <table style={{ width: '100%', borderCollapse: 'collapse', background: '#f8fafc', borderRadius: 12, overflow: 'hidden', boxShadow: '0 2px 8px #2563eb08' }}>
                     <thead>
-                      <tr>
-                        <th><Clock size={16} /> Time</th>
-                        <th><Users size={16} /> Players</th>
-                        <th><DollarSign size={16} /> Price</th>
-                        <th>Status</th>
-                        <th>Action</th>
+                      <tr style={{ background: '#f1f5fb' }}>
+                        <th style={{ padding: 14, fontWeight: 700, fontSize: 16, color: '#2563eb' }}><Clock size={16} /> Time</th>
+                        <th style={{ padding: 14, fontWeight: 700, fontSize: 16, color: '#2563eb' }}><Users size={16} /> Players</th>
+                        <th style={{ padding: 14, fontWeight: 700, fontSize: 16, color: '#2563eb' }}><DollarSign size={16} /> Price</th>
+                        <th style={{ padding: 14, fontWeight: 700, fontSize: 16, color: '#2563eb' }}>Status</th>
+                        <th style={{ padding: 14, fontWeight: 700, fontSize: 16, color: '#2563eb' }}>Action</th>
                       </tr>
                     </thead>
                     <tbody>
@@ -344,16 +380,17 @@ const FutsalDetails = () => {
                         }
                         const canJoin = timeStatus === 'upcoming' && slot.status === 'available';
                         return (
-                          <tr key={slot._id}>
-                            <td>{slot.time}</td>
-                            <td>{slot.currentPlayers || 0}/{slot.maxPlayers}</td>
-                            <td>₹{slot.price}</td>
-                            <td>
-                              <span className={`${styles.status} ${statusClass}`}>{statusLabel}</span>
+                          <tr key={slot._id} style={{ background: '#fff', borderBottom: '1px solid #e3e8f0' }}>
+                            <td style={{ padding: 14, fontWeight: 600, color: '#222' }}>{slot.time}</td>
+                            <td style={{ padding: 14, fontWeight: 600, color: '#43a047' }}>{slot.currentPlayers || 0}/{slot.maxPlayers}</td>
+                            <td style={{ padding: 14, fontWeight: 600, color: '#fbc02d' }}>₹{slot.price}</td>
+                            <td style={{ padding: 14 }}>
+                              <span className={`${styles.status} ${statusClass}`} style={{ fontWeight: 700, fontSize: 14, padding: '4px 12px', borderRadius: 6 }}>{statusLabel}</span>
                             </td>
-                            <td>
+                            <td style={{ padding: 14 }}>
                               <button
                                 className={`${styles.btnJoinNow} ${!canJoin ? styles.btnJoinNowDisabled : ''}`}
+                                style={{ background: canJoin ? '#2563eb' : '#e3e8f0', color: canJoin ? '#fff' : '#888', borderRadius: 8, padding: '8px 18px', fontWeight: 700, border: 'none', boxShadow: canJoin ? '0 2px 8px #2563eb22' : 'none', cursor: canJoin ? 'pointer' : 'not-allowed', transition: 'background 0.2s' }}
                                 onClick={() => canJoin && handleJoinNow(slot)}
                                 disabled={!canJoin}
                               >
@@ -371,75 +408,95 @@ const FutsalDetails = () => {
           </div>
         </section>
 
+        {/* ABOUT SECTION */}
         <section className={styles.aboutSection}>
-          <div className={styles.container}>
+          <div className={styles.container} style={{ maxWidth: 900, margin: '0 auto', background: '#fff', borderRadius: 18, boxShadow: '0 4px 24px #2563eb11', padding: '2.5rem 2rem', marginBottom: 36, border: '1.5px solid #e3e8f0' }}>
             <div className={styles.aboutContent}>
-              <h2>About Us:</h2>
-              <p>{futsalData.description}</p>
+              <h2 style={{ fontWeight: 800, color: '#2563eb', marginBottom: 12 }}>About Us:</h2>
+              <p style={{ fontSize: 17, color: '#444', marginBottom: 18 }}>{futsalData.description}</p>
             </div>
-            <div className={styles.features}>
+            <div className={styles.features} style={{ display: 'flex', flexWrap: 'wrap', gap: 16, marginBottom: 10 }}>
               {futsalData.features && futsalData.features.length > 0 ? (
                 futsalData.features.map((feature, index) => (
-                  <div key={index} className={styles.feature}>
+                  <div key={index} className={styles.feature} style={{ background: '#f1f5fb', color: '#2563eb', borderRadius: 8, padding: '8px 18px', fontWeight: 600, display: 'flex', alignItems: 'center', gap: 8 }}>
                     <i className="fas fa-check-circle"></i>
                     <span>{feature}</span>
                   </div>
                 ))
               ) : (
-                <p className={styles.noFeatures}>No features listed</p>
+                <p className={styles.noFeatures} style={{ color: '#888' }}>No features listed</p>
               )}
             </div>
           </div>
         </section>
 
+        {/* OWNER SECTION */}
         <section className={styles.ownerSection}>
-          <div className={styles.container}>
-            <h2>Meet the Owner:</h2>
-            <div className={styles.ownerProfile}>
+          <div className={styles.container} style={{ maxWidth: 900, margin: '0 auto', background: '#fff', borderRadius: 18, boxShadow: '0 4px 24px #2563eb11', padding: '2.5rem 2rem', marginBottom: 36, border: '1.5px solid #e3e8f0' }}>
+            <h2 style={{ fontWeight: 800, color: '#2563eb', marginBottom: 18 }}>Meet the Owner:</h2>
+            <div className={styles.ownerProfile} style={{ display: 'flex', alignItems: 'center', gap: 32 }}>
               <div className={styles.ownerImage}>
-                <img 
-                  src={futsalData.owner.image} 
+                <img
+                  src={futsalData.owner.image}
                   alt={futsalData.owner.name}
+                  style={{ width: 90, height: 90, borderRadius: '50%', objectFit: 'cover', border: '3px solid #2563eb', background: '#f1f5fb' }}
                   onError={(e) => {
                     e.target.onerror = null;
                     e.target.src = '/default-owner.png';
                   }}
                 />
               </div>
-              <h3>
-                {futsalData.owner.name}, 
-                Founder - {futsalData.name}
-              </h3>
-              <p className={styles.ownerBio}>
-                {futsalData.owner.bio}
-              </p>
-              <div className={styles.ownerContact}>
-                <div className={styles.contactItem}>
-                  <i className="fas fa-phone"></i>
-                  <span>{futsalData.owner.phone}</span>
+              <div style={{ flex: 1 }}>
+                <h3 style={{ fontWeight: 700, fontSize: 22, marginBottom: 6 }}>{futsalData.owner.name}, <span style={{ fontWeight: 400, fontSize: 18 }}>Founder - {futsalData.name}</span></h3>
+                <p className={styles.ownerBio} style={{ color: '#444', fontSize: 16, marginBottom: 10 }}>{futsalData.owner.bio}</p>
+                <div className={styles.ownerContact} style={{ display: 'flex', alignItems: 'center', gap: 24, marginBottom: 10 }}>
+                  <div className={styles.contactItem} style={{ color: '#43a047', fontWeight: 600, display: 'flex', alignItems: 'center', gap: 6 }}>
+                    <i className="fas fa-phone"></i>
+                    <span>{futsalData.owner.phone}</span>
+                  </div>
+                  {futsalData.owner.email && (
+                    <div className={styles.contactItem} style={{ color: '#2563eb', fontWeight: 600, display: 'flex', alignItems: 'center', gap: 6 }}>
+                      <i className="fas fa-envelope"></i>
+                      <span>{futsalData.owner.email}</span>
+                    </div>
+                  )}
                 </div>
-              </div>
-              <div className={styles.ownerActions}>
-                <button className={styles.addFriendBtn}>Add Friend</button>
-                <button className={styles.messageBtn}>Message</button>
+                {/* Optionally show more owner info if available */}
+                {futsalData.owner && futsalData.owner.additionalInfo && (
+                  <div style={{ color: '#888', fontSize: 15, marginBottom: 8 }}>{futsalData.owner.additionalInfo}</div>
+                )}
+                <div className={styles.ownerActions} style={{ display: 'flex', gap: 12 }}>
+                  <button className={styles.addFriendBtn} style={{ background: '#2563eb', color: '#fff', borderRadius: 8, padding: '8px 18px', fontWeight: 600, border: 'none', boxShadow: '0 2px 8px #2563eb22', cursor: 'pointer' }}>Add Friend</button>
+                  <button className={styles.messageBtn} style={{ background: '#fff', color: '#2563eb', border: '1.5px solid #2563eb', borderRadius: 8, padding: '8px 18px', fontWeight: 600, cursor: 'pointer' }}>Message</button>
+                </div>
               </div>
             </div>
           </div>
         </section>
 
+        {/* LOCATION SECTION */}
         <section className={styles.locationSection}>
-          <div className={styles.container}>
-            <h2>Find Us:</h2>
-            <div className={styles.locationMap}>
-              <img 
-                src={futsalData.mapImage} 
-                alt="Venue Map"
-                onError={(e) => {
-                  e.target.onerror = null;
-                  e.target.src = '/default-map.png';
-                }}
-              />
-              <div className={styles.mapMarker}>
+          <div className={styles.container} style={{ maxWidth: 900, margin: '0 auto', background: '#fff', borderRadius: 18, boxShadow: '0 4px 24px #2563eb11', padding: '2.5rem 2rem', marginBottom: 36, border: '1.5px solid #e3e8f0' }}>
+            <h2 style={{ fontWeight: 800, color: '#2563eb', marginBottom: 18 }}>Find Us:</h2>
+            <div className={styles.locationMap} style={{ display: 'flex', alignItems: 'center', gap: 24 }}>
+              {/* Blueprint/placeholder for map */}
+              <div style={{
+                width: 220,
+                height: 140,
+                borderRadius: 12,
+                border: '2px dashed #2563eb',
+                background: '#f1f5fb',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                color: '#2563eb',
+                fontWeight: 700,
+                fontSize: 18,
+                flexShrink: 0
+              }}>
+                <span style={{ opacity: 0.5 }}>Map will appear here</span>
+              </div>
+              <div className={styles.mapMarker} style={{ color: '#2563eb', fontWeight: 700, fontSize: 18, display: 'flex', alignItems: 'center', gap: 8 }}>
                 <i className="fas fa-map-marker-alt"></i>
                 <span>{futsalData.location}</span>
               </div>
@@ -448,16 +505,16 @@ const FutsalDetails = () => {
         </section>
       </main>
 
-      <footer className={styles.footer}>
-        <div className={styles.container}>
-          <div className={styles.footerLinks}>
+      <footer className={styles.footer} style={{ background: '#fff', borderTop: '1.5px solid #e3e8f0', marginTop: 48 }}>
+        <div className={styles.container} style={{ maxWidth: 900, margin: '0 auto', display: 'flex', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', padding: '2rem 0' }}>
+          <div className={styles.footerLinks} style={{ display: 'flex', gap: 24 }}>
             <a href="#">About</a>
             <a href="#">Contact Us</a>
             <a href="#">Pricing</a>
             <a href="#">FAQs</a>
             <a href="#">Team</a>
           </div>
-          <div className={styles.footerSocial}>
+          <div className={styles.footerSocial} style={{ display: 'flex', gap: 18 }}>
             <a href="#"><i className="fab fa-instagram"></i></a>
             <a href="#"><i className="fab fa-facebook-f"></i></a>
             <a href="#"><i className="fab fa-twitter"></i></a>
