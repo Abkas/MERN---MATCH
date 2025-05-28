@@ -1,16 +1,120 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-import { User, LogOut } from 'lucide-react'
+import { User, LogOut, Users, Star } from 'lucide-react'
 import { useAuthStore } from '../store/useAuthStore'
 import styles from '../pages/css/HowItWorks.module.css'
 
 const HowItWorksPage = () => {
   const { logOut } = useAuthStore()
   const navigate = useNavigate()
+  const [showAllFeatures, setShowAllFeatures] = useState(false)
+  const [showAllProcesses, setShowAllProcesses] = useState(false)
+  const [activeFaqIndex, setActiveFaqIndex] = useState(null)
 
   const handleLogout = () => {
     logOut()
     navigate('/login')
+  }
+
+  const handleLogin = (type) => {
+    if (type === 'player') {
+      navigate('/player-login')
+    } else if (type === 'organizer') {
+      navigate('/organizer-login')
+    }
+  }
+
+  const processes = [
+    {
+      icon: '/icons/profile-circle.png',
+      title: 'CREATE YOUR PROFILE',
+      description: 'SET YOUR PREFERRED SPORT, SKILL LEVEL, LOCATION, AND AVAILABILITY.'
+    },
+    {
+      icon: '/icons/search.png',
+      title: 'FIND TEAMS',
+      description: 'SEARCH LOCAL GAMES OR GET MATCHED WITH NEARBY PLAYERS.'
+    },
+    {
+      icon: '/icons/calender.png',
+      title: 'JOIN OR HOST MATCHES',
+      description: 'JOIN GAMES OR CREATE YOUR OWN WITH TIME AND PLAYER SETTINGS.'
+    },
+    {
+      icon: '/icons/star.png',
+      title: 'PLAY & BUILD CREDIBILITY',
+      description: 'PLAY, GET RATED, AND GROW YOUR REPUTATION.'
+    },
+    {
+      icon: '/icons/trophy.png',
+      title: 'COMPETE IN TOURNAMENTS',
+      description: 'PARTICIPATE IN LOCAL TOURNAMENTS AND WIN EXCITING PRIZES.'
+    },
+    {
+      icon: '/icons/bolt.png',
+      title: 'QUICK MATCHMAKING',
+      description: 'GET INSTANTLY MATCHED WITH PLAYERS OF SIMILAR SKILL LEVELS.'
+    }
+  ]
+
+  const features = [
+    {
+      icon: 'icons/trophy.png',
+      title: 'TOURNAMENTS',
+      description: 'JOIN LOCAL AND ONLINE TOURNAMENTS, TEAM UP, AND COMPETE TO WIN.'
+    },
+    {
+      icon: 'icons/bolt.png',
+      title: 'QUICK JOIN',
+      description: 'JUMP INTO GAMES THAT NEED PLAYERS. NO WAITING — JUST PICK A SLOT AND PLAY.'
+    },
+    {
+      icon: 'icons/verifies.png',
+      title: 'VERIFIED',
+      description: 'PLAY WORRY-FREE WITH VERIFIED USERS, SECURE PAYMENTS, AND GUARANTEED REFUNDS.'
+    },
+    {
+      icon: 'icons/groud.png',
+      title: 'BOOK COURTS',
+      description: 'FIND AND BOOK NEARBY FUTSAL COURTS EASILY — PICK A TIME, CONFIRM, AND YOU\'RE SET.'
+    },
+    {
+      icon: 'icons/star.png',
+      title: 'PREMIUM',
+      description: 'ACCESS EXCLUSIVE FEATURES AND PRIORITY MATCHMAKING FOR AN ENHANCED EXPERIENCE.'
+    },
+    {
+      icon: 'icons/profile-circle.png',
+      title: 'PROFILES',
+      description: 'CREATE AND CUSTOMIZE YOUR PLAYER PROFILE WITH STATS AND ACHIEVEMENTS.'
+    }
+  ]
+
+  const faqs = [
+    {
+      question: "What is MatchPoint?",
+      answer: "MatchPoint is a sports matchmaking platform that connects players for local games. It helps you find teammates, join matches, and organize sports events in your area."
+    },
+    {
+      question: "Is MatchPoint free to use?",
+      answer: "Yes, MatchPoint offers free access to browse and join games. However, certain premium features like priority match recommendations or tournament hosting may require a small fee."
+    },
+    {
+      question: "Can I use MatchPoint for all sports?",
+      answer: "Yes, MatchPoint supports a wide range of sports including futsal, basketball, cricket, and more. You can find matches and teammates for any sport available in your area."
+    },
+    {
+      question: "Do I need to pay if no matches are played?",
+      answer: "No, you only pay for matches you participate in. There are no hidden fees or charges for unused services."
+    },
+    {
+      question: "Is there a verification process for players?",
+      answer: "Yes, we verify all players for safety and security. This includes profile verification, player ratings, and a community-driven review system to ensure a trustworthy environment."
+    }
+  ]
+
+  const toggleFaq = (index) => {
+    setActiveFaqIndex(activeFaqIndex === index ? null : index)
   }
 
   return (
@@ -26,7 +130,7 @@ const HowItWorksPage = () => {
             <Link to="/how-it-works" className={`${styles.navLink} ${styles.active_page}`}>How It Works</Link>
           </div>
           <div className={styles.navProfileLogout}>
-            <Link to="/profile" title="Profile" className={styles.profileLink}>
+            <Link to="/player-profile" title="Profile" className={styles.profileLink}>
               <User size={28} style={{ verticalAlign: 'middle' }} />
             </Link>
             <button className={styles.btnLogout} onClick={handleLogout}>
@@ -36,6 +140,7 @@ const HowItWorksPage = () => {
           </div>
         </nav>
       </div>
+
       <main>
         {/* How MatchPoint Works Section */}
         <section className={styles.howItWorks}>
@@ -49,26 +154,26 @@ const HowItWorksPage = () => {
         <section className={styles.gameMatchProcess}>
           <h2>The Game Match Process</h2>
           <div className={styles.processCards}>
-            <div className={styles.processCard}>
-              <div className={styles.icon}><img src='/icons/profile-circle.png'/></div>
-              <h3>CREATE YOUR PROFILE</h3>
-              <p>SET YOUR PREFERRED SPORT, SKILL LEVEL, LOCATION, AND AVAILABILITY.</p>
-            </div>
-            <div className={styles.processCard}>
-              <div className={styles.icon}><img src='/icons/search.png'/></div>
-              <h3>FIND GAMES OR TEAMMATES</h3>
-              <p>SEARCH LOCAL GAMES OR GET MATCHED WITH NEARBY PLAYERS.</p>
-            </div>
-            <div className={styles.processCard}>
-              <div className={styles.icon}><img src='/icons/calender.png'/></div>
-              <h3>JOIN OR HOST MATCHES</h3>
-              <p>JOIN GAMES OR CREATE YOUR OWN WITH TIME AND PLAYER SETTINGS.</p>
-            </div>
-            <div className={styles.processCard}>
-              <div className={styles.icon}><img src='/icons/star.png'/></div>
-              <h3>PLAY & BUILD CREDIBILITY</h3>
-              <p>PLAY, GET RATED, AND GROW YOUR REPUTATION.</p>
-            </div>
+            {processes.slice(0, showAllProcesses ? processes.length : 3).map((process, index) => (
+              <div 
+                key={index} 
+                className={`${styles.processCard} ${index >= 3 ? styles.fadeInProcess : ''}`}
+              >
+                <div className={styles.icon}>
+                  <img src={process.icon} alt={process.title} />
+                </div>
+                <h3>{process.title}</h3>
+                <p>{process.description}</p>
+              </div>
+            ))}
+          </div>
+          <div className={styles.seeMoreContainer}>
+            <button 
+              className={styles.seeMoreButton}
+              onClick={() => setShowAllProcesses(!showAllProcesses)}
+            >
+              {showAllProcesses ? 'Show Less' : 'See More Steps'}
+            </button>
           </div>
         </section>
 
@@ -89,6 +194,13 @@ const HowItWorksPage = () => {
                 <li><i className="fas fa-paper-plane"></i> Schedule gaming sessions based on your availability</li>
                 <li><i className="fas fa-paper-plane"></i> Build your reputation with reviews and ratings</li>
               </ul>
+              <button
+                className={styles.loginButton}
+                onClick={() => handleLogin('player')}
+              >
+                <Users size={20} />
+                Login as Player
+              </button>
             </div>
             <div className={`${styles.column} ${styles.organizersColumn}`}>
               <h3>For Organizers</h3>
@@ -103,6 +215,13 @@ const HowItWorksPage = () => {
                 <li><i className="fas fa-paper-plane"></i> Schedule gaming sessions based on your availability</li>
                 <li><i className="fas fa-paper-plane"></i> Build your reputation as a trusted organizer</li>
               </ul>
+              <button
+                className={styles.loginButton}
+                onClick={() => handleLogin('organizer')}
+              >
+                <Star size={20} />
+                Login as Organizer
+              </button>
             </div>
           </div>
         </section>
@@ -111,26 +230,26 @@ const HowItWorksPage = () => {
         <section className={styles.keyFeatures}>
           <h2>Key Features</h2>
           <div className={styles.featureCards}>
-            <div className={styles.featureCard}>
-              <div className={styles.icon}><img src='icons/trophy.png'></img></div>
-              <h3>TOURNAMENTS</h3>
-              <p>JOIN LOCAL AND ONLINE TOURNAMENTS, TEAM UP, AND COMPETE TO WIN.</p>
-            </div>
-            <div className={styles.featureCard}>
-              <div className={styles.icon}><img src='icons/bolt.png'></img></div>
-              <h3>QUICK JOIN</h3>
-              <p>JUMP INTO GAMES THAT NEED PLAYERS. NO WAITING — JUST PICK A SLOT AND PLAY.</p>
-            </div>
-            <div className={styles.featureCard}>
-              <div className={styles.icon}><img src='icons/verifies.png'></img></div>
-              <h3>VERIFIED & SECURE</h3>
-              <p>PLAY WORRY-FREE WITH VERIFIED USERS, SECURE PAYMENTS, AND GUARANTEED REFUNDS.</p>
-            </div>
-            <div className={styles.featureCard}>
-              <div className={styles.icon}><img src='icons/groud.png'></img></div>
-              <h3>BOOK COURTS</h3>
-              <p>FIND AND BOOK NEARBY FUTSAL COURTS EASILY — PICK A TIME, CONFIRM, AND YOU'RE SET.</p>
-            </div>
+            {features.slice(0, showAllFeatures ? features.length : 3).map((feature, index) => (
+              <div 
+                key={index} 
+                className={`${styles.featureCard} ${index >= 3 ? styles.fadeInFeature : ''}`}
+              >
+                <div className={styles.icon}>
+                  <img src={feature.icon} alt={feature.title} />
+                </div>
+                <h3>{feature.title}</h3>
+                <p>{feature.description}</p>
+              </div>
+            ))}
+          </div>
+          <div className={styles.seeMoreContainer}>
+            <button 
+              className={styles.seeMoreButton}
+              onClick={() => setShowAllFeatures(!showAllFeatures)}
+            >
+              {showAllFeatures ? 'Show Less' : 'See More Features'}
+            </button>
           </div>
         </section>
 
@@ -138,66 +257,24 @@ const HowItWorksPage = () => {
         <section className={styles.faqSection}>
           <h2>Frequently Asked Questions</h2>
           <div className={styles.faqContainer}>
-            <div className={styles.faqItem}>
-              <div className={styles.faqQuestion}>
-                <div className={styles.indicator}><div className={styles.circle}></div></div>
-                <p>What is MatchPoint?</p>
-                <i className="fas fa-chevron-right"></i>
+            {faqs.map((faq, index) => (
+              <div 
+                key={index} 
+                className={`${styles.faqItem} ${activeFaqIndex === index ? styles.active : ''}`}
+                onClick={() => toggleFaq(index)}
+              >
+                <div className={styles.faqQuestion}>
+                  <div className={styles.indicator}>
+                    <div className={styles.circle}></div>
+                  </div>
+                  <p>{faq.question}</p>
+                  <i className={`fas fa-chevron-right ${styles.arrow} ${activeFaqIndex === index ? styles.rotated : ''}`}></i>
+                </div>
+                <div className={styles.faqAnswer}>
+                  <p>{faq.answer}</p>
+                </div>
               </div>
-              <div className={styles.faqAnswer}>
-                <p>MatchPoint is a sports matchmaking platform that connects players for local games.</p>
-              </div>
-            </div>
-            <div className={`${styles.faqItem} ${styles.active}`}>
-              <div className={styles.faqQuestion}>
-                <div className={styles.indicator}><div className={styles.circle}></div></div>
-                <p>Is MatchPoint free to use?</p>
-                <i className="fas fa-chevron-right"></i>
-              </div>
-              <div className={styles.faqAnswer}>
-                <p>Yes, MatchPoint offers free access to browse and join games. However, certain premium features like priority match recommendations or tournament hosting may require a small fee.</p>
-              </div>
-            </div>
-            <div className={styles.faqItem}>
-              <div className={styles.faqQuestion}>
-                <div className={styles.indicator}><div className={styles.circle}></div></div>
-                <p>Is MatchPoint free to use?</p>
-                <i className="fas fa-chevron-right"></i>
-              </div>
-              <div className={styles.faqAnswer}>
-                <p>Yes, basic features are free to use.</p>
-              </div>
-            </div>
-            <div className={styles.faqItem}>
-              <div className={styles.faqQuestion}>
-                <div className={styles.indicator}><div className={styles.circle}></div></div>
-                <p>Can I use MatchPoint for all sports?</p>
-                <i className="fas fa-chevron-right"></i>
-              </div>
-              <div className={styles.faqAnswer}>
-                <p>Yes, MatchPoint supports a wide range of sports.</p>
-              </div>
-            </div>
-            <div className={styles.faqItem}>
-              <div className={styles.faqQuestion}>
-                <div className={styles.indicator}><div className={styles.circle}></div></div>
-                <p>Do I need to pay if no matches are played?</p>
-                <i className="fas fa-chevron-right"></i>
-              </div>
-              <div className={styles.faqAnswer}>
-                <p>No, you only pay for matches you participate in.</p>
-              </div>
-            </div>
-            <div className={styles.faqItem}>
-              <div className={styles.faqQuestion}>
-                <div className={styles.indicator}><div className={styles.circle}></div></div>
-                <p>Is there a verification process for players?</p>
-                <i className="fas fa-chevron-right"></i>
-              </div>
-              <div className={styles.faqAnswer}>
-                <p>Yes, we verify all players for safety and security.</p>
-              </div>
-            </div>
+            ))}
           </div>
         </section>
       </main>

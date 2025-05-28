@@ -5,10 +5,7 @@ import {
     updateFutsal,
     deleteFutsal,
     createTournament,
-    getOrganizerProfileById,
-    getCurrentOrganizerProfile,
-    updateOrganizerProfile,
-    updateOrganizerProfileById
+    getOrganizerProfile
 } from '../controllers/organizer.controller.js';
 import { verifyJWT } from '../middlewares/auth.middleware.js';
 import { upload } from '../middlewares/multer.middleware.js';
@@ -36,13 +33,7 @@ router
 .post(verifyJWT, createTournament)
 
 router
-.route('/profile/:id')
-.get(verifyJWT, getOrganizerProfileById)
-.patch(verifyJWT, upload.single('avatar'), updateOrganizerProfileById);
-
-router
-.route('/profile')
-.get(verifyJWT, getCurrentOrganizerProfile)
-.patch(verifyJWT, upload.single('avatar'), updateOrganizerProfile);
+.route('/organizer-profile')
+.get(getOrganizerProfile);
 
 export default router

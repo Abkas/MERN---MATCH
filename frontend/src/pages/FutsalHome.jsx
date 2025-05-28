@@ -23,26 +23,12 @@ const FutsalHome = () => {
               <img src="/FUTSALHOME/notification-icon.png" alt="Notifications" />
             </div>
             <div className={styles.profile}>
-              <Link to="/profile"><img src="/FUTSALHOME/profile-icon.png" alt="Profile" /></Link>
+              <Link to="/player-profile"><img src="/FUTSALHOME/profile-icon.png" alt="Profile" /></Link>
             </div>
           </div>
         </nav>
 
-        {/* Social Media Sidebar */}
-        <div className={styles.socialSidebar}>
-          <a href="#" className={`${styles.socialIcon} ${styles.linkedin}`}>
-            <img src="/FUTSALHOME/linkedin-icon.png" alt="LinkedIn" />
-          </a>
-          <a href="#" className={`${styles.socialIcon} ${styles.tiktok}`}>
-            <img src="/FUTSALHOME/tiktok-icon.png" alt="TikTok" />
-          </a>
-          <a href="#" className={`${styles.socialIcon} ${styles.instagram}`}>
-            <img src="/FUTSALHOME/instagram-icon.png" alt="Instagram" />
-          </a>
-          <a href="#" className={`${styles.socialIcon} ${styles.facebook}`}>
-            <img src="/FUTSALHOME/facebook-icon.png" alt="Facebook" />
-          </a>
-        </div>
+     
 
         {/* Main Content */}
         <div className={styles.mainContent}>

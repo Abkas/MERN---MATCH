@@ -3,7 +3,7 @@
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-  font-family: 'Inter', sans-serif;
+ 
 }
 
 .body { 
@@ -35,19 +35,21 @@ button {
 
 /* Navigation Styles */
 .nav {
-  width: 100vw; 
   display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 20px 0;
-  max-width: 1200px;
-  margin: 0 auto;
-  position: relative;
-  z-index: 10;
+      justify-content: space-between;
+      align-items: center;
+      padding: 20px 0;
+      max-width: 1200px;
+      margin: 0 auto;
+      position: relative;
+      z-index: 10;
 }
 
 .logo img {
   height: 50px;
+  margin-left: -20px;
+  width: 70px;
+ 
 }
 
 .navLinks {
@@ -87,6 +89,7 @@ button {
   display: flex;
   gap: 20px;
   color: #e0e0e0;
+  margin-right: -20px;
 }
 
 .notification, .profile {
@@ -105,45 +108,15 @@ button {
   height: 20px;
 }
 
-/* Social Media Sidebar */
-.socialSidebar {
-  position: fixed;
-  left: 30px;
-  top: 50%;
-  transform: translateY(-50%);
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-  z-index: 10;
-}
 
-.socialIcon {
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  background-color: #fff;
-  border: 1px solid rgba(0, 0, 0, 0.1);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  transition: all 0.3s ease;
-}
 
-.socialIcon:hover {
-  transform: scale(1.1);
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-}
-
-.socialIcon img {
-  width: 20px;
-  height: 20px;
-}
 
 /* Hero Section */
 .hero {
-  background-color: #f8e1e1;
-  padding: 60px 0;
-  text-align: left;
+  background-color: #c5d6f4;
+    text-align: left;
+    width: 100%;
+   
 }
 
 .hero h1 {
@@ -166,10 +139,10 @@ button {
 .searchBox {
   display: flex;
   align-items: center;
-  background-color: #fff;
+  background-color: #d50000;
   border-radius: 30px;
   padding: 0 15px;
-  max-width: 500px;
+  width: 100;
   position: relative;
   border: 1px solid #ddd;
 }
@@ -230,6 +203,11 @@ button {
   color: #333;
 }
 
+.hashTag {
+  color: #4169e1;
+  font-weight: 700;
+}
+
 .sectionTitleCentered {
   font-size: 24px;
   font-weight: 700;
@@ -241,13 +219,22 @@ button {
 /* Futsal Near You Section */
 .futsalNearYou {
   padding: 60px 0;
+  background-color: #f8f9fa;
 }
 
-.futsalCards {
+.futsalNearYou .container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+.futsalGrid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
-  gap: 30px;
-  margin-bottom: 40px;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 2rem;
+  margin: 2rem auto;
+  max-width: 1200px;
+  padding: 0 20px;
 }
 
 .futsalCard {
@@ -256,11 +243,15 @@ button {
   overflow: hidden;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
   position: relative;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
 }
 
 .cardImage {
   position: relative;
   height: 200px;
+  width: 100%;
 }
 
 .cardImage img {
@@ -297,6 +288,9 @@ button {
 
 .cardContent {
   padding: 20px;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
 }
 
 .cardHeader {
@@ -309,6 +303,7 @@ button {
 .cardHeader h3 {
   font-size: 18px;
   font-weight: 600;
+  margin: 0;
 }
 
 .rating {
@@ -350,9 +345,9 @@ button {
 }
 
 .cardActions {
+  margin-top: auto;
   display: flex;
   gap: 10px;
-  margin-top: 20px;
 }
 
 .btnBook {
@@ -382,6 +377,7 @@ button {
 
 .seeMore {
   text-align: center;
+  margin-top: 2rem;
 }
 
 .btnSeeMore {
@@ -391,11 +387,13 @@ button {
   padding: 10px 30px;
   border-radius: 30px;
   font-size: 14px;
-  transition: background-color 0.3s;
+  transition: all 0.3s ease;
 }
 
 .btnSeeMore:hover {
-  background-color: #f0f0f0;
+  background-color: #4169e1;
+  color: white;
+  border-color: #4169e1;
 }
 
 /* Quick Join Section */
@@ -546,16 +544,6 @@ button {
   color: #2e7d32;
 }
 
-.statusPlaying {
-  background-color: #fffde7;
-  color: #fbc02d;
-}
-
-.statusSoon {
-  background-color: #e3f2fd;
-  color: #0288d1;
-}
-
 .btnJoinNow {
   background-color: #2563eb;
   color: white;
@@ -621,6 +609,23 @@ button {
 
   .timeSlots table {
     min-width: 600px;
+  }
+
+  .futsalGrid {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+    padding: 0 15px;
+  }
+  
+  .cardImage {
+    height: 180px;
+  }
+}
+
+@media (min-width: 769px) and (max-width: 1024px) {
+  .futsalGrid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.5rem;
   }
 }
 
@@ -805,13 +810,6 @@ button {
     flex-wrap: wrap;
     justify-content: center;
   }
-}
-
-.futsalGrid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-  gap: 2rem;
-  margin: 2rem 0;
 }
 
 .noFutsals {
@@ -1222,4 +1220,22 @@ button {
   .statLabel {
     font-size: 1rem;
   }
+}
+
+/* Restore original futsalCards for Offers section */
+.futsalCards {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+  gap: 30px;
+  margin-bottom: 40px;
+}
+
+/* Keep the new futsalGrid styles for Futsal Near You section */
+.futsalGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 2rem;
+  margin: 2rem auto;
+  max-width: 1200px;
+  padding: 0 20px;
 }

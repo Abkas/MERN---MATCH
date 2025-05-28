@@ -106,22 +106,6 @@ const BookFutsal = () => {
           </div>
         </nav>
 
-        {/* Social Media Sidebar */}
-        <div className={styles.socialSidebar}>
-          <a href="#" className={`${styles.socialIcon} ${styles.linkedin}`}>
-            <img src="/FUTSALHOME/linkedin-icon.png" alt="LinkedIn" />
-          </a>
-          <a href="#" className={`${styles.socialIcon} ${styles.tiktok}`}>
-            <img src="/FUTSALHOME/tiktok-icon.png" alt="TikTok" />
-          </a>
-          <a href="#" className={`${styles.socialIcon} ${styles.instagram}`}>
-            <img src="/FUTSALHOME/instagram-icon.png" alt="Instagram" />
-          </a>
-          <a href="#" className={`${styles.socialIcon} ${styles.facebook}`}>
-            <img src="/FUTSALHOME/facebook-icon.png" alt="Facebook" />
-          </a>
-        </div>
-
         {/* Main Content */}
         <main className={styles.main}>
           <section className={styles.hero}>
