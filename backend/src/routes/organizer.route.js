@@ -34,6 +34,6 @@ router
 
 router
 .route('/organizer-profile')
-.get(getOrganizerProfile);
+.get(verifyJWT, getOrganizerProfile);
 
 export default router

@@ -174,58 +174,21 @@ const getFutsalsByOrganizer = asyncHandler(async (req, res) => {
 
 // GET /organizer/profile
 const getOrganizerProfile = asyncHandler(async (req, res) => {
-    console.log('getOrganizerProfile called'); // Debug: confirm route is hit
-    // If user is authenticated, use req.user._id; else, fallback to query param for demo/testing
-    let userId = req.user?._id || req.query.userId;
+    const userId = req.user?._id;
     if (!userId) {
-        // fallback to demo
-        const demoProfile = {
-            name: 'Demo Organizer',
-            avatar: '/default-owner.png',
-            email: 'demo.organizer@example.com',
-            phone: '+1234567890',
-            organizerProfile: {
-                bio: 'This is a demo bio for the organizer. Showcase your experience and achievements here.',
-                additionalInfo: 'Demo additional info about the organizer.',
-                awards: 'Best Organizer 2024',
-                isVerified: true,
-                futsals: [],
-                tournaments: []
-            }
-        };
-        return res.status(200).json(new ApiResponse(200, demoProfile, 'Organizer profile blueprint'));
+        return res.status(401).json(new ApiResponse(401, {}, 'Unauthorized: No user found in request'));
     }
-
-    // Fetch user and organizer profile from DB
     const user = await User.findById(userId).select('-password');
     if (!user) {
-        throw new ApiError(404, 'User not found');
+        return res.status(404).json(new ApiResponse(404, {}, 'User not found'));
     }
-    const organizerProfile = await OrganizerProfile.findOne({ user: userId })
-        .populate({
-            path: 'futsals',
-            populate: { path: 'slots tournaments reviews followers' }
-        });
-    if (!organizerProfile) {
-        throw new ApiError(404, 'Organizer profile not found');
-    }
-    // Compose response with user and organizer profile fields
-    const response = {
-        name: user.fullName || user.username,
-        avatar: user.avatar || '/default-owner.png',
-        email: user.email,
-        phone: user.phoneNumber,
-        organizerProfile: {
-            bio: organizerProfile.bio,
-            additionalInfo: organizerProfile.additionalInfo,
-            awards: organizerProfile.awards,
-            isVerified: organizerProfile.isVerified,
-            futsals: organizerProfile.futsals,
-            // Optionally, add tournaments if you have them
-        }
+    const organizerProfile = await OrganizerProfile.findOne({ user: userId });
+    const responseData = {
+        user: user ? user.toObject() : {},
+        organizerProfile: organizerProfile ? organizerProfile.toObject() : {}
     };
-    console.log('Organizer profile response:', JSON.stringify(response, null, 2));
-    return res.status(200).json(new ApiResponse(200, response, 'Organizer profile fetched from DB'));
+    // Fix: Place responseData in the data field, message as string
+    return res.status(200).json(new ApiResponse(200, responseData, 'Organizer profile (all raw data, frontend merges with blueprint)'));
 });
 
 export {

@@ -143,41 +143,31 @@ export const useAuthStore =create((set)  => ({
         }
     },
 
-    updateOrganizerProfile: async (data) => {
-        set({ isUpdatingProfile: true });
+    fetchOrganizerProfile: async () => {
         try {
-            let response;
-            // If data contains a File (avatar), use FormData
-            if (data && (data.avatar instanceof File)) {
-                const formData = new FormData();
-                Object.entries(data).forEach(([key, value]) => {
-                    if (value !== '' && value !== undefined && value !== null) {
-                        formData.append(key, value);
-                    }
-                });
-                response = await axiosInstance.patch('/organizer/profile', formData, {
-                    headers: { 'Content-Type': 'multipart/form-data' },
-                });
+            const res = await axiosInstance.get('/organizer/organizer-profile');
+            console.log('DEBUG: Full /organizer/organizer-profile response:', res);
+            // The backend sends { data: { statusCode, data, message, ... } }
+            // But if the real data is in message, use that
+            if (res.data && res.data.message && res.data.message.user && res.data.message.organizerProfile) {
+                // Use message as the data source
+                return res.data.message;
+            } else if (res.data && res.data.data && res.data.data.user && res.data.data.organizerProfile) {
+                // Use data as the data source
+                return res.data.data;
+            } else if (res.data && res.data.data && res.data.data.data && res.data.data.data.user && res.data.data.data.organizerProfile) {
+                // If double-nested (data.data.data)
+                return res.data.data.data;
             } else {
-                response = await axiosInstance.patch('/organizer/profile', data);
-            }
-            if (response.data && (response.data.success || response.data.message === 'Organizer profile updated successfully')) {
-                set((state) => ({
-                    authUser: {
-                        ...state.authUser,
-                        organizerProfile: response.data.data
-                    }
-                }));
-                toast.success('Organizer profile updated successfully');
-            } else {
-                throw new Error(response.data.message || 'Failed to update organizer profile');
+                // fallback: log what is actually there
+                console.log('DEBUG: Unexpected /organizer/organizer-profile response shape:', res.data);
+                return null;
             }
         } catch (error) {
-            console.error('Organizer profile update error:', error);
-            toast.error(error.response?.data?.message || 'Error updating organizer profile');
-        } finally {
-            set({ isUpdatingProfile: false });
+            toast.error(error.response?.data?.message || 'Error fetching organizer profile');
+            return null;
         }
     },
-    
+
+
 }) )

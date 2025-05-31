@@ -80,7 +80,7 @@ const FutsalSchema = new Schema({
         type: Boolean,
         default: false
     },
-    isNew: {
+    isNewFutsal: {
         type: Boolean,
         default: true
     }
