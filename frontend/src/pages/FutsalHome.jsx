@@ -1,8 +1,24 @@
 import React from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import styles from './css/FutsalHome.module.css'
+import { useAuthStore } from '../store/useAuthStore'
 
 const FutsalHome = () => {
+  const { authUser } = useAuthStore();
+  const navigate = useNavigate();
+
+  // Handler for profile icon click
+  const handleProfileClick = (e) => {
+    e.preventDefault();
+    if (!authUser) {
+      navigate('/login');
+    } else if (authUser.role === 'organizer') {
+      navigate('/organizer-profile');
+    } else {
+      navigate('/player-profile');
+    }
+  };
+
   return (
     <div className={styles.body}>
       <div className={styles.container}>
@@ -23,12 +39,13 @@ const FutsalHome = () => {
               <img src="/FUTSALHOME/notification-icon.png" alt="Notifications" />
             </div>
             <div className={styles.profile}>
-              <Link to="/player-profile"><img src="/FUTSALHOME/profile-icon.png" alt="Profile" /></Link>
+              {/* Use Link to /linkprofile for unified profile navigation */}
+              <Link to="/profile" style={{ background: 'none', border: 'none', padding: 0, cursor: 'pointer' }}>
+                <img src="/FUTSALHOME/profile-icon.png" alt="Profile" />
+              </Link>
             </div>
           </div>
         </nav>
-
-     
 
         {/* Main Content */}
         <div className={styles.mainContent}>
