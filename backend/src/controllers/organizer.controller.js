@@ -202,7 +202,13 @@ const updateOrganizerProfile = asyncHandler(async (req, res) => {
     // Handle avatar upload if present
     let avatarUrl;
     if (req.file) {
+        console.log('Avatar file received:', req.file);
         avatarUrl = await uploadOnCloudinary(req.file.path);
+        if (!avatarUrl || !avatarUrl.url) {
+            console.log('Cloudinary upload failed or returned no URL');
+            return res.status(500).json(new ApiResponse(500, 'Failed to upload avatar image', {}));
+        }
+        console.log('Cloudinary avatar URL:', avatarUrl.url);
     }
 
     // Update User fields
@@ -210,7 +216,7 @@ const updateOrganizerProfile = asyncHandler(async (req, res) => {
     if (req.body.name) userUpdates.username = req.body.name;
     if (req.body.email) userUpdates.email = req.body.email;
     if (req.body.phone) userUpdates.phoneNumber = req.body.phone;
-    if (avatarUrl) userUpdates.avatar = avatarUrl;
+    if (avatarUrl && avatarUrl.url) userUpdates.avatar = avatarUrl.url;
 
     if (Object.keys(userUpdates).length > 0) {
         await User.findByIdAndUpdate(userId, userUpdates);
@@ -233,8 +239,9 @@ const updateOrganizerProfile = asyncHandler(async (req, res) => {
     const user = await User.findById(userId).select('-password');
     const updatedOrganizerProfile = await OrganizerProfile.findOne({ user: userId });
 
+    // FIX: Swap message and data arguments for ApiResponse
     return res.status(200).json(
-        new ApiResponse(200, { user, organizerProfile: updatedOrganizerProfile }, 'Organizer profile updated successfully')
+        new ApiResponse(200, 'Organizer profile updated successfully', { user, organizerProfile: updatedOrganizerProfile })
     );
 });
 
