@@ -100,10 +100,10 @@ const PUpcomingMatchesPage = () => {
                         </li>
                     </ul>
                 </aside>
-                <main className={styles.mainContent}>
-                    <h1 className={styles.pageTitle}>
-                        <span style={{ color: '#2563eb', fontWeight: 800, letterSpacing: 1 }}>Upcoming Matches</span>
-                        <span style={{ fontSize: 18, color: '#888', marginLeft: 12 }}>
+                <main className={styles.mainContent} style={{ maxWidth: 1100, margin: '0 auto', padding: '3rem 0', marginLeft: '250px', width: 'calc(100% - 250px)' }}>
+                    <h1 className={styles.pageTitle} style={{ fontSize: '2.2rem', fontWeight: 800, color: '#232946', letterSpacing: 1, marginBottom: 36, display: 'flex', alignItems: 'center', gap: 18 }}>
+                        <span style={{ color: '#2563eb' }}>Upcoming Matches</span>
+                        <span style={{ fontSize: 18, color: '#888', fontWeight: 500, marginLeft: 12, display: 'flex', alignItems: 'center' }}>
                             <Clock size={22} style={{ verticalAlign: 'middle', marginRight: 4 }} />
                             {joinedSlots.length > 0 ? `${joinedSlots.length} match${joinedSlots.length > 1 ? 'es' : ''}` : ''}
                         </span>
@@ -111,15 +111,15 @@ const PUpcomingMatchesPage = () => {
                     {loading ? (
                         <div className={styles.loading}>Loading your matches...</div>
                     ) : joinedSlots.length === 0 ? (
-                        <div className={styles.noMatches}>
+                        <div className={styles.noMatches} style={{ background: '#fff', borderRadius: 18, boxShadow: '0 4px 24px #2563eb11', padding: '3rem 2rem', maxWidth: 480, margin: '0 auto', marginTop: 40 }}>
                             <img src="/firstpage/logo.png" alt="No matches" style={{ width: 80, marginBottom: 16, opacity: 0.7 }} />
-                            <p style={{ fontSize: 18, color: '#888', marginBottom: 8 }}>You haven't joined any matches yet.</p>
-                            <Link to="/bookfutsal" className={styles.findMatchesBtn} style={{ background: '#2563eb', color: '#fff', borderRadius: 8, padding: '10px 24px', fontWeight: 600, textDecoration: 'none', boxShadow: '0 2px 8px #2563eb22' }}>
+                            <p style={{ fontSize: 20, color: '#888', marginBottom: 8, fontWeight: 500 }}>You haven't joined any matches yet.</p>
+                            <Link to="/bookfutsal" className={styles.findMatchesBtn} style={{ background: '#2563eb', color: '#fff', borderRadius: 8, padding: '12px 32px', fontWeight: 700, textDecoration: 'none', boxShadow: '0 2px 8px #2563eb22', fontSize: 17 }}>
                                 Find Matches
                             </Link>
                         </div>
                     ) : (
-                        <div className={styles.matchesGrid} style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(340px, 1fr))', gap: 28, marginTop: 24 }}>
+                        <div className={styles.matchesGrid} style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(370px, 1fr))', gap: 36, marginTop: 24 }}>
                             {joinedSlots.map((slot) => {
                                 const timeStatus = getSlotTimeStatus(slot, slot.date);
                                 let statusLabel = '';
@@ -138,43 +138,43 @@ const PUpcomingMatchesPage = () => {
                                     statusClass = styles[`status${slot.status.charAt(0).toUpperCase() + slot.status.slice(1)}`] || '';
                                 }
                                 return (
-                                    <div key={slot._id} className={styles.matchCard} style={{ background: '#fff', borderRadius: 18, boxShadow: '0 4px 24px #2563eb11', padding: 24, display: 'flex', flexDirection: 'column', justifyContent: 'space-between', border: '1.5px solid #e3e8f0', transition: 'box-shadow 0.2s', position: 'relative' }}>
-                                        <div className={styles.matchHeader} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 10 }}>
-                                            <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-                                                <img src="/FUTSALHOME/logo.png" alt="futsal-logo" style={{ width: 38, height: 38, borderRadius: 8, objectFit: 'cover', background: '#f3f6fa', border: '1px solid #e3e8f0' }} />
-                                                <h3 style={{ fontSize: 20, fontWeight: 700, color: '#222', margin: 0 }}>{slot.futsal.name}</h3>
+                                    <div key={slot._id} className={styles.matchCard} style={{ background: '#fff', borderRadius: 22, boxShadow: '0 8px 32px #2563eb13', padding: 32, display: 'flex', flexDirection: 'column', justifyContent: 'space-between', border: '1.5px solid #e3e8f0', transition: 'box-shadow 0.2s', position: 'relative', minHeight: 260 }}>
+                                        <div className={styles.matchHeader} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 16 }}>
+                                            <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
+                                                <img src="/FUTSALHOME/logo.png" alt="futsal-logo" style={{ width: 48, height: 48, borderRadius: 10, objectFit: 'cover', background: '#f3f6fa', border: '1px solid #e3e8f0' }} />
+                                                <h3 style={{ fontSize: 22, fontWeight: 700, color: '#222', margin: 0 }}>{slot.futsal.name}</h3>
                                             </div>
-                                            <span className={`${styles.status} ${statusClass}`} style={{ fontWeight: 700, fontSize: 14, padding: '4px 12px', borderRadius: 6, letterSpacing: 0.5 }}>{statusLabel}</span>
+                                            <span className={`${styles.status} ${statusClass}`} style={{ fontWeight: 700, fontSize: 15, padding: '6px 16px', borderRadius: 8, letterSpacing: 0.5 }}>{statusLabel}</span>
                                         </div>
-                                        <div className={styles.matchDetails} style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10, marginBottom: 18 }}>
-                                            <div className={styles.detailItem} style={{ display: 'flex', alignItems: 'center', gap: 6, color: '#2563eb', fontWeight: 600 }}>
-                                                <Clock size={16} />
+                                        <div className={styles.matchDetails} style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 14, marginBottom: 22 }}>
+                                            <div className={styles.detailItem} style={{ display: 'flex', alignItems: 'center', gap: 8, color: '#2563eb', fontWeight: 600, fontSize: 16 }}>
+                                                <Clock size={18} />
                                                 <span>{slot.time}</span>
                                             </div>
-                                            <div className={styles.detailItem} style={{ display: 'flex', alignItems: 'center', gap: 6, color: '#43a047', fontWeight: 600 }}>
-                                                <Users size={16} />
+                                            <div className={styles.detailItem} style={{ display: 'flex', alignItems: 'center', gap: 8, color: '#43a047', fontWeight: 600, fontSize: 16 }}>
+                                                <Users size={18} />
                                                 <span>{slot.currentPlayers}/{slot.maxPlayers} Players</span>
                                             </div>
-                                            <div className={styles.detailItem} style={{ display: 'flex', alignItems: 'center', gap: 6, color: '#fbc02d', fontWeight: 600 }}>
-                                                <DollarSign size={16} />
+                                            <div className={styles.detailItem} style={{ display: 'flex', alignItems: 'center', gap: 8, color: '#fbc02d', fontWeight: 600, fontSize: 16 }}>
+                                                <DollarSign size={18} />
                                                 <span>₹{slot.price} per player</span>
                                             </div>
-                                            <div className={styles.detailItem} style={{ display: 'flex', alignItems: 'center', gap: 6, color: '#d32f2f', fontWeight: 600 }}>
-                                                <MapPin size={16} />
+                                            <div className={styles.detailItem} style={{ display: 'flex', alignItems: 'center', gap: 8, color: '#d32f2f', fontWeight: 600, fontSize: 16 }}>
+                                                <MapPin size={18} />
                                                 <span>{slot.futsal.location}</span>
                                             </div>
                                         </div>
-                                        <div className={styles.matchActions} style={{ display: 'flex', gap: 12, marginTop: 'auto' }}>
+                                        <div className={styles.matchActions} style={{ display: 'flex', gap: 18, marginTop: 'auto' }}>
                                             <button
                                                 className={styles.viewDetailsBtn}
-                                                style={{ background: '#2563eb', color: '#fff', borderRadius: 8, padding: '8px 18px', fontWeight: 600, border: 'none', boxShadow: '0 2px 8px #2563eb22', cursor: 'pointer', transition: 'background 0.2s' }}
+                                                style={{ background: '#2563eb', color: '#fff', borderRadius: 10, padding: '10px 24px', fontWeight: 700, border: 'none', boxShadow: '0 2px 8px #2563eb22', cursor: 'pointer', fontSize: 16, transition: 'background 0.2s' }}
                                                 onClick={() => navigate(`/futsal/${slot.futsal._id}`)}
                                             >
                                                 View Details
                                             </button>
                                             <button
                                                 className={styles.cancelBtn}
-                                                style={{ background: '#fff', color: '#d32f2f', border: '1.5px solid #d32f2f', borderRadius: 8, padding: '8px 18px', fontWeight: 600, cursor: 'pointer', transition: 'background 0.2s' }}
+                                                style={{ background: '#fff', color: '#d32f2f', border: '2px solid #d32f2f', borderRadius: 10, padding: '10px 24px', fontWeight: 700, cursor: 'pointer', fontSize: 16, transition: 'background 0.2s' }}
                                                 onClick={() => handleCancelBooking(slot._id)}
                                             >
                                                 Cancel Booking

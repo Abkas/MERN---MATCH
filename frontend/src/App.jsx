@@ -20,7 +20,7 @@ import BookFutsal from "./pages/BookFutsal"
 
 import FutsalDetails from './pages/FutsalDetails'
 
-import UpdateProfile from "./components/updatePage"
+import PlayerUpdateProfile from "./pages/Player-profile/PlayerUpdateProfile"
 
 import ODashboard from "./pages/organizer-profile/ODashbaord"
 import OHistory from "./pages/organizer-profile/OHistory"
@@ -30,6 +30,7 @@ import OSlotsPage from "./pages/organizer-profile/OSlotsPage"
 import UpdateFutsal from "./components/updatefutsal"
 import OrganizerProfile from "./pages/organizer-profile/OrganizerProfile"
 import OrganizerUpdateProfile from "./pages/organizer-profile/OrganizerUpdateProfile"
+import PlayerProfile from "./pages/Player-profile/PlayerProfile"
 
 import { useAuthStore } from "./store/useAuthStore"
 import { useEffect } from "react"
@@ -79,7 +80,7 @@ const App = () => {
 
         <Route path="/futsal/:id" element={authUser?<FutsalDetails />:<Navigate to = '/login'/>} />
       
-        <Route path = '/update-profile' element= {authUser?<UpdateProfile />: <Navigate to='/login'/>} />
+        <Route path = '/update-profile' element= {authUser?<PlayerUpdateProfile />: <Navigate to='/login'/>} />
 
         <Route path = '/organizer-dashboard' element= {authUser?<ODashboard />: <Navigate to='/login'/>} />
         <Route path = '/organizer-history' element= {authUser?<OHistory />: <Navigate to='/login'/>} />
@@ -90,6 +91,7 @@ const App = () => {
         <Route path="/profile" element={<Linkprofile />} />
         <Route path="/organizer-profile/:id" element={authUser ? <OrganizerProfile /> : <Navigate to="/login" />} />
         <Route path="/organizer-update-profile" element={authUser ? <OrganizerUpdateProfile /> : <Navigate to="/login" />} />
+        <Route path="/player-profile/:id" element={authUser ? <PlayerProfile /> : <Navigate to="/login" />} />
       </Routes>
 
       <Toaster />

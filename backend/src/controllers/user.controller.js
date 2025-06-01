@@ -216,6 +216,7 @@ const getCurrentUser = asyncHandler(async(req,res) =>{
             avatar: user.avatar,
             playerProfile: user.playerProfile,
             organizerProfile: user.organizerProfile,
+            matchHistory: user.matchHistory, // <-- add this
             createdAt: user.createdAt,
             updatedAt: user.updatedAt
         }, 'Current user fetched successfully'))

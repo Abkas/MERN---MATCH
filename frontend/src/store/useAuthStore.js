@@ -63,31 +63,6 @@ export const useAuthStore =create((set)  => ({
         }
     },
 
-    updatePlayerProfile: async(data) => {
-        set({isUpdatingProfile: true})
-        try {
-            if (typeof data === 'string') {
-                return
-            }
-            const response = await axiosInstance.patch('/users/update-account', data)
-            if (response.data.success) {
-                set((state) => ({
-                    authUser: {
-                        ...state.authUser,
-                        ...response.data.data
-                    }
-                }))
-                toast.success('Profile updated successfully')
-            } else {
-                throw new Error(response.data.message || 'Failed to update profile')
-            }
-        } catch (error) {
-            console.error('Profile update error:', error)
-            toast.error(error.response?.data?.message || 'Error updating profile')
-        } finally {
-            set({isUpdatingProfile: false})
-        }
-    },
 
     createFutsal: async(data) =>{
         set({isCreatingFutsal: true})
@@ -199,6 +174,68 @@ export const useAuthStore =create((set)  => ({
         } catch (error) {
             console.error('Organizer profile update error:', error);
             toast.error(error.response?.data?.message || 'Error updating organizer profile');
+        } finally {
+            set({ isUpdatingProfile: false });
+        }
+    },
+
+    fetchPlayerProfile: async () => {
+        try {
+            const res = await axiosInstance.get('/player/profile');
+            console.log('DEBUG: Full /player/profile response:', res);
+            // The backend sends { data: { statusCode, data, message, ... } }
+            // But if the real data is in message, use that
+            if (res.data && res.data.message && res.data.message.user && res.data.message.playerProfile) {
+                // Use message as the data source
+                return res.data.message;
+            } else if (res.data && res.data.data && res.data.data.user && res.data.data.playerProfile) {
+                // Use data as the data source
+                return res.data.data;
+            } else if (res.data && res.data.data && res.data.data.data && res.data.data.data.user && res.data.data.data.playerProfile) {
+                // If double-nested (data.data.data)
+                return res.data.data.data;
+            } else {
+                // fallback: log what is actually there
+                console.log('DEBUG: Unexpected /player/profile response shape:', res.data);
+                return null;
+            }
+        } catch (error) {
+            toast.error(error.response?.data?.message || 'Error fetching player profile');
+            return null;
+        }
+    },
+    
+    updatePlayerProfile: async (data) => {
+        set({ isUpdatingProfile: true });
+        try {
+            // Prepare form data for avatar upload
+            const formData = new FormData();
+            Object.entries(data).forEach(([key, value]) => {
+                if (key === 'avatar' && value instanceof File) {
+                    formData.append('avatar', value);
+                } else {
+                    formData.append(key, value);
+                }
+            });
+            const response = await axiosInstance.patch('/player/update-profile', formData, {
+                headers: { 'Content-Type': 'multipart/form-data' }
+            });
+            console.log('DEBUG: Player profile update response:', response);
+            if (response.data && response.data.data && response.data.data.user && response.data.data.playerProfile) {
+                set((state) => ({
+                    authUser: {
+                        ...state.authUser,
+                        ...response.data.data.user,
+                        playerProfile: response.data.data.playerProfile
+                    }
+                }));
+                toast.success('Player profile updated successfully');
+            } else {
+                throw new Error(response.data.message || 'Failed to update player profile');
+            }
+        } catch (error) {
+            console.error('Player profile update error:', error);
+            toast.error(error.response?.data?.message || 'Error updating player profile');
         } finally {
             set({ isUpdatingProfile: false });
         }

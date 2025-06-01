@@ -76,4 +76,5 @@ router
 .route('/check')
 .get(verifyJWT, checkAuth)
 
-export default router   
+
+export default router

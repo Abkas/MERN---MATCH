@@ -11,7 +11,7 @@ const Linkprofile = () => {
       if (authUser.role === 'organizer') {
         navigate(`/organizer-profile/${authUser._id}`);
       } else if (authUser.role === 'player') {
-        navigate('/player-profile');
+        navigate(`/player-profile/${authUser._id}`);
       }
     } else {
       navigate('/login');

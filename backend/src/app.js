@@ -23,6 +23,7 @@ import GameRouter from './routes/game.route.js'
 import SlotRouter from './routes/slot.routes.js'   
 import OrganizerRouter from './routes/organizer.route.js'
 import FutsalRouter from './routes/futsal.route.js'
+import playerRoutes from './routes/player.route.js' // Importing player routes
 //routes declaration
 
 app.use('/api/v1/users', UserRouter)
@@ -30,6 +31,6 @@ app.use('/api/v1/games', GameRouter)
 app.use('/api/v1/slots', SlotRouter)
 app.use('/api/v1/organizer', OrganizerRouter)
 app.use('/api/v1/futsals', FutsalRouter)
-
+app.use('/api/v1/player', playerRoutes) // Registering player routes under correct API prefix
 
 export {app}
