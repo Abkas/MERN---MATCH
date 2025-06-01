@@ -127,6 +127,26 @@ const OrganizerProfile = () => {
               </div>
             </div>
           </div>
+          {/* Update Profile Button */}
+          <button
+            className={styles.updateProfileBtn}
+            style={{
+              marginTop: 24,
+              background: '#eebbc3',
+              color: '#232946',
+              border: 'none',
+              borderRadius: 8,
+              padding: '0.8rem 2.2rem',
+              fontWeight: 700,
+              fontSize: '1.1rem',
+              cursor: 'pointer',
+              boxShadow: '0 2px 8px #eebbc355',
+              transition: 'background 0.2s',
+            }}
+            onClick={() => navigate('/organizer-update-profile', { state: { user, organizerProfile } })}
+          >
+            Update Profile
+          </button>
         </main>
       </div>
     </div>

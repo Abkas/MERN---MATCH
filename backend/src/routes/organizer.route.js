@@ -5,7 +5,8 @@ import {
     updateFutsal,
     deleteFutsal,
     createTournament,
-    getOrganizerProfile
+    getOrganizerProfile,
+    updateOrganizerProfile
 } from '../controllers/organizer.controller.js';
 import { verifyJWT } from '../middlewares/auth.middleware.js';
 import { upload } from '../middlewares/multer.middleware.js';
@@ -34,6 +35,10 @@ router
 
 router
 .route('/organizer-profile')
-.get(verifyJWT, getOrganizerProfile);
+.get(verifyJWT, getOrganizerProfile)
+
+router
+.route('/update-profile')
+.patch(verifyJWT, upload.single('avatar'), updateOrganizerProfile);
 
 export default router

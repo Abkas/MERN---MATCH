@@ -169,5 +169,39 @@ export const useAuthStore =create((set)  => ({
         }
     },
 
+    // Add updateOrganizerProfile for organizer
+    updateOrganizerProfile: async (data) => {
+        set({ isUpdatingProfile: true });
+        try {
+            // Prepare form data for avatar upload
+            const formData = new FormData();
+            Object.entries(data).forEach(([key, value]) => {
+                if (key === 'avatar' && value instanceof File) {
+                    formData.append('avatar', value);
+                } else {
+                    formData.append(key, value);
+                }
+            });
+            const response = await axiosInstance.patch('/organizer/update-profile', formData, {
+                headers: { 'Content-Type': 'multipart/form-data' }
+            });
+            if (response.data.success) {
+                set((state) => ({
+                    authUser: {
+                        ...state.authUser,
+                        ...response.data.data.user
+                    }
+                }));
+                toast.success('Organizer profile updated successfully');
+            } else {
+                throw new Error(response.data.message || 'Failed to update organizer profile');
+            }
+        } catch (error) {
+            console.error('Organizer profile update error:', error);
+            toast.error(error.response?.data?.message || 'Error updating organizer profile');
+        } finally {
+            set({ isUpdatingProfile: false });
+        }
+    },
 
 }) )

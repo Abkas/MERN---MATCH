@@ -7,6 +7,7 @@ import mongoose from 'mongoose'
 import { OrganizerProfile } from '../models/organizerprofile.model.js'
 import { User } from '../models/user.model.js'
 import {Slot} from '../models/slot.model.js'
+import { uploadOnCloudinary } from '../utils/cloudinary.js'
 
 
 const createFutsal = asyncHandler(async (req, res) => {
@@ -191,11 +192,58 @@ const getOrganizerProfile = asyncHandler(async (req, res) => {
     return res.status(200).json(new ApiResponse(200, responseData, 'Organizer profile (all raw data, frontend merges with blueprint)'));
 });
 
+// PATCH /organizer/update-profile
+const updateOrganizerProfile = asyncHandler(async (req, res) => {
+    const userId = req.user?._id;
+    if (!userId) {
+        return res.status(401).json(new ApiResponse(401, {}, 'Unauthorized: No user found in request'));
+    }
+
+    // Handle avatar upload if present
+    let avatarUrl;
+    if (req.file) {
+        avatarUrl = await uploadOnCloudinary(req.file.path);
+    }
+
+    // Update User fields
+    const userUpdates = {};
+    if (req.body.name) userUpdates.username = req.body.name;
+    if (req.body.email) userUpdates.email = req.body.email;
+    if (req.body.phone) userUpdates.phoneNumber = req.body.phone;
+    if (avatarUrl) userUpdates.avatar = avatarUrl;
+
+    if (Object.keys(userUpdates).length > 0) {
+        await User.findByIdAndUpdate(userId, userUpdates);
+    }
+
+    // Update OrganizerProfile fields
+    const organizerUpdates = {};
+    if (req.body.bio) organizerUpdates.bio = req.body.bio;
+    if (req.body.additionalInfo) organizerUpdates.additionalInfo = req.body.additionalInfo;
+    if (req.body.awards) organizerUpdates.awards = req.body.awards;
+
+    let organizerProfile = await OrganizerProfile.findOne({ user: userId });
+    if (!organizerProfile) {
+        organizerProfile = new OrganizerProfile({ user: userId });
+    }
+    Object.assign(organizerProfile, organizerUpdates);
+    await organizerProfile.save();
+
+    // Return updated data
+    const user = await User.findById(userId).select('-password');
+    const updatedOrganizerProfile = await OrganizerProfile.findOne({ user: userId });
+
+    return res.status(200).json(
+        new ApiResponse(200, { user, organizerProfile: updatedOrganizerProfile }, 'Organizer profile updated successfully')
+    );
+});
+
 export {
     createFutsal,
     getFutsalsByOrganizer,
     updateFutsal,
     deleteFutsal,
     createTournament,
-    getOrganizerProfile
+    getOrganizerProfile,
+    updateOrganizerProfile
 };
