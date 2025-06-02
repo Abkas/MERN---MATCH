@@ -109,12 +109,12 @@ const BookFutsal = () => {
         {/* Main Content */}
         <main className={styles.main}>
           <section className={styles.hero}>
-            <div className={styles.container}>
-              <h1>Find Players & Book</h1>
-              <h1>Your Futsal Game!</h1>
+            <div className={styles.heroContent}>
+              <h1 className={styles.heroTitle}>Find Players & Book</h1>
+              <h1 className={styles.heroTitle}>Your Futsal Game!</h1>
               <p className={styles.subtitle}>Join an existing match or create your own—easy & hassle-free</p>
               
-              <div className={styles.searchContainer}>
+              <div className={styles.searchBarWrapper}>
                 <form onSubmit={handleSearch} className={styles.searchForm}>
                   <div className={styles.searchInput}>
                     <MapPin className={styles.searchIcon} />

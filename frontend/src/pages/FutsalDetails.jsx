@@ -476,30 +476,124 @@ const FutsalDetails = () => {
 
         {/* LOCATION SECTION */}
         <section className={styles.locationSection}>
-          <div className={styles.container} style={{ maxWidth: 900, margin: '0 auto', background: '#fff', borderRadius: 18, boxShadow: '0 4px 24px #2563eb11', padding: '2.5rem 2rem', marginBottom: 36, border: '1.5px solid #e3e8f0' }}>
-            <h2 style={{ fontWeight: 800, color: '#2563eb', marginBottom: 18 }}>Find Us:</h2>
-            <div className={styles.locationMap} style={{ display: 'flex', alignItems: 'center', gap: 24 }}>
-              {/* Blueprint/placeholder for map */}
-              <div style={{
-                width: 220,
-                height: 140,
-                borderRadius: 12,
-                border: '2px dashed #2563eb',
-                background: '#f1f5fb',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                color: '#2563eb',
-                fontWeight: 700,
-                fontSize: 18,
-                flexShrink: 0
-              }}>
-                <span style={{ opacity: 0.5 }}>Map will appear here</span>
-              </div>
-              <div className={styles.mapMarker} style={{ color: '#2563eb', fontWeight: 700, fontSize: 18, display: 'flex', alignItems: 'center', gap: 8 }}>
-                <i className="fas fa-map-marker-alt"></i>
-                <span>{futsalData.location}</span>
-              </div>
+          <div className={styles.container} style={{ maxWidth: 900, margin: '0 auto', background: '#fff', borderRadius: 18, boxShadow: '0 4px 24px #2563eb11', padding: '2.5rem 2rem', marginBottom: 36, border: '1.5px solid #e3e8f0', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+            <h2 style={{ fontWeight: 800, color: '#2563eb', marginBottom: 18, textAlign: 'center', width: '100%' }}>Find Us:</h2>
+            <div className={styles.locationMap} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 24, width: '100%' }}>
+              {(() => {
+                let mapLinkRaw = (futsalData.mapImage || '').trim();
+                // If user pasted full <iframe ...> tag, extract src
+                let mapLink = mapLinkRaw;
+                const iframeMatch = mapLinkRaw.match(/<iframe[^>]*src=["']([^"']+)["']/i);
+                if (iframeMatch) {
+                  mapLink = iframeMatch[1];
+                }
+                // Try to extract coordinates from the embed or link
+                let lat = null, lng = null;
+                const pbCoordMatch = mapLink.match(/!3d([\d.\-]+)!4d([\d.\-]+)/);
+                if (pbCoordMatch) {
+                  lat = pbCoordMatch[1];
+                  lng = pbCoordMatch[2];
+                } else {
+                  const qMatch = mapLink.match(/[?&]q=([\d.\-]+),([\d.\-]+)/);
+                  if (qMatch) {
+                    lat = qMatch[1];
+                    lng = qMatch[2];
+                  } else {
+                    const atMatch = mapLink.match(/@([\d.\-]+),([\d.\-]+)/);
+                    if (atMatch) {
+                      lat = atMatch[1];
+                      lng = atMatch[2];
+                    }
+                  }
+                }
+                // Map rendering logic (no locationName display)
+                return (
+                  <div style={{ width: '100%' }}>
+                    {/* Map rendering logic below (unchanged, no locationName) */}
+                    {(() => {
+                      if (lat && lng) {
+                        const apiKey = 'YOUR_GOOGLE_MAPS_API_KEY';
+                        const staticMap = `https://maps.googleapis.com/maps/api/staticmap?center=${lat},${lng}&zoom=16&size=600x300&markers=color:red%7Clabel:F%7C${lat},${lng}&key=${apiKey}`;
+                        const markerEmbed = `https://www.google.com/maps?q=${lat},${lng}&z=16&output=embed`;
+                        if (apiKey && apiKey !== 'YOUR_GOOGLE_MAPS_API_KEY') {
+                          return (
+                            <img src={staticMap} alt="Futsal Location" style={{ width: 600, height: 300, borderRadius: 16, boxShadow: '0 2px 12px #2563eb22', margin: '0 auto', display: 'block' }} />
+                          );
+                        } else {
+                          return (
+                            <iframe
+                              src={markerEmbed}
+                              width="600"
+                              height="300"
+                              style={{ border: 0, borderRadius: 16, boxShadow: '0 2px 12px #2563eb22', display: 'block', margin: '0 auto' }}
+                              allowFullScreen=""
+                              loading="lazy"
+                              referrerPolicy="no-referrer-when-downgrade"
+                              title="Futsal Map with Marker"
+                            ></iframe>
+                          );
+                        }
+                      }
+                      const isEmbed = mapLink.startsWith('https://') && mapLink.includes('/maps/embed');
+                      const isGoogleMaps = mapLink.startsWith('https://') && mapLink.includes('google.com/maps');
+                      if (!mapLink || mapLink === '/default-map.png') {
+                        return (
+                          <div style={{ color: 'orange', fontWeight: 700, fontSize: 16, textAlign: 'center', width: '100%' }}>
+                            No map link provided. Please update the futsal profile with a Google Maps link.
+                          </div>
+                        );
+                      }
+                      if (isEmbed) {
+                        return (
+                          <iframe
+                            src={mapLink}
+                            width="400"
+                            height="260"
+                            style={{ border: 0, borderRadius: 16, boxShadow: '0 2px 12px #2563eb22', display: 'block', margin: '0 auto' }}
+                            allowFullScreen=""
+                            loading="lazy"
+                            referrerPolicy="no-referrer-when-downgrade"
+                            title="Futsal Map"
+                          ></iframe>
+                        );
+                      } else if (isGoogleMaps) {
+                        return (
+                          <a
+                            href={mapLink}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            style={{ color: '#2563eb', fontWeight: 600, textDecoration: 'underline', fontSize: 18, display: 'block', textAlign: 'center', width: '100%' }}
+                            onClick={e => { e.stopPropagation(); }}
+                          >
+                            View on Google Maps
+                          </a>
+                        );
+                      } else {
+                        return (
+                          <div style={{
+                            width: 400,
+                            height: 260,
+                            borderRadius: 16,
+                            border: '2px dashed #2563eb',
+                            background: '#f1f5fb',
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            color: '#2563eb',
+                            fontWeight: 700,
+                            fontSize: 20,
+                            flexShrink: 0,
+                            margin: '0 auto',
+                            textAlign: 'center'
+                          }}>
+                            <span style={{ opacity: 0.5 }}>Map will appear here</span>
+                          </div>
+                        );
+                      }
+                    })()}
+                  </div>
+                );
+              })()}
             </div>
           </div>
         </section>

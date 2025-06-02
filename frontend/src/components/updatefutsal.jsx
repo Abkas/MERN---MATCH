@@ -378,7 +378,7 @@ const UpdateFutsal = () => {
             <div className={styles.formSection}>
               <h2>Location Map</h2>
               <div className={styles.formGroup}>
-                <label htmlFor="mapLink">Google Maps Embed Link</label>
+                <label htmlFor="mapLink">Google Maps Link</label>
                 <div className={styles.iconInput}>
                   <Map size={16} />
                   <input 
@@ -387,12 +387,21 @@ const UpdateFutsal = () => {
                     name="mapLink" 
                     value={formData.mapLink} 
                     onChange={handleInputChange} 
-                    placeholder="Paste your Google Maps embed link here"
+                    placeholder="Paste your Google Maps link here (get it from Share > Copy Link)"
                   />
+                  <a
+                    href="https://www.google.com/maps"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className={styles.mapSelectBtn}
+                    style={{ marginLeft: 12, color: '#2563eb', fontWeight: 600, textDecoration: 'underline', fontSize: 14 }}
+                  >
+                    Select on Map
+                  </a>
                 </div>
                 <p className={styles.fieldNote}>
                   <AlertCircle size={16} />
-                  To get the embed link, go to Google Maps, find your location, click Share, and select "Embed a map"
+                  Open Google Maps, find your futsal, click Share, and copy the link. Paste it here.
                 </p>
               </div>
             </div>

@@ -89,4 +89,4 @@ const FutsalCard = ({ futsal }) => {
   );
 };
 
-export default FutsalCard; 
+export default FutsalCard;
