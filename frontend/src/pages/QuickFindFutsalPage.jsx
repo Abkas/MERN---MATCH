@@ -36,6 +36,19 @@ const QuickFindFutsalPage = () => {
   // Cache for slots data
   const [slotCache, setSlotCache] = useState({}); // { [futsalId]: Slot[] }
 
+  // State to toggle availability filter
+  const [availableOnly, setAvailableOnly] = useState(true);
+
+  // Independent toggles for each filter
+  const [distanceFilterActive, setDistanceFilterActive] = useState(true);
+  const [priceFilterActive, setPriceFilterActive] = useState(true);
+  const [seatsFilterActive, setSeatsFilterActive] = useState(true);
+
+  // State to toggle each filter independently
+  const [distanceActive, setDistanceActive] = useState(true);
+  const [priceActive, setPriceActive] = useState(true);
+  const [seatsActive, setSeatsActive] = useState(false);
+
   // Helper for label values
   const distanceLabels = ['1km', '3km', '5km', '10+km'];
   const priceLabels = ['Rs100', 'Rs150', 'Rs200', 'Rs250+'];
@@ -123,12 +136,19 @@ const QuickFindFutsalPage = () => {
   const handleFindNow = async () => {
     setFiltering(true);
     setFilterActive(true);
-    const minPrice = 0; // You can add a min price slider if needed
+    // If all toggles are off, show all futsals (no filtering)
+    if (!priceActive && !distanceActive && !seatsActive) {
+      setFilteredFutsals(futsals.map(futsal => ({ ...futsal, slots: undefined })));
+      setFiltering(false);
+      return;
+    }
+    const minPrice = 0;
     const maxPrice = getMaxPrice(price);
-    const availableOnly = true; // You can add a toggle if needed
-    const today = new Date().toISOString().slice(0, 10); // YYYY-MM-DD
-
-    // For each futsal, fetch slots for today if not cached
+    const today = new Date().toISOString().slice(0, 10);
+    const seatsValue = (() => {
+      const idx = Math.round((seats / 100) * (seatsLabels.length - 1));
+      return parseInt(seatsLabels[idx], 10);
+    })();
     const futsalWithSlots = await Promise.all(
       futsals.map(async (futsal) => {
         let slots = slotCache[futsal._id];
@@ -136,25 +156,27 @@ const QuickFindFutsalPage = () => {
           slots = await fetchSlotsForFutsal(futsal._id, today);
           setSlotCache((prev) => ({ ...prev, [futsal._id]: slots }));
         }
-        if (slots.length > 0) {
-          console.log('Sample slot for', futsal.name, ':', slots[0]);
-        }
-        // Filter slots by criteria
+        // Filter slots by active filters
         const matchingSlots = slots.filter(slot => {
-          const priceOk = slot.price >= minPrice && slot.price <= maxPrice;
-          const availOk = availableOnly ? slot.status === 'available' : true;
-          return priceOk && availOk;
+          let ok = true;
+          if (priceActive) {
+            ok = ok && slot.price >= minPrice && slot.price <= maxPrice;
+          }
+          if (distanceActive) {
+            // TODO: Add distance filter logic if futsal has distance property
+          }
+          if (seatsActive) {
+            ok = ok && (slot.seats ? slot.seats >= seatsValue : true);
+          }
+          return ok;
         });
-        console.log('Futsal:', futsal.name, 'All slots:', slots, 'Matching slots:', matchingSlots);
         if (matchingSlots.length > 0) {
           return { ...futsal, slots: matchingSlots };
         }
         return null;
       })
     );
-    // Only futsals with at least one matching slot
     const filtered = futsalWithSlots.filter(Boolean);
-    console.log('Filtered futsals:', filtered.map(f => f && f.name));
     setFilteredFutsals(filtered);
     setFiltering(false);
   };
@@ -268,36 +290,115 @@ const QuickFindFutsalPage = () => {
           <div className={styles.filters}>
             <h2>Quick Filters</h2>
             <div className={styles.filterSliders}>
-              <div className={styles.filterGroup}>
+              {/* Distance Filter Group */}
+              <div className={styles.filterGroup} style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+                <div
+                  onClick={() => setDistanceActive((prev) => !prev)}
+                  style={{
+                    width: 18,
+                    height: 18,
+                    borderRadius: 4,
+                    background: distanceActive ? '#2ecc40' : '#bbb',
+                    marginRight: 8,
+                    cursor: 'pointer',
+                    border: '1px solid #888',
+                    transition: 'background 0.2s',
+                  }}
+                  title="Toggle distance filter"
+                ></div>
                 <label>Distance: <span className={styles.filterValue}>{getCurrentLabel(distanceLabels, distance)}</span></label>
                 <div className={styles.sliderContainer}>
                   <div className={styles.sliderTrack}>
                     <div className={styles.sliderFill} style={{ width: `${distance}%` }}></div>
-                    <input type="range" min="0" max="100" value={distance} onChange={e => setDistance(Number(e.target.value))} className={styles.slider} />
+                    <input
+                      type="range"
+                      min="0"
+                      max="100"
+                      value={distance}
+                      onChange={e => setDistance(Number(e.target.value))}
+                      className={styles.slider}
+                      style={{
+                        accentColor: distanceActive ? '#007bff' : '#bbb',
+                        // fallback for browsers not supporting accentColor
+                        background: distanceActive ? undefined : '#eee',
+                      }}
+                    />
                   </div>
                   <div className={styles.sliderLabels}>
                     {distanceLabels.map(label => <span key={label}>{label}</span>)}
                   </div>
                 </div>
               </div>
-              <div className={styles.filterGroup}>
+              {/* Price Filter Group */}
+              <div className={styles.filterGroup} style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+                <div
+                  onClick={() => setPriceActive((prev) => !prev)}
+                  style={{
+                    width: 18,
+                    height: 18,
+                    borderRadius: 4,
+                    background: priceActive ? '#2ecc40' : '#bbb',
+                    marginRight: 8,
+                    cursor: 'pointer',
+                    border: '1px solid #888',
+                    transition: 'background 0.2s',
+                  }}
+                  title="Toggle price filter"
+                ></div>
                 <label>Price: <span className={styles.filterValue}>{getCurrentLabel(priceLabels, price)}</span></label>
                 <div className={styles.sliderContainer}>
                   <div className={styles.sliderTrack}>
                     <div className={styles.sliderFill} style={{ width: `${price}%` }}></div>
-                    <input type="range" min="0" max="100" value={price} onChange={e => setPrice(Number(e.target.value))} className={styles.slider} />
+                    <input
+                      type="range"
+                      min="0"
+                      max="100"
+                      value={price}
+                      onChange={e => setPrice(Number(e.target.value))}
+                      className={styles.slider}
+                      style={{
+                        accentColor: priceActive ? '#007bff' : '#bbb',
+                        background: priceActive ? undefined : '#eee',
+                      }}
+                    />
                   </div>
                   <div className={styles.sliderLabels}>
                     {priceLabels.map(label => <span key={label}>{label}</span>)}
                   </div>
                 </div>
               </div>
-              <div className={styles.filterGroup}>
+              {/* Seats Filter Group */}
+              <div className={styles.filterGroup} style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+                <div
+                  onClick={() => setSeatsActive((prev) => !prev)}
+                  style={{
+                    width: 18,
+                    height: 18,
+                    borderRadius: 4,
+                    background: seatsActive ? '#2ecc40' : '#bbb',
+                    marginRight: 8,
+                    cursor: 'pointer',
+                    border: '1px solid #888',
+                    transition: 'background 0.2s',
+                  }}
+                  title="Toggle seats filter"
+                ></div>
                 <label>Seats Needed: <span className={styles.filterValue}>{getCurrentLabel(seatsLabels, seats)}</span></label>
                 <div className={styles.sliderContainer}>
                   <div className={styles.sliderTrack}>
                     <div className={styles.sliderFill} style={{ width: `${seats}%` }}></div>
-                    <input type="range" min="0" max="100" value={seats} onChange={e => setSeats(Number(e.target.value))} className={styles.slider} />
+                    <input
+                      type="range"
+                      min="0"
+                      max="100"
+                      value={seats}
+                      onChange={e => setSeats(Number(e.target.value))}
+                      className={styles.slider}
+                      style={{
+                        accentColor: seatsActive ? '#007bff' : '#bbb',
+                        background: seatsActive ? undefined : '#eee',
+                      }}
+                    />
                   </div>
                   <div className={styles.sliderLabels}>
                     {seatsLabels.map(label => <span key={label}>{label}</span>)}
