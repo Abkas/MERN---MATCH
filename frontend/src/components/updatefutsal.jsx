@@ -22,6 +22,68 @@ import styles from "../pages/css/UpdateFutsalProfile.module.css";
 import { useAuthStore } from "../store/useAuthStore";
 import { toast } from "react-hot-toast";
 
+// Utility to extract map data from a Google Maps link
+function extractMapData(mapLink) {
+  let lat = null, lng = null, placeName = '', placeId = '';
+  // 1. /@lat,lng
+  const atMatch = mapLink.match(/@([\d.\-]+),([\d.\-]+)/);
+  if (atMatch) {
+    lat = atMatch[1];
+    lng = atMatch[2];
+  } else {
+    // 2. ?q=lat,lng or &q=lat,lng
+    const qMatch = mapLink.match(/[?&]q=([\d.\-]+),([\d.\-]+)/);
+    if (qMatch) {
+      lat = qMatch[1];
+      lng = qMatch[2];
+    } else {
+      // 3. /place/.../lat,lng or /dir/.../lat,lng
+      const placeDirMatch = mapLink.match(/\/((place|dir|search)[^\/]*)\/([\d.\-]+),([\d.\-]+)/);
+      if (placeDirMatch) {
+        lat = placeDirMatch[3];
+        lng = placeDirMatch[4];
+      } else {
+        // 4. /maps?q=lat,lng
+        const mapsQMatch = mapLink.match(/maps\?q=([\d.\-]+),([\d.\-]+)/);
+        if (mapsQMatch) {
+          lat = mapsQMatch[1];
+          lng = mapsQMatch[2];
+        } else {
+          // 5. /maps/search/?api=1&query=lat,lng
+          const apiQueryMatch = mapLink.match(/query=([\d.\-]+),([\d.\-]+)/);
+          if (apiQueryMatch) {
+            lat = apiQueryMatch[1];
+            lng = apiQueryMatch[2];
+          } else {
+            // 6. !3dlat!4dlng (embed links)
+            const pbCoordMatch = mapLink.match(/!3d([\d.\-]+)!4d([\d.\-]+)/);
+            if (pbCoordMatch) {
+              lat = pbCoordMatch[1];
+              lng = pbCoordMatch[2];
+            }
+          }
+        }
+      }
+    }
+  }
+  // Place name (if present)
+  const placeMatch = mapLink.match(/\/place\/([^/]+)/);
+  if (placeMatch) {
+    placeName = decodeURIComponent(placeMatch[1].replace(/\+/g, ' '));
+  }
+  // Place ID (if present)
+  const placeIdMatch = mapLink.match(/[?&]place_id=([^&]+)/);
+  if (placeIdMatch) {
+    placeId = placeIdMatch[1];
+  }
+  return {
+    latitude: lat ? Number(lat) : undefined,
+    longitude: lng ? Number(lng) : undefined,
+    placeName,
+    placeId
+  };
+}
+
 const UpdateFutsal = () => {
   const navigate = useNavigate();
   const location = useLocation();
@@ -123,7 +185,14 @@ const UpdateFutsal = () => {
       };
       delete submitData.openingHoursFrom;
       delete submitData.openingHoursTo;
-
+      // Extract map data and add to submitData
+      if (formData.mapLink) {
+        const mapData = extractMapData(formData.mapLink);
+        submitData.latitude = mapData.latitude;
+        submitData.longitude = mapData.longitude;
+        submitData.placeName = mapData.placeName;
+        submitData.placeId = mapData.placeId;
+      }
       if (isCreating) {
         await createFutsal(submitData);
         toast.success('Futsal created successfully');

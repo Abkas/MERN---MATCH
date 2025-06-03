@@ -17,7 +17,7 @@ const createFutsal = asyncHandler(async (req, res) => {
 
         const userFields = ['phoneNumber'];
         const organizerFields = ['bio',  'isVerified'];
-        const futsalFields = ['name', 'location', 'description', 'ownerDescription', 'ownerName', 'openingHours','futsalPhoto', 'gamesOrganized', 'plusPoints', 'mapLink'];
+        const futsalFields = ['name', 'location', 'description', 'ownerDescription', 'ownerName', 'openingHours','futsalPhoto', 'gamesOrganized', 'plusPoints', 'mapLink', 'latitude', 'longitude', 'placeName', 'placeId'];
 
         const userUpdates = {};
         const organizerUpdates = {};
@@ -118,10 +118,16 @@ const getFutsalsByOrganizer = asyncHandler(async (req, res) => {
  const updateFutsal = asyncHandler(async (req, res) => {
     const { id } = req.params
     const updates = req.body
+    // Only allow updating mapLink, latitude, longitude, placeName, placeId if provided
+    const allowedFields = ['name', 'location', 'description', 'ownerDescription', 'ownerName', 'openingHours','futsalPhoto', 'gamesOrganized', 'plusPoints', 'mapLink', 'latitude', 'longitude', 'placeName', 'placeId', 'price', 'rating', 'images', 'isAwarded', 'isNewFutsal'];
+    const filteredUpdates = {};
+    Object.keys(updates).forEach(key => {
+        if (allowedFields.includes(key)) filteredUpdates[key] = updates[key];
+    });
 
     const updatedFutsal = await Futsal.findByIdAndUpdate(
         id,
-        { $set: updates },
+        { $set: filteredUpdates },
         { new: true }
     );
 

@@ -64,6 +64,18 @@ const FutsalSchema = new Schema({
     mapLink: {
         type: String 
     },
+    latitude: {
+        type: Number
+    },
+    longitude: {
+        type: Number
+    },
+    placeName: {
+        type: String
+    },
+    placeId: {
+        type: String
+    },
     futsalPhoto:{
         type: String
     },
