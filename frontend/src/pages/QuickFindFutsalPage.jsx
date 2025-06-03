@@ -45,8 +45,8 @@ const QuickFindFutsalPage = () => {
   const [seatsFilterActive, setSeatsFilterActive] = useState(true);
 
   // State to toggle each filter independently
-  const [distanceActive, setDistanceActive] = useState(true);
-  const [priceActive, setPriceActive] = useState(true);
+  const [distanceActive, setDistanceActive] = useState(false);
+  const [priceActive, setPriceActive] = useState(false);
   const [seatsActive, setSeatsActive] = useState(false);
 
   // Helper for label values
@@ -145,10 +145,6 @@ const QuickFindFutsalPage = () => {
     const minPrice = 0;
     const maxPrice = getMaxPrice(price);
     const today = new Date().toISOString().slice(0, 10);
-    const seatsValue = (() => {
-      const idx = Math.round((seats / 100) * (seatsLabels.length - 1));
-      return parseInt(seatsLabels[idx], 10);
-    })();
     const futsalWithSlots = await Promise.all(
       futsals.map(async (futsal) => {
         let slots = slotCache[futsal._id];
@@ -156,18 +152,13 @@ const QuickFindFutsalPage = () => {
           slots = await fetchSlotsForFutsal(futsal._id, today);
           setSlotCache((prev) => ({ ...prev, [futsal._id]: slots }));
         }
-        // Filter slots by active filters
+        // Filter slots by active filters (only price)
         const matchingSlots = slots.filter(slot => {
           let ok = true;
           if (priceActive) {
-            ok = ok && slot.price >= minPrice && slot.price <= maxPrice;
+            ok = ok && typeof slot.price === 'number' && slot.price >= minPrice && slot.price <= maxPrice;
           }
-          if (distanceActive) {
-            // TODO: Add distance filter logic if futsal has distance property
-          }
-          if (seatsActive) {
-            ok = ok && (slot.seats ? slot.seats >= seatsValue : true);
-          }
+          // (distanceActive logic can be added here if needed)
           return ok;
         });
         if (matchingSlots.length > 0) {
