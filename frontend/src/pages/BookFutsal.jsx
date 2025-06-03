@@ -123,8 +123,8 @@ const BookFutsal = () => {
               </div>
               
               <div className={styles.actionButtons}>
-                <button className={styles.btnFindTournament}>Find a Tournament</button>
-                <button className={styles.btnHostTournament}>Host a Tournament</button>
+                <button className={styles.btnFindTournament} onClick={() => navigate('/tournaments')} type="button">Find a Tournament</button>
+                <button className={styles.btnHostTournament} onClick={() => navigate('/tournaments')} type="button">Host a Tournament</button>
               </div>
             </div>
           </section>

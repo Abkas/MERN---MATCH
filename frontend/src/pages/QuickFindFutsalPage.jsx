@@ -1,8 +1,86 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import styles from './css/QuickFind.module.css'
+import FutsalCard from '../components/FutsalCard'
+import futsalService from '../services/futsalService'
+import QuickJoinSection from '../components/QuickJoinSection'
 
 const QuickFindFutsalPage = () => {
+  // State for filter values
+  const [distance, setDistance] = useState(25);
+  const [price, setPrice] = useState(50);
+  const [seats, setSeats] = useState(40);
+
+  // Futsal data state
+  const [futsals, setFutsals] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  // Search state
+  const [searchQuery, setSearchQuery] = useState("");
+  const [searchResults, setSearchResults] = useState([]);
+  const [showSuggestions, setShowSuggestions] = useState(false);
+
+  // Helper for label values
+  const distanceLabels = ['1km', '3km', '5km', '10+km'];
+  const priceLabels = ['Rs100', 'Rs150', 'Rs200', 'Rs250+'];
+  const seatsLabels = ['2', '4', '6', '8'];
+
+  // Get current label for each filter
+  const getCurrentLabel = (labels, value) => {
+    const idx = Math.round((value / 100) * (labels.length - 1));
+    return labels[idx];
+  };
+
+  useEffect(() => {
+    fetchFutsals();
+  }, []);
+
+  const fetchFutsals = async () => {
+    try {
+      setLoading(true);
+      const response = await futsalService.getAllFutsals();
+      if (response && Array.isArray(response.message)) {
+        setFutsals(response.message);
+      } else {
+        setFutsals([]);
+      }
+      setError(null);
+    } catch (err) {
+      setError('Failed to fetch futsals. Please try again later.');
+      setFutsals([]);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Search handler (filter futsals by name/location)
+  const handleSearchChange = (e) => {
+    const value = e.target.value;
+    setSearchQuery(value);
+    if (value.trim() === "") {
+      setSearchResults([]);
+      setShowSuggestions(false);
+      return;
+    }
+    const filtered = futsals.filter(futsal =>
+      (futsal.name && futsal.name.toLowerCase().includes(value.toLowerCase())) ||
+      (futsal.location && futsal.location.toLowerCase().includes(value.toLowerCase()))
+    );
+    setSearchResults(filtered);
+    setShowSuggestions(true);
+  };
+
+  const handleSuggestionClick = (futsalId) => {
+    window.location.href = `/futsal/${futsalId}`;
+  };
+
+  const handleClearSearch = () => {
+    setSearchQuery("");
+    setSearchResults([]);
+    setShowSuggestions(false);
+  };
+
   return (
     <div className={styles.body}>
         <nav>
@@ -29,14 +107,72 @@ const QuickFindFutsalPage = () => {
 
       <main>
         <section className={styles.searchSection}>
-          <div className={styles.searchBar}>
+          <div className={styles.searchBar} style={{ position: 'relative' }}>
             <div className={styles.searchInput}>
               <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                 <circle cx="11" cy="11" r="8"></circle>
                 <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
               </svg>
-              <input type="text" placeholder="Search Futsal" />
+              <input
+                type="text"
+                placeholder="Search Futsal"
+                value={searchQuery}
+                onChange={handleSearchChange}
+                onFocus={() => searchQuery && setShowSuggestions(true)}
+                autoComplete="off"
+              />
+              {searchQuery && searchResults.length === 0 && showSuggestions && (
+                <span
+                  style={{ color: '#e74c3c', fontWeight: 700, marginLeft: 8, cursor: 'pointer', fontSize: 18 }}
+                  onClick={handleClearSearch}
+                  title="Clear"
+                >&#10005;</span>
+              )}
             </div>
+            {/* Suggestions dropdown */}
+            {showSuggestions && searchQuery && (
+              <div style={{
+                position: 'absolute',
+                top: '110%',
+                left: 0,
+                right: 0,
+                background: '#fff',
+                border: '1px solid #e0e0e0',
+                borderRadius: 8,
+                boxShadow: '0 4px 16px #0001',
+                zIndex: 20,
+                maxHeight: 220,
+                overflowY: 'auto',
+                padding: '0.5rem 0',
+              }}>
+                {searchResults.length > 0 ? (
+                  searchResults.map(futsal => (
+                    <div
+                      key={futsal._id}
+                      style={{ padding: '10px 18px', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 10 }}
+                      onClick={() => handleSuggestionClick(futsal._id)}
+                    >
+                      <img src={futsal.futsalPhoto || '/default-futsal.jpg'} alt={futsal.name} style={{ width: 32, height: 32, borderRadius: 8, objectFit: 'cover', marginRight: 8 }} />
+                      <span style={{ fontWeight: 600 }}>{futsal.name}</span>
+                      {futsal.location && (
+                        <span style={{ color: '#888', fontSize: 13, marginLeft: 8 }}>{futsal.location}</span>
+                      )}
+                    </div>
+                  ))
+                ) : (
+                  searchQuery && (
+                    <div style={{ padding: '10px 18px', color: '#e74c3c', display: 'flex', alignItems: 'center', gap: 8 }}>
+                      <span>No match for "{searchQuery}"</span>
+                      <span
+                        style={{ fontWeight: 700, fontSize: 18, cursor: 'pointer' }}
+                        onClick={handleClearSearch}
+                        title="Clear"
+                      >&#10005;</span>
+                    </div>
+                  )
+                )}
+              </div>
+            )}
             <button className={styles.searchBtn}>Search</button>
           </div>
 
@@ -44,47 +180,38 @@ const QuickFindFutsalPage = () => {
             <h2>Quick Filters</h2>
             <div className={styles.filterSliders}>
               <div className={styles.filterGroup}>
-                <label>Distance:</label>
+                <label>Distance: <span className={styles.filterValue}>{getCurrentLabel(distanceLabels, distance)}</span></label>
                 <div className={styles.sliderContainer}>
                   <div className={styles.sliderTrack}>
-                    <div className={styles.sliderFill} style={{ width: '25%' }}></div>
-                    <input type="range" min="0" max="100" defaultValue="25" className={styles.slider} />
+                    <div className={styles.sliderFill} style={{ width: `${distance}%` }}></div>
+                    <input type="range" min="0" max="100" value={distance} onChange={e => setDistance(Number(e.target.value))} className={styles.slider} />
                   </div>
                   <div className={styles.sliderLabels}>
-                    <span>1km</span>
-                    <span>3km</span>
-                    <span>5km</span>
-                    <span>10+km</span>
+                    {distanceLabels.map(label => <span key={label}>{label}</span>)}
                   </div>
                 </div>
               </div>
               <div className={styles.filterGroup}>
-                <label>Price:</label>
+                <label>Price: <span className={styles.filterValue}>{getCurrentLabel(priceLabels, price)}</span></label>
                 <div className={styles.sliderContainer}>
                   <div className={styles.sliderTrack}>
-                    <div className={styles.sliderFill} style={{ width: '50%' }}></div>
-                    <input type="range" min="0" max="100" defaultValue="50" className={styles.slider} />
+                    <div className={styles.sliderFill} style={{ width: `${price}%` }}></div>
+                    <input type="range" min="0" max="100" value={price} onChange={e => setPrice(Number(e.target.value))} className={styles.slider} />
                   </div>
                   <div className={styles.sliderLabels}>
-                    <span>Rs100</span>
-                    <span>Rs150</span>
-                    <span>Rs200</span>
-                    <span>Rs250+</span>
+                    {priceLabels.map(label => <span key={label}>{label}</span>)}
                   </div>
                 </div>
               </div>
               <div className={styles.filterGroup}>
-                <label>Seats Needed:</label>
+                <label>Seats Needed: <span className={styles.filterValue}>{getCurrentLabel(seatsLabels, seats)}</span></label>
                 <div className={styles.sliderContainer}>
                   <div className={styles.sliderTrack}>
-                    <div className={styles.sliderFill} style={{ width: '40%' }}></div>
-                    <input type="range" min="0" max="100" defaultValue="40" className={styles.slider} />
+                    <div className={styles.sliderFill} style={{ width: `${seats}%` }}></div>
+                    <input type="range" min="0" max="100" value={seats} onChange={e => setSeats(Number(e.target.value))} className={styles.slider} />
                   </div>
                   <div className={styles.sliderLabels}>
-                    <span>2</span>
-                    <span>4</span>
-                    <span>6</span>
-                    <span>8</span>
+                    {seatsLabels.map(label => <span key={label}>{label}</span>)}
                   </div>
                 </div>
               </div>
@@ -95,224 +222,39 @@ const QuickFindFutsalPage = () => {
 
         <section className={styles.availableFutsal}>
           <h2>Available Futsal</h2>
-          <div className={styles.filterOptions}>
+          <div className={styles.filterOptions} style={{ marginBottom: '16px' }}>
             <div className={styles.filterDropdown}>
-              <button className={styles.dropdownBtn}>
-                Date & Time
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                  <polyline points="6 9 12 15 18 9"></polyline>
-                </svg>
-              </button>
+              <button className={styles.dropdownBtn}>Date & Time</button>
             </div>
             <div className={styles.filterDropdown}>
-              <button className={styles.dropdownBtn}>
-                Entry Fee
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                  <polyline points="6 9 12 15 18 9"></polyline>
-                </svg>
-              </button>
+              <button className={styles.dropdownBtn}>Entry Fee</button>
             </div>
-            <div className={`${styles.filterDropdown} ${styles.active}`}>
-              <button className={styles.dropdownBtn}>
-                Location
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                  <polyline points="6 9 12 15 18 9"></polyline>
-                </svg>
-              </button>
+            <div className={styles.filterDropdown}>
+              <button className={styles.dropdownBtn}>Location</button>
             </div>
-            <div className={`${styles.filterDropdown} ${styles.active}`}>
-              <button className={styles.dropdownBtn}>
-                Players Needed
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                  <polyline points="6 9 12 15 18 9"></polyline>
-                </svg>
-              </button>
+            <div className={styles.filterDropdown}>
+              <button className={styles.dropdownBtn}>Players Needed</button>
             </div>
           </div>
-          <div className={styles.futsalVenue}>
-            <div className={styles.venueHeader}>
-              <button className={styles.venueName}>
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                  <polygon points="5 3 19 12 5 21 5 3"></polygon>
-                </svg>
-                Dhanakw Futsal , Chabill
-              </button>
-              <div className={styles.venueInfo}>
-                <span className={styles.gamesPending}>3 Games Pending</span>
-                <span className={styles.priceInfo}>Nrs: 300 (Per Person)</span>
-                <span className={styles.nextGame}>Next Game: 30 Mins</span>
-              </div>
-            </div>
-            <div className={styles.dateNavigation}>
-              <button className={styles.prevDate}>
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                  <polyline points="15 18 9 12 15 6"></polyline>
-                </svg>
-              </button>
-              <span>Date: 27th March</span>
-              <button className={styles.nextDate}>
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                  <polyline points="9 18 15 12 9 6"></polyline>
-                </svg>
-              </button>
-            </div>
-            <div className={styles.timeSlots}>
-              <table>
-                <thead>
-                  <tr>
-                    <th>Time</th>
-                    <th>Players</th>
-                    <th>Price(Per person)</th>
-                    <th>Team</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td>12:00 - 13:00</td>
-                    <td className={styles.playersCircles}>
-                      <span className={`${styles.playerCircle} ${styles.filled}`}></span>
-                      <span className={`${styles.playerCircle} ${styles.filled}`}></span>
-                      <span className={`${styles.playerCircle} ${styles.filled}`}></span>
-                      <span className={`${styles.playerCircle} ${styles.filled}`}></span>
-                      <span className={`${styles.playerCircle} ${styles.filled}`}></span>
-                      <span className={`${styles.playerCircle} ${styles.filled}`}></span>
-                      <span className={`${styles.playerCircle} ${styles.filled}`}></span>
-                      <span className={`${styles.playerCircle} ${styles.filled}`}></span>
-                      <span className={styles.playerCircle}></span>
-                      <span className={styles.playerCircle}></span>
-                    </td>
-                    <td className={styles.price}>Rs 200</td>
-                    <td className={styles.team}>
-                      <button className={styles.joinNowBtn}>Join Now</button>
-                      <div className={styles.teamInfo}>
-                        <span className={styles.teamCaptain}>S</span>
-                        <span className={styles.teamName}>Smith Ray</span>
-                        <span className={styles.teamMembers}>+5 others</span>
-                      </div>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td>13:00 - 14:00</td>
-                    <td className={styles.playersCircles}>
-                      <span className={`${styles.playerCircle} ${styles.filled}`}></span>
-                      <span className={`${styles.playerCircle} ${styles.filled}`}></span>
-                      <span className={`${styles.playerCircle} ${styles.filled}`}></span>
-                      <span className={`${styles.playerCircle} ${styles.filled}`}></span>
-                      <span className={`${styles.playerCircle} ${styles.filled}`}></span>
-                      <span className={`${styles.playerCircle} ${styles.filled}`}></span>
-                      <span className={`${styles.playerCircle} ${styles.filled}`}></span>
-                      <span className={`${styles.playerCircle} ${styles.filled}`}></span>
-                      <span className={`${styles.playerCircle} ${styles.filled}`}></span>
-                      <span className={styles.playerCircle}></span>
-                    </td>
-                    <td className={styles.price}>Rs 150</td>
-                    <td className={styles.team}>
-                      <button className={styles.joinNowBtn}>Join Now</button>
-                      <div className={styles.teamInfo}>
-                        <span className={`${styles.teamCaptain} ${styles.pink}`}>H</span>
-                        <span className={styles.teamName}>Hade Ray</span>
-                        <span className={styles.teamMembers}>+6 others</span>
-                      </div>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td>15:00 - 16:00</td>
-                    <td className={styles.playersCircles}>
-                      <span className={`${styles.playerCircle} ${styles.filled}`}></span>
-                      <span className={`${styles.playerCircle} ${styles.filled}`}></span>
-                      <span className={`${styles.playerCircle} ${styles.filled}`}></span>
-                      <span className={`${styles.playerCircle} ${styles.filled}`}></span>
-                      <span className={styles.playerCircle}></span>
-                      <span className={styles.playerCircle}></span>
-                      <span className={styles.playerCircle}></span>
-                      <span className={styles.playerCircle}></span>
-                      <span className={styles.playerCircle}></span>
-                      <span className={styles.playerCircle}></span>
-                    </td>
-                    <td className={styles.price}>Rs 200</td>
-                    <td className={styles.team}>
-                      <button className={styles.joinNowBtn}>Join Now</button>
-                      <div className={styles.teamInfo}>
-                        <span className={`${styles.teamCaptain} ${styles.blue}`}>A</span>
-                        <span className={styles.teamName}>Hade Ray</span>
-                        <span className={styles.teamMembers}>+1 others</span>
-                      </div>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td></td>
-                    <td className={styles.playersCircles}>
-                      <span className={`${styles.playerCircle} ${styles.filled}`}></span>
-                      <span className={`${styles.playerCircle} ${styles.filled}`}></span>
-                      <span className={`${styles.playerCircle} ${styles.filled}`}></span>
-                      <span className={`${styles.playerCircle} ${styles.filled}`}></span>
-                      <span className={`${styles.playerCircle} ${styles.filled}`}></span>
-                      <span className={`${styles.playerCircle} ${styles.filled}`}></span>
-                      <span className={`${styles.playerCircle} ${styles.filled}`}></span>
-                      <span className={styles.playerCircle}></span>
-                      <span className={styles.playerCircle}></span>
-                      <span className={styles.playerCircle}></span>
-                    </td>
-                    <td className={styles.price}>Rs 200</td>
-                    <td className={styles.team}>
-                      <button className={styles.joinNowBtn}>Join Now</button>
-                      <div className={styles.teamInfo}>
-                        <span className={`${styles.teamCaptain} ${styles.pink}`}>B</span>
-                        <span className={styles.teamName}>Hade Ray</span>
-                        <span className={styles.teamMembers}>+4 others</span>
-                      </div>
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
-          <div className={styles.futsalVenueList}>
-            <div className={styles.venueItem}>
-              <button className={styles.venueName}>
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                  <polygon points="5 3 19 12 5 21 5 3"></polygon>
-                </svg>
-                SamaKhosi Futsal, Nagarkot
-              </button>
-              <div className={styles.venueInfo}>
-                <span className={styles.gamesPending}>5 Games Pending</span>
-                <span className={styles.priceInfo}>Nrs: 300 (Per Person)</span>
-                <span className={styles.nextGame}>Next Game: 10 Min</span>
-              </div>
-            </div>
-            <div className={styles.venueItem}>
-              <button className={styles.venueName}>
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                  <polygon points="5 3 19 12 5 21 5 3"></polygon>
-                </svg>
-                Harei Futsal, Thimi
-              </button>
-              <div className={styles.venueInfo}>
-                <span className={styles.gamesPending}>5 Games Pending</span>
-                <span className={styles.priceInfo}>Nrs: 300 (Per Person)</span>
-                <span className={styles.nextGame}>Next Game: 1 Hr</span>
-              </div>
-            </div>
-            <div className={styles.venueItem}>
-              <button className={styles.venueName}>
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                  <polygon points="5 3 19 12 5 21 5 3"></polygon>
-                </svg>
-                Golden Futsal, Lalitpur
-              </button>
-              <div className={styles.venueInfo}>
-                <span className={styles.gamesPending}>5 Games Pending</span>
-                <span className={styles.priceInfo}>Nrs: 300 (Per Person)</span>
-                <span className={styles.nextGame}>Next Game:2 Hr</span>
-              </div>
-            </div>
+          {/* Render the QuickJoinSection for each futsal, just like BookFutsal */}
+          <div className={styles.venueList}>
+            {loading ? (
+              <div style={{ padding: '2rem', textAlign: 'center' }}>Loading futsals...</div>
+            ) : error ? (
+              <div style={{ color: 'red', padding: '2rem', textAlign: 'center' }}>{error}</div>
+            ) : futsals.length === 0 ? (
+              <div style={{ padding: '2rem', textAlign: 'center' }}>No futsals found</div>
+            ) : (
+              futsals.map(futsal => (
+                <QuickJoinSection key={futsal._id} futsal={futsal} />
+              ))
+            )}
           </div>
         </section>
 
-        <section className={styles.registerMatch}>
-          <h2>Register for a Match</h2>
-          <div className={styles.registerForm}>
+        <section className={styles.registerMatch + ' ' + styles.disabledSection}>
+          <h2 style={{ color: '#aaa' }}>Register for a Match <span className={styles.comingSoonBadge}>Coming Soon</span></h2>
+          <div className={styles.registerForm} style={{ opacity: 0.5, pointerEvents: 'none' }}>
             <div className={styles.formGroup}>
               <label>Suitable Futsal's:</label>
               <div className={styles.selectedVenues}>
