@@ -27,23 +27,27 @@ const TournamentPage = () => {
                 </div>
               </nav>
 
-      <section className={styles.hero}>
-        <div className={styles.heroContent}>
-          <h1>Compete & Conquer: Join Exciting Tournaments!</h1>
+      <section className={styles.hero} style={{ opacity: 0.6, filter: 'grayscale(0.7)', pointerEvents: 'none', background: '#f3f4f8', display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: '220px', position: 'relative' }}>
+        <div className={styles.heroContent} style={{ textAlign: 'center', width: '100%' }}>
+          <h1 style={{ color: '#888', fontWeight: 700, textAlign: 'center', margin: '0 auto' }}>Compete & Conquer: Join Exciting Tournaments!</h1>
           <div className={styles.searchContainer}>
-            <input type="text" placeholder="Search exciting games" />
-            <button className={styles.filterBtn}>Filter</button>
+            <input type="text" placeholder="Search exciting games" disabled style={{ background: '#eee', color: '#aaa', cursor: 'not-allowed' }} />
+            <button className={styles.filterBtn} disabled style={{ background: '#ccc', color: '#888', cursor: 'not-allowed' }}>Filter</button>
           </div>
           <div className={styles.actionButtons}>
-            <button className={styles.findBtn}>Find a Tournament</button>
-            <button className={styles.hostBtn}>Host a Tournament</button>
+            <button className={styles.findBtn} disabled style={{ background: '#ccc', color: '#888', cursor: 'not-allowed' }}>Find a Tournament</button>
+            <button className={styles.hostBtn} disabled style={{ background: '#ccc', color: '#888', cursor: 'not-allowed' }}>Host a Tournament</button>
           </div>
+        </div>
+        {/* Coming Soon Badge */}
+        <div className={styles.comingSoonBadge}>
+          🚧 Coming Soon 🚧
         </div>
         {/* <div className={styles.heroImage}><img src="/tournaments/football silhouette, soccer silhouette….jpg" alt="" /></div> */}
       </section>
 
-      <section className={styles.tournamentsSection}>
-        <h2>#Near You</h2>
+      <section className={styles.tournamentsSection} style={{ opacity: 0.6, filter: 'grayscale(0.7)', pointerEvents: 'none', background: '#f3f4f8' }}>
+        <h2 style={{ color: '#888', textAlign: 'center', fontWeight: 700 }}>#Near You (Coming Soon)</h2>
         <div className={styles.tournamentCards}>
           {/* Card 1 */}
           <div className={styles.tournamentCard}>
@@ -128,13 +132,13 @@ const TournamentPage = () => {
           </div>
         </div>
         <div className={styles.seeMoreContainer}>
-          <button className={styles.seeMoreBtn}>See More</button>
+          <button className={styles.seeMoreBtn} style={{ background: '#ccc', color: '#888', cursor: 'not-allowed' }}>See More</button>
         </div>
       </section>
 
       {/* Stats Section */}
-      <section className={styles.statsSection}>
-        <h2>Loved by the world's best teams</h2>
+      <section className={styles.statsSection} style={{ opacity: 0.6, filter: 'grayscale(0.7)', pointerEvents: 'none', background: '#f3f4f8' }}>
+        <h2 style={{ color: '#888', textAlign: 'center', fontWeight: 700 }}>Loved by the world's best teams (Coming Soon)</h2>
         <div className={styles.statsContainer}>
           <div className={styles.statItem}>
             <h3>300+</h3>
@@ -152,8 +156,8 @@ const TournamentPage = () => {
       </section>
 
       {/* Popular Section */}
-      <section className={`${styles.tournamentsSection} ${styles.popularSection}`}>
-        <h2>#Popular</h2>
+      <section className={`${styles.tournamentsSection} ${styles.popularSection}`} style={{ opacity: 0.6, filter: 'grayscale(0.7)', pointerEvents: 'none', background: '#f3f4f8' }}>
+        <h2 style={{ color: '#888', textAlign: 'center', fontWeight: 700 }}>#Popular (Coming Soon)</h2>
         <div className={styles.tournamentCards}>
           {/* Card 1 */}
           <div className={styles.tournamentCard}>
@@ -238,13 +242,13 @@ const TournamentPage = () => {
           </div>
         </div>
         <div className={styles.seeMoreContainer}>
-          <button className={styles.seeMoreBtn}>See More</button>
+          <button className={styles.seeMoreBtn} style={{ background: '#ccc', color: '#888', cursor: 'not-allowed' }}>See More</button>
         </div>
       </section>
 
       {/* How to Join Section */}
-      <section className={styles.howToJoin}>
-        <h2>HOW TO JOIN AND COMPETE?</h2>
+      <section className={styles.howToJoin} style={{ opacity: 0.6, filter: 'grayscale(0.7)', pointerEvents: 'none', background: '#f3f4f8' }}>
+        <h2 style={{ color: '#888', textAlign: 'center', fontWeight: 700 }}>HOW TO JOIN AND COMPETE?</h2>
         <div className={styles.stepsContainer}>
           <div className={styles.step}>
             <div className={styles.stepIcon}>🔍</div>
