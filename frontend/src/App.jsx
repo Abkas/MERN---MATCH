@@ -60,14 +60,13 @@ const App = () => {
     <div>
         
       <Routes>
-        <Route path = '/'  element= {authUser? <HomePage />: <Navigate to='/login'/>} />
+        <Route path = '/'  element={<HomePage />} />
+        <Route path = '/about-us'  element={<AboutUsPage />} />
+        <Route path = '/how-it-works'  element={<HowItWorks />} />
         <Route path = '/signup'  element= { !authUser? <SignUpPage />: <Navigate to = '/'/>}/>
         <Route path = '/login'  element= {!authUser?<LogInPage />: <Navigate to = '/'/>} />
-        <Route path = '/about-us'  element= { authUser? <AboutUsPage />: <Navigate to='/login'/>} />
-        <Route path = '/how-it-works'  element= { authUser? <HowItWorks />:<Navigate to = 'login'/>} />
 
 
-        {/* <Route path = '/player-profile'  element= {authUser?<PProfilePage />: <Navigate to='/login'/>} /> */}
         <Route path = '/player-dashboard'  element= {authUser?<PDashboardPage />: <Navigate to='/login'/>} />
         <Route path = '/player-addfriend'  element= {authUser?<PAddFriend />: <Navigate to='/login'/>} />
         <Route path = '/player-history'  element= {authUser?<PHistoryPage />: <Navigate to='/login'/>} />
@@ -88,7 +87,7 @@ const App = () => {
         <Route path = '/organizer-slots' element= {authUser?<OSlotsPage />: <Navigate to='/login'/>} />
 
         <Route path = '/update-futsal' element= {authUser?<UpdateFutsal />: <Navigate to='/login'/>} />
-        <Route path="/profile" element={<Linkprofile />} />
+        <Route path="/profile" element={authUser ? <Linkprofile /> : <Navigate to="/login" />} />
         <Route path="/organizer-profile/:id" element={authUser ? <OrganizerProfile /> : <Navigate to="/login" />} />
         <Route path="/organizer-update-profile" element={authUser ? <OrganizerUpdateProfile /> : <Navigate to="/login" />} />
         <Route path="/player-profile/:id" element={authUser ? <PlayerProfile /> : <Navigate to="/login" />} />
