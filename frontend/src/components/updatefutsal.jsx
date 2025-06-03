@@ -191,7 +191,6 @@ const UpdateFutsal = () => {
         <div className={styles.sidebar}>
           {renderSection("basic", "Basic Information", <Info size={18} />)}
           {renderSection("about", "About Futsal", <Star size={18} />)}
-          {renderSection("owner", "Owner Information", <Users size={18} />)}
           {renderSection("facilities", "Facilities", <CheckSquare size={18} />)}
           {renderSection("map", "Location Map", <Map size={18} />)}
         </div>
@@ -293,51 +292,6 @@ const UpdateFutsal = () => {
                   placeholder="Describe your futsal, its features, and what makes it special..."
                 />
                 <p className={styles.fieldNote}>Provide a detailed description of your futsal to attract more customers</p>
-              </div>
-            </div>
-          )}
-
-          {activeSection === "owner" && (
-            <div className={styles.formSection}>
-              <h2>Owner Information</h2>
-              <div className={styles.formGroup}>
-                <label htmlFor="ownerName">Owner Name</label>
-                <input 
-                  type="text" 
-                  id="ownerName" 
-                  name="ownerName" 
-                  value={formData.ownerName} 
-                  onChange={handleInputChange} 
-                  required 
-                  placeholder="Enter owner's name"
-                />
-              </div>
-              <div className={styles.formGroup}>
-                <label htmlFor="ownerDescription">Owner Description</label>
-                <textarea 
-                  id="ownerDescription" 
-                  name="ownerDescription" 
-                  rows={4} 
-                  value={formData.ownerDescription} 
-                  onChange={handleInputChange} 
-                  required 
-                  placeholder="Tell us about yourself and your experience..."
-                />
-              </div>
-              <div className={styles.formGroup}>
-                <label htmlFor="phoneNumber">Contact Number</label>
-                <div className={styles.iconInput}>
-                  <Phone size={16} />
-                  <input 
-                    type="text" 
-                    id="phoneNumber" 
-                    name="phoneNumber" 
-                    value={formData.phoneNumber} 
-                    onChange={handleInputChange} 
-                    required 
-                    placeholder="Enter contact number"
-                  />
-                </div>
               </div>
             </div>
           )}

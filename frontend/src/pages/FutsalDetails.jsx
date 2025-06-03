@@ -487,52 +487,98 @@ const FutsalDetails = () => {
                 if (iframeMatch) {
                   mapLink = iframeMatch[1];
                 }
-                // Try to extract coordinates from the embed or link
+                // Robust coordinate extraction for all Google Maps link types
                 let lat = null, lng = null;
-                const pbCoordMatch = mapLink.match(/!3d([\d.\-]+)!4d([\d.\-]+)/);
-                if (pbCoordMatch) {
-                  lat = pbCoordMatch[1];
-                  lng = pbCoordMatch[2];
+                // Try to extract coordinates from all common Google Maps link formats
+                // 1. /@lat,lng
+                const atMatch = mapLink.match(/@([\d.\-]+),([\d.\-]+)/);
+                if (atMatch) {
+                  lat = atMatch[1];
+                  lng = atMatch[2];
                 } else {
+                  // 2. ?q=lat,lng or &q=lat,lng
                   const qMatch = mapLink.match(/[?&]q=([\d.\-]+),([\d.\-]+)/);
                   if (qMatch) {
                     lat = qMatch[1];
                     lng = qMatch[2];
                   } else {
-                    const atMatch = mapLink.match(/@([\d.\-]+),([\d.\-]+)/);
-                    if (atMatch) {
-                      lat = atMatch[1];
-                      lng = atMatch[2];
+                    // 3. /place/.../lat,lng or /dir/.../lat,lng
+                    const placeDirMatch = mapLink.match(/\/((place|dir|search)[^\/]*)\/([\d.\-]+),([\d.\-]+)/);
+                    if (placeDirMatch) {
+                      lat = placeDirMatch[3];
+                      lng = placeDirMatch[4];
+                    } else {
+                      // 4. /maps?q=lat,lng
+                      const mapsQMatch = mapLink.match(/maps\?q=([\d.\-]+),([\d.\-]+)/);
+                      if (mapsQMatch) {
+                        lat = mapsQMatch[1];
+                        lng = mapsQMatch[2];
+                      } else {
+                        // 5. /maps/search/?api=1&query=lat,lng
+                        const apiQueryMatch = mapLink.match(/query=([\d.\-]+),([\d.\-]+)/);
+                        if (apiQueryMatch) {
+                          lat = apiQueryMatch[1];
+                          lng = apiQueryMatch[2];
+                        } else {
+                          // 6. !3dlat!4dlng (embed links)
+                          const pbCoordMatch = mapLink.match(/!3d([\d.\-]+)!4d([\d.\-]+)/);
+                          if (pbCoordMatch) {
+                            lat = pbCoordMatch[1];
+                            lng = pbCoordMatch[2];
+                          }
+                        }
+                      }
                     }
                   }
                 }
-                // Map rendering logic (no locationName display)
+                // 5. If still not found, check for short URLs (goo.gl/maps or maps.app.goo.gl)
+                const isShortUrl = mapLink.match(/(goo\.gl\/maps|maps\.app\.goo\.gl)/);
+                // Map rendering logic with marker
                 return (
                   <div style={{ width: '100%' }}>
-                    {/* Map rendering logic below (unchanged, no locationName) */}
+                    {/* Map rendering logic below (with marker) */}
                     {(() => {
                       if (lat && lng) {
-                        const apiKey = 'YOUR_GOOGLE_MAPS_API_KEY';
-                        const staticMap = `https://maps.googleapis.com/maps/api/staticmap?center=${lat},${lng}&zoom=16&size=600x300&markers=color:red%7Clabel:F%7C${lat},${lng}&key=${apiKey}`;
+                        const apiKey = import.meta.env.VITE_GOOGLE_MAPS_API_KEY;
                         const markerEmbed = `https://www.google.com/maps?q=${lat},${lng}&z=16&output=embed`;
-                        if (apiKey && apiKey !== 'YOUR_GOOGLE_MAPS_API_KEY') {
-                          return (
-                            <img src={staticMap} alt="Futsal Location" style={{ width: 600, height: 300, borderRadius: 16, boxShadow: '0 2px 12px #2563eb22', margin: '0 auto', display: 'block' }} />
-                          );
-                        } else {
-                          return (
-                            <iframe
-                              src={markerEmbed}
-                              width="600"
-                              height="300"
-                              style={{ border: 0, borderRadius: 16, boxShadow: '0 2px 12px #2563eb22', display: 'block', margin: '0 auto' }}
-                              allowFullScreen=""
-                              loading="lazy"
-                              referrerPolicy="no-referrer-when-downgrade"
-                              title="Futsal Map with Marker"
-                            ></iframe>
-                          );
-                        }
+                        // Center the map and make it interactive, with a button to open in Google Maps
+                        return (
+                          <div style={{ width: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
+                            <div style={{ width: '100%', maxWidth: 600, minWidth: 320, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
+                              <iframe
+                                src={markerEmbed}
+                                width="100%"
+                                height="300"
+                                style={{ border: 0, borderRadius: 16, boxShadow: '0 2px 12px #2563eb22', display: 'block' }}
+                                allowFullScreen=""
+                                loading="lazy"
+                                referrerPolicy="no-referrer-when-downgrade"
+                                title="Futsal Map with Marker"
+                              ></iframe>
+                              <a
+                                href={`https://www.google.com/maps/search/?api=1&query=${lat},${lng}`}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                style={{
+                                  marginTop: 16,
+                                  background: '#2563eb',
+                                  color: '#fff',
+                                  padding: '10px 28px',
+                                  borderRadius: 8,
+                                  fontWeight: 700,
+                                  fontSize: 16,
+                                  textDecoration: 'none',
+                                  boxShadow: '0 2px 8px #2563eb22',
+                                  transition: 'background 0.2s',
+                                  display: 'inline-block',
+                                  textAlign: 'center'
+                                }}
+                              >
+                                Open in Google Maps
+                              </a>
+                            </div>
+                          </div>
+                        );
                       }
                       const isEmbed = mapLink.startsWith('https://') && mapLink.includes('/maps/embed');
                       const isGoogleMaps = mapLink.startsWith('https://') && mapLink.includes('google.com/maps');
@@ -540,6 +586,13 @@ const FutsalDetails = () => {
                         return (
                           <div style={{ color: 'orange', fontWeight: 700, fontSize: 16, textAlign: 'center', width: '100%' }}>
                             No map link provided. Please update the futsal profile with a Google Maps link.
+                          </div>
+                        );
+                      }
+                      if (isShortUrl) {
+                        return (
+                          <div style={{ color: 'orange', fontWeight: 700, fontSize: 16, textAlign: 'center', width: '100%' }}>
+                            This Google Maps link is a short URL. Please copy the full Google Maps link (with coordinates) from the browser address bar after opening the location.
                           </div>
                         );
                       }

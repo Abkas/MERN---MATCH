@@ -45,6 +45,13 @@ const FutsalCard = ({ futsal }) => {
             <span>{futsal.rating || '4.5'}/5</span>
           </div>
         </div>
+        {/* Show organizer/owner name if available */}
+        {futsal.organizer?.fullName || futsal.ownerName ? (
+          <div className={styles.ownerRow} style={{ fontSize: 15, color: '#2563eb', fontWeight: 600, marginBottom: 6, display: 'flex', alignItems: 'center', gap: 8 }}>
+            <Users size={16} style={{ opacity: 0.7 }} />
+            <span>{futsal.organizer?.fullName || futsal.ownerName || 'Owner'}</span>
+          </div>
+        ) : null}
 
         <div className={styles.tags}>
           {futsal.plusPoints && futsal.plusPoints.map((facility, index) => (
