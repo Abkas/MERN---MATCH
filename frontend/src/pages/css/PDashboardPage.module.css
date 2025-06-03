@@ -461,6 +461,31 @@
   background-color: rgba(16, 185, 129, 0.05);
 }
 
+/* Gray Unavailable Section */
+.grayUnavailableSection {
+  background: none;
+  position: static;
+  padding: 0;
+}
+.grayUnavailableSection > * {
+  background: #f3f4f6 !important;
+  color: #a0aec0 !important;
+  filter: none;
+  opacity: 1;
+  border-radius: var(--radius);
+  box-shadow: none;
+  pointer-events: none;
+}
+.grayUnavailableSection .statItem p,
+.grayUnavailableSection .statItem h3,
+.grayUnavailableSection .badgesSection h2,
+.grayUnavailableSection .badge,
+.grayUnavailableSection .recentMatches h2,
+.grayUnavailableSection .matchesTable th,
+.grayUnavailableSection .matchesTable td {
+  color: #b0b7c3 !important;
+}
+
 /* Responsive Design - Keeping sidebar fixed */
 @media (max-width: 1024px) {
   .content {
