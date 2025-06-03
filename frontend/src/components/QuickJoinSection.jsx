@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { ChevronDown, ChevronUp, Clock, Users, DollarSign } from 'lucide-react';
 import styles from '../pages/css/BookFutsal.module.css';
 import { axiosInstance } from '../lib/axios';
@@ -6,7 +6,8 @@ import toast from 'react-hot-toast';
 import SeatSelectionModal from './SeatSelectionModal';
 import { getSlotTimeStatus } from '../utils/slotTimeStatus';
 
-const QuickJoinSection = ({ futsal }) => {
+// Accept maxPrice as prop
+const QuickJoinSection = ({ futsal, maxPrice, onHasSlots }) => {
   const [isExpanded, setIsExpanded] = useState(false);
   const [slots, setSlots] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -70,6 +71,33 @@ const QuickJoinSection = ({ futsal }) => {
     }
   };
 
+  // Memoize filtered slots for performance and to use for hiding futsal if empty
+  const filteredSlots = useMemo(() =>
+    slots.filter(slot => {
+      const timeStatus = getSlotTimeStatus(slot, selectedDate);
+      const notFull = (slot.currentPlayers || 0) < slot.maxPlayers;
+      const priceOk = typeof maxPrice === 'number' ? slot.price <= maxPrice : true;
+      return (
+        slot.status === 'available' &&
+        timeStatus === 'upcoming' &&
+        notFull &&
+        priceOk
+      );
+    }), [slots, selectedDate, maxPrice]);
+
+  // Notify parent if this futsal has any slots after filtering
+  useEffect(() => {
+    if (typeof onHasSlots === 'function') {
+      onHasSlots(futsal._id, filteredSlots.length > 0);
+    }
+    // eslint-disable-next-line
+  }, [filteredSlots.length]);
+
+  // If expanded and no slots match, hide this futsal section
+  if (isExpanded && filteredSlots.length === 0 && !loading) {
+    return null;
+  }
+
   return (
     <div className={styles.venueItem}>
       <div className={styles.venueHeader}>
@@ -104,7 +132,7 @@ const QuickJoinSection = ({ futsal }) => {
 
           {loading ? (
             <div className={styles.loading}>Loading slots...</div>
-          ) : slots.length === 0 ? (
+          ) : filteredSlots.length === 0 ? (
             <div className={styles.noSlots}>No slots available for this date</div>
           ) : (
             <div className={styles.timeSlots}>
@@ -119,55 +147,44 @@ const QuickJoinSection = ({ futsal }) => {
                   </tr>
                 </thead>
                 <tbody>
-                  {slots
-                    .filter(slot => {
-                      const timeStatus = getSlotTimeStatus(slot, selectedDate);
-                      const notFull = (slot.currentPlayers || 0) < slot.maxPlayers;
-                      return (
-                        slot.status === 'available' &&
-                        timeStatus === 'upcoming' &&
-                        notFull
-                        // Optionally: && slot.hasTableToJoin
-                      );
-                    })
-                    .map((slot) => {
-                      const timeStatus = getSlotTimeStatus(slot, selectedDate);
-                      let statusLabel = '';
-                      let statusClass = '';
-                      if (timeStatus === 'ended') {
-                        statusLabel = 'Ended';
-                        statusClass = styles.statusEnded;
-                      } else if (timeStatus === 'playing') {
-                        statusLabel = 'Playing';
-                        statusClass = styles.statusPlaying;
-                      } else if (timeStatus === 'soon') {
-                        statusLabel = 'Starting Soon';
-                        statusClass = styles.statusSoon;
-                      } else {
-                        statusLabel = slot.status;
-                        statusClass = styles[`status${slot.status.charAt(0).toUpperCase() + slot.status.slice(1)}`] || '';
-                      }
-                      const canJoin = timeStatus === 'upcoming' && slot.status === 'available';
-                      return (
-                        <tr key={slot._id}>
-                          <td>{slot.time}</td>
-                          <td>{slot.currentPlayers || 0}/{slot.maxPlayers}</td>
-                          <td>₹{slot.price}</td>
-                          <td>
-                            <span className={`${styles.status} ${statusClass}`}>{statusLabel}</span>
-                          </td>
-                          <td>
-                            <button
-                              className={`${styles.btnJoinNow} ${!canJoin ? styles.btnJoinNowDisabled : ''}`}
-                              onClick={() => canJoin && handleJoinNow(slot)}
-                              disabled={!canJoin}
-                            >
-                              Join Now
-                            </button>
-                          </td>
-                        </tr>
-                      );
-                    })}
+                  {filteredSlots.map((slot) => {
+                    const timeStatus = getSlotTimeStatus(slot, selectedDate);
+                    let statusLabel = '';
+                    let statusClass = '';
+                    if (timeStatus === 'ended') {
+                      statusLabel = 'Ended';
+                      statusClass = styles.statusEnded;
+                    } else if (timeStatus === 'playing') {
+                      statusLabel = 'Playing';
+                      statusClass = styles.statusPlaying;
+                    } else if (timeStatus === 'soon') {
+                      statusLabel = 'Starting Soon';
+                      statusClass = styles.statusSoon;
+                    } else {
+                      statusLabel = slot.status;
+                      statusClass = styles[`status${slot.status.charAt(0).toUpperCase() + slot.status.slice(1)}`] || '';
+                    }
+                    const canJoin = timeStatus === 'upcoming' && slot.status === 'available';
+                    return (
+                      <tr key={slot._id}>
+                        <td>{slot.time}</td>
+                        <td>{slot.currentPlayers || 0}/{slot.maxPlayers}</td>
+                        <td>₹{slot.price}</td>
+                        <td>
+                          <span className={`${styles.status} ${statusClass}`}>{statusLabel}</span>
+                        </td>
+                        <td>
+                          <button
+                            className={`${styles.btnJoinNow} ${!canJoin ? styles.btnJoinNowDisabled : ''}`}
+                            onClick={() => canJoin && handleJoinNow(slot)}
+                            disabled={!canJoin}
+                          >
+                            Join Now
+                          </button>
+                        </td>
+                      </tr>
+                    );
+                  })}
                 </tbody>
               </table>
             </div>

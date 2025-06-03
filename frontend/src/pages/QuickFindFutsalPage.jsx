@@ -4,12 +4,14 @@ import styles from './css/QuickFind.module.css'
 import FutsalCard from '../components/FutsalCard'
 import futsalService from '../services/futsalService'
 import QuickJoinSection from '../components/QuickJoinSection'
+import { axiosInstance } from '../lib/axios';
 
 const QuickFindFutsalPage = () => {
   // State for filter values
   const [distance, setDistance] = useState(25);
   const [price, setPrice] = useState(50);
   const [seats, setSeats] = useState(40);
+  const [maxSlotPrice, setMaxSlotPrice] = useState(null);
 
   // Futsal data state
   const [futsals, setFutsals] = useState([]);
@@ -21,6 +23,19 @@ const QuickFindFutsalPage = () => {
   const [searchResults, setSearchResults] = useState([]);
   const [showSuggestions, setShowSuggestions] = useState(false);
 
+  // Futsal slot mapping state
+  const [futsalSlotMap, setFutsalSlotMap] = useState({});
+
+  // State to track which futsals have eligible slots after filtering
+  const [filteredFutsals, setFilteredFutsals] = useState([]);
+  const [filtering, setFiltering] = useState(false);
+
+  // State to track if filter is active
+  const [filterActive, setFilterActive] = useState(false);
+
+  // Cache for slots data
+  const [slotCache, setSlotCache] = useState({}); // { [futsalId]: Slot[] }
+
   // Helper for label values
   const distanceLabels = ['1km', '3km', '5km', '10+km'];
   const priceLabels = ['Rs100', 'Rs150', 'Rs200', 'Rs250+'];
@@ -30,6 +45,13 @@ const QuickFindFutsalPage = () => {
   const getCurrentLabel = (labels, value) => {
     const idx = Math.round((value / 100) * (labels.length - 1));
     return labels[idx];
+  };
+
+  const getMaxPrice = (value) => {
+    if (value < 25) return 100;
+    if (value < 50) return 150;
+    if (value < 75) return 200;
+    return 1000000; // 250+ means no upper limit
   };
 
   useEffect(() => {
@@ -51,6 +73,22 @@ const QuickFindFutsalPage = () => {
       setFutsals([]);
     } finally {
       setLoading(false);
+    }
+  };
+
+  // Helper to fetch slots for a futsal (returns promise)
+  const fetchSlotsForFutsal = async (futsalId, date) => {
+    try {
+      console.log('Fetching slots for futsalId:', futsalId, 'date:', date);
+      const response = await axiosInstance.get(`/slots/${futsalId}/slots`, { params: { date } });
+      console.log('API response for slots:', response);
+      if (response.data.success) {
+        return response.data.message;
+      }
+      return [];
+    } catch (err) {
+      console.error('Error fetching slots:', err);
+      return [];
     }
   };
 
@@ -79,6 +117,57 @@ const QuickFindFutsalPage = () => {
     setSearchQuery("");
     setSearchResults([]);
     setShowSuggestions(false);
+  };
+
+  // When Find Now is clicked, filter futsals and slots by price
+  const handleFindNow = async () => {
+    setFiltering(true);
+    setFilterActive(true);
+    const minPrice = 0; // You can add a min price slider if needed
+    const maxPrice = getMaxPrice(price);
+    const availableOnly = true; // You can add a toggle if needed
+    const today = new Date().toISOString().slice(0, 10); // YYYY-MM-DD
+
+    // For each futsal, fetch slots for today if not cached
+    const futsalWithSlots = await Promise.all(
+      futsals.map(async (futsal) => {
+        let slots = slotCache[futsal._id];
+        if (!slots) {
+          slots = await fetchSlotsForFutsal(futsal._id, today);
+          setSlotCache((prev) => ({ ...prev, [futsal._id]: slots }));
+        }
+        if (slots.length > 0) {
+          console.log('Sample slot for', futsal.name, ':', slots[0]);
+        }
+        // Filter slots by criteria
+        const matchingSlots = slots.filter(slot => {
+          const priceOk = slot.price >= minPrice && slot.price <= maxPrice;
+          const availOk = availableOnly ? slot.status === 'available' : true;
+          return priceOk && availOk;
+        });
+        console.log('Futsal:', futsal.name, 'All slots:', slots, 'Matching slots:', matchingSlots);
+        if (matchingSlots.length > 0) {
+          return { ...futsal, slots: matchingSlots };
+        }
+        return null;
+      })
+    );
+    // Only futsals with at least one matching slot
+    const filtered = futsalWithSlots.filter(Boolean);
+    console.log('Filtered futsals:', filtered.map(f => f && f.name));
+    setFilteredFutsals(filtered);
+    setFiltering(false);
+  };
+
+  // Callback to receive slot info from QuickJoinSection
+  const handleHasSlots = (futsalId, hasSlots) => {
+    setFutsalSlotMap(prev => ({ ...prev, [futsalId]: hasSlots }));
+  };
+
+  // Only apply futsalSlotMap filtering if a filter is active (maxSlotPrice is not null)
+  const shouldShowFutsal = (futsal) => {
+    if (maxSlotPrice == null) return true;
+    return futsalSlotMap[futsal._id] !== false;
   };
 
   return (
@@ -216,7 +305,7 @@ const QuickFindFutsalPage = () => {
                 </div>
               </div>
             </div>
-            <button className={styles.findNowBtn}>Find Now</button>
+            <button className={styles.findNowBtn} onClick={handleFindNow}>Find Now</button>
           </div>
         </section>
 
@@ -238,16 +327,37 @@ const QuickFindFutsalPage = () => {
           </div>
           {/* Render the QuickJoinSection for each futsal, just like BookFutsal */}
           <div className={styles.venueList}>
-            {loading ? (
-              <div style={{ padding: '2rem', textAlign: 'center' }}>Loading futsals...</div>
-            ) : error ? (
-              <div style={{ color: 'red', padding: '2rem', textAlign: 'center' }}>{error}</div>
-            ) : futsals.length === 0 ? (
-              <div style={{ padding: '2rem', textAlign: 'center' }}>No futsals found</div>
+            {filtering ? (
+              <div style={{ padding: '2rem', textAlign: 'center' }}>Filtering...</div>
+            ) : filterActive ? (
+              filteredFutsals.length === 0 ? (
+                <div style={{ padding: '2rem', textAlign: 'center' }}>No futsals found</div>
+              ) : (
+                filteredFutsals.map(futsal => {
+                  console.log('Rendering futsal:', futsal.name, 'with slots:', futsal.slots);
+                  return (
+                    <QuickJoinSection
+                      key={futsal._id}
+                      futsal={futsal}
+                      slots={futsal.slots}
+                      minPrice={0}
+                      maxPrice={getMaxPrice(price)}
+                      availableOnly={true}
+                    />
+                  );
+                })
+              )
             ) : (
-              futsals.map(futsal => (
-                <QuickJoinSection key={futsal._id} futsal={futsal} />
-              ))
+              futsals.map(futsal => {
+                console.log('Rendering futsal (no filter):', futsal.name);
+                return (
+                  <QuickJoinSection
+                    key={futsal._id}
+                    futsal={futsal}
+                    // Don't pass slots, let QuickJoinSection fetch on expand
+                  />
+                );
+              })
             )}
           </div>
         </section>
