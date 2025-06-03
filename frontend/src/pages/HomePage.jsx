@@ -13,7 +13,7 @@ const HomePage = () => {
     logOut()
     navigate('/login')
   }
-  
+
   return (
     <div>
       <div className={styles.hero}>
@@ -44,7 +44,17 @@ const HomePage = () => {
         {/* Hero Content */}
         <div className={styles.heroContent}>
           <h1>Where Games Begin &<br />Teams Unite</h1>
-          <button className={styles.btnFindGames}>Find Games</button>
+          <button
+            className={styles.btnFindGames}
+            onClick={() => {
+              const section = document.getElementById('popularGamesSection');
+              if (section) {
+                section.scrollIntoView({ behavior: 'smooth' });
+              }
+            }}
+          >
+            Find Games
+          </button>
         </div>
       </div>
 
@@ -97,7 +107,7 @@ const HomePage = () => {
         </div>
       </section>
 
-      <section className={styles.popularGames}>
+      <section id="popularGamesSection" className={styles.popularGames}>
         <h2>Popular Games</h2>
         <div className={styles.gameCards}>
           <Link to="/futsalhome" className={styles.gameCard}>
@@ -105,16 +115,22 @@ const HomePage = () => {
               <img src="/firstpage/rectangle-2740.png" alt="Soccer" />
             </div>
           </Link>
-          <Link to="/games/basketball" className={styles.gameCard}>
+          <div className={`${styles.gameCard} ${styles.disabledGameCard}`}
+            tabIndex={0}
+          >
             <div className={styles.gameCardInner}>
+              <span className={styles.comingSoonInfo} style={{opacity: 1}}>Coming Soon</span>
               <img src="/firstpage/rectangle-2750.png" alt="Basketball" />
             </div>
-          </Link>
-          <Link to="/games/volleyball" className={styles.gameCard}>
+          </div>
+          <div className={`${styles.gameCard} ${styles.disabledGameCard}`}
+            tabIndex={0}
+          >
             <div className={styles.gameCardInner}>
+              <span className={styles.comingSoonInfo} style={{opacity: 1}}>Coming Soon</span>
               <img src="/firstpage/rectangle-2760.png" alt="Volleyball" />
             </div>
-          </Link>
+          </div>
         </div>
         <button className={styles.btnMoreGames}>More Games</button>
       </section>

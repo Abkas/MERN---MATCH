@@ -119,44 +119,55 @@ const QuickJoinSection = ({ futsal }) => {
                   </tr>
                 </thead>
                 <tbody>
-                  {slots.map((slot) => {
-                    const timeStatus = getSlotTimeStatus(slot, selectedDate);
-                    let statusLabel = '';
-                    let statusClass = '';
-                    if (timeStatus === 'ended') {
-                      statusLabel = 'Ended';
-                      statusClass = styles.statusEnded;
-                    } else if (timeStatus === 'playing') {
-                      statusLabel = 'Playing';
-                      statusClass = styles.statusPlaying;
-                    } else if (timeStatus === 'soon') {
-                      statusLabel = 'Starting Soon';
-                      statusClass = styles.statusSoon;
-                    } else {
-                      statusLabel = slot.status;
-                      statusClass = styles[`status${slot.status.charAt(0).toUpperCase() + slot.status.slice(1)}`] || '';
-                    }
-                    const canJoin = timeStatus === 'upcoming' && slot.status === 'available';
-                    return (
-                      <tr key={slot._id}>
-                        <td>{slot.time}</td>
-                        <td>{slot.currentPlayers || 0}/{slot.maxPlayers}</td>
-                        <td>₹{slot.price}</td>
-                        <td>
-                          <span className={`${styles.status} ${statusClass}`}>{statusLabel}</span>
-                        </td>
-                        <td>
-                          <button
-                            className={`${styles.btnJoinNow} ${!canJoin ? styles.btnJoinNowDisabled : ''}`}
-                            onClick={() => canJoin && handleJoinNow(slot)}
-                            disabled={!canJoin}
-                          >
-                            Join Now
-                          </button>
-                        </td>
-                      </tr>
-                    );
-                  })}
+                  {slots
+                    .filter(slot => {
+                      const timeStatus = getSlotTimeStatus(slot, selectedDate);
+                      const notFull = (slot.currentPlayers || 0) < slot.maxPlayers;
+                      return (
+                        slot.status === 'available' &&
+                        timeStatus === 'upcoming' &&
+                        notFull
+                        // Optionally: && slot.hasTableToJoin
+                      );
+                    })
+                    .map((slot) => {
+                      const timeStatus = getSlotTimeStatus(slot, selectedDate);
+                      let statusLabel = '';
+                      let statusClass = '';
+                      if (timeStatus === 'ended') {
+                        statusLabel = 'Ended';
+                        statusClass = styles.statusEnded;
+                      } else if (timeStatus === 'playing') {
+                        statusLabel = 'Playing';
+                        statusClass = styles.statusPlaying;
+                      } else if (timeStatus === 'soon') {
+                        statusLabel = 'Starting Soon';
+                        statusClass = styles.statusSoon;
+                      } else {
+                        statusLabel = slot.status;
+                        statusClass = styles[`status${slot.status.charAt(0).toUpperCase() + slot.status.slice(1)}`] || '';
+                      }
+                      const canJoin = timeStatus === 'upcoming' && slot.status === 'available';
+                      return (
+                        <tr key={slot._id}>
+                          <td>{slot.time}</td>
+                          <td>{slot.currentPlayers || 0}/{slot.maxPlayers}</td>
+                          <td>₹{slot.price}</td>
+                          <td>
+                            <span className={`${styles.status} ${statusClass}`}>{statusLabel}</span>
+                          </td>
+                          <td>
+                            <button
+                              className={`${styles.btnJoinNow} ${!canJoin ? styles.btnJoinNowDisabled : ''}`}
+                              onClick={() => canJoin && handleJoinNow(slot)}
+                              disabled={!canJoin}
+                            >
+                              Join Now
+                            </button>
+                          </td>
+                        </tr>
+                      );
+                    })}
                 </tbody>
               </table>
             </div>

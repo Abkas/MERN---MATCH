@@ -752,3 +752,68 @@
   align-items: center;
   gap: 12px;
 }
+
+.futsalSliderBox {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--bg-white);
+  border-radius: 1.5rem;
+  box-shadow: 0 4px 24px rgba(16,185,129,0.13);
+  padding: 2rem 2.5rem;
+  margin-bottom: 2.5rem;
+  max-width: 600px;
+  margin-left: auto;
+  margin-right: auto;
+  border: 2.5px solid var(--primary);
+  gap: 2.5rem;
+  min-height: 120px;
+}
+.futsalInfoBox {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+}
+.futsalPhoto {
+  width: 64px;
+  height: 64px;
+  border-radius: 1rem;
+  object-fit: cover;
+  box-shadow: 0 2px 8px rgba(16,185,129,0.10);
+  border: 2px solid var(--primary-dark);
+  background: #f3f4f6;
+}
+.futsalTextInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+.futsalName {
+  font-weight: 800;
+  font-size: 1.5rem;
+  color: var(--primary-dark);
+  letter-spacing: 0.5px;
+}
+.futsalLocation {
+  color: var(--text-light);
+  font-size: 1rem;
+  font-weight: 500;
+}
+.arrowBtn {
+  background: var(--primary);
+  color: #fff;
+  font-size: 28px;
+  border: none;
+  border-radius: 50%;
+  width: 44px;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 8px rgba(16,185,129,0.15);
+  transition: background 0.18s;
+  cursor: pointer;
+}
+.arrowBtn:hover {
+  background: var(--primary-dark);
+}

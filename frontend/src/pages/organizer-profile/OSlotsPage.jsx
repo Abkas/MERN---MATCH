@@ -173,7 +173,9 @@ const OSlotsPage = () => {
       setLoading(true);
       const response = await axiosInstance.patch(`/slots/${futsal._id}/slots/${slotId}`, updates);
       if (response.data.success) {
-        setSlots(prevSlots => prevSlots.map(slot => slot._id === slotId ? { ...slot, ...response.data.data } : slot));
+        // Refetch slots after successful update to ensure UI is in sync
+        const res = await axiosInstance.get(`/slots/${futsal._id}/slots`, { params: { date: selectedDate } });
+        setSlots(res.data.message || []);
         toast.success('Slot updated successfully');
       } else {
         toast.error('Failed to update slot: ' + (response.data.message || 'Unknown error'));
@@ -303,43 +305,26 @@ const OSlotsPage = () => {
           ) : (
             <>
               {/* Futsal name slider in a modern, visible box */}
-              <div style={{
-                background: '#fff',
-                borderRadius: '1.5rem',
-                boxShadow: '0 4px 24px rgba(16,185,129,0.13)',
-                padding: '2.5rem 2rem',
-                marginBottom: '2.5rem',
-                maxWidth: 500,
-                marginLeft: 'auto',
-                marginRight: 'auto',
-                border: '2.5px solid #10b981',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                minHeight: 120,
-                position: 'relative',
-                gap: '2.5rem',
-              }}>
+              <div className={styles.futsalSliderBox}>
                 {futsals.length > 1 && (
-                  <button className={styles.arrowBtn} onClick={handlePrevFutsal} title="Previous Futsal" style={{background: '#10b981', color: '#fff', fontSize: 28, border: 'none', borderRadius: '50%', width: 48, height: 48, display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 2px 8px rgba(16,185,129,0.15)'}}>
-                    <ChevronLeft size={32} />
+                  <button className={styles.arrowBtn} onClick={handlePrevFutsal} title="Previous Futsal">
+                    <ChevronLeft size={28} />
                   </button>
                 )}
-                <span style={{
-                  fontWeight: 800,
-                  fontSize: '2.2rem',
-                  color: '#059669',
-                  letterSpacing: '1px',
-                  textAlign: 'center',
-                  flex: 1,
-                  userSelect: 'none',
-                  textShadow: '0 2px 8px rgba(16,185,129,0.08)'
-                }}>
-                  {futsal?.name || 'Futsal Name'}
-                </span>
+                <div className={styles.futsalInfoBox}>
+                  <img
+                    src={futsal?.futsalPhoto || '/default-futsal.jpg'}
+                    alt={futsal?.name || 'Futsal'}
+                    className={styles.futsalPhoto}
+                  />
+                  <div className={styles.futsalTextInfo}>
+                    <span className={styles.futsalName}>{futsal?.name || 'Futsal Name'}</span>
+                    <span className={styles.futsalLocation}>{futsal?.location || ''}</span>
+                  </div>
+                </div>
                 {futsals.length > 1 && (
-                  <button className={styles.arrowBtn} onClick={handleNextFutsal} title="Next Futsal" style={{background: '#10b981', color: '#fff', fontSize: 28, border: 'none', borderRadius: '50%', width: 48, height: 48, display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 2px 8px rgba(16,185,129,0.15)'}}>
-                    <ChevronRight size={32} />
+                  <button className={styles.arrowBtn} onClick={handleNextFutsal} title="Next Futsal">
+                    <ChevronRight size={28} />
                   </button>
                 )}
               </div>

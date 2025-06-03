@@ -16,6 +16,8 @@ const BookFutsal = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [page, setPage] = useState(1);
   const [isExpanded, setIsExpanded] = useState(false);
+  const [searchResults, setSearchResults] = useState([]);
+  const [showSuggestions, setShowSuggestions] = useState(false);
   const futsalsPerPage = 3;
 
   useEffect(() => {
@@ -71,6 +73,32 @@ const BookFutsal = () => {
     setIsExpanded(!isExpanded);
   };
 
+  const handleSearchChange = (e) => {
+    const value = e.target.value;
+    setSearchQuery(value);
+    if (value.trim() === "") {
+      setSearchResults([]);
+      setShowSuggestions(false);
+      return;
+    }
+    const filtered = futsals.filter(futsal =>
+      (futsal.name && futsal.name.toLowerCase().includes(value.toLowerCase())) ||
+      (futsal.location && futsal.location.toLowerCase().includes(value.toLowerCase()))
+    );
+    setSearchResults(filtered);
+    setShowSuggestions(true);
+  };
+
+  const handleSuggestionClick = (futsalId) => {
+    navigate(`/futsal/${futsalId}`);
+  };
+
+  const handleClearSearch = () => {
+    setSearchQuery("");
+    setSearchResults([]);
+    setShowSuggestions(false);
+  };
+
   return (
     <div className={styles.body}>
       <div className={styles.container}>
@@ -104,17 +132,70 @@ const BookFutsal = () => {
               <h1 className={styles.heroTitle}>Your Futsal Game!</h1>
               <p className={styles.subtitle}>Join an existing match or create your own—easy & hassle-free</p>
               
-              <div className={styles.searchBarWrapper}>
-                <form onSubmit={handleSearch} className={styles.searchForm}>
+              <div className={styles.searchBarWrapper} style={{ position: 'relative' }}>
+                <form onSubmit={handleSearch} className={styles.searchForm} autoComplete="off">
                   <div className={styles.searchInput}>
                     <MapPin className={styles.searchIcon} />
                     <input
                       type="text"
                       placeholder="Search by name or location..."
                       value={searchQuery}
-                      onChange={e => setSearchQuery(e.target.value)}
+                      onChange={handleSearchChange}
+                      onFocus={() => searchQuery && setShowSuggestions(true)}
+                      autoComplete="off"
                     />
+                    {searchQuery && searchResults.length === 0 && showSuggestions && (
+                      <span
+                        style={{ color: '#e74c3c', fontWeight: 700, marginLeft: 8, cursor: 'pointer', fontSize: 18 }}
+                        onClick={handleClearSearch}
+                        title="Clear"
+                      >&#10005;</span>
+                    )}
                   </div>
+                  {/* Suggestions dropdown */}
+                  {showSuggestions && searchQuery && (
+                    <div style={{
+                      position: 'absolute',
+                      top: '110%',
+                      left: 0,
+                      right: 0,
+                      background: '#fff',
+                      border: '1px solid #e0e0e0',
+                      borderRadius: 8,
+                      boxShadow: '0 4px 16px #0001',
+                      zIndex: 20,
+                      maxHeight: 220,
+                      overflowY: 'auto',
+                      padding: '0.5rem 0',
+                    }}>
+                      {searchResults.length > 0 ? (
+                        searchResults.map(futsal => (
+                          <div
+                            key={futsal._id}
+                            style={{ padding: '10px 18px', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 10 }}
+                            onClick={() => handleSuggestionClick(futsal._id)}
+                          >
+                            <img src={futsal.futsalPhoto || '/default-futsal.jpg'} alt={futsal.name} style={{ width: 32, height: 32, borderRadius: 8, objectFit: 'cover', marginRight: 8 }} />
+                            <span style={{ fontWeight: 600 }}>{futsal.name}</span>
+                            {futsal.location && (
+                              <span style={{ color: '#888', fontSize: 13, marginLeft: 8 }}>{futsal.location}</span>
+                            )}
+                          </div>
+                        ))
+                      ) : (
+                        searchQuery && (
+                          <div style={{ padding: '10px 18px', color: '#e74c3c', display: 'flex', alignItems: 'center', gap: 8 }}>
+                            <span>No match for "{searchQuery}"</span>
+                            <span
+                              style={{ fontWeight: 700, fontSize: 18, cursor: 'pointer' }}
+                              onClick={handleClearSearch}
+                              title="Clear"
+                            >&#10005;</span>
+                          </div>
+                        )
+                      )}
+                    </div>
+                  )}
                   <button type="submit" className={styles.searchButton}>
                     <Search className={styles.searchIcon} />
                     Search
