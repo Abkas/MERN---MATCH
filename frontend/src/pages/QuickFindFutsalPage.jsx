@@ -145,6 +145,11 @@ const QuickFindFutsalPage = () => {
     const minPrice = 0;
     const maxPrice = getMaxPrice(price);
     const today = new Date().toISOString().slice(0, 10);
+    // Calculate seats needed from slider
+    const seatsValue = (() => {
+      const idx = Math.round((seats / 100) * (seatsLabels.length - 1));
+      return parseInt(seatsLabels[idx], 10);
+    })();
     const futsalWithSlots = await Promise.all(
       futsals.map(async (futsal) => {
         let slots = slotCache[futsal._id];
@@ -152,11 +157,23 @@ const QuickFindFutsalPage = () => {
           slots = await fetchSlotsForFutsal(futsal._id, today);
           setSlotCache((prev) => ({ ...prev, [futsal._id]: slots }));
         }
-        // Filter slots by active filters (only price)
+        // Filter slots by active filters (price and seats)
         const matchingSlots = slots.filter(slot => {
           let ok = true;
           if (priceActive) {
             ok = ok && typeof slot.price === 'number' && slot.price >= minPrice && slot.price <= maxPrice;
+          }
+          if (seatsActive) {
+            let currentPlayersCount = 0;
+            if (typeof slot.currentPlayers === 'number') {
+              currentPlayersCount = slot.currentPlayers;
+            } else if (Array.isArray(slot.players)) {
+              currentPlayersCount = slot.players.length;
+            }
+            const availableSeats = typeof slot.maxPlayers === 'number'
+              ? slot.maxPlayers - currentPlayersCount
+              : undefined;
+            ok = ok && typeof availableSeats === 'number' && availableSeats >= seatsValue;
           }
           // (distanceActive logic can be added here if needed)
           return ok;
