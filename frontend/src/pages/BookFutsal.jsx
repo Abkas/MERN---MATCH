@@ -13,6 +13,7 @@ const BookFutsal = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [searchLocation, setSearchLocation] = useState('');
+  const [searchQuery, setSearchQuery] = useState('');
   const [page, setPage] = useState(1);
   const [isExpanded, setIsExpanded] = useState(false);
   const futsalsPerPage = 3;
@@ -51,30 +52,19 @@ const BookFutsal = () => {
     }
   };
 
-  const handleSearch = async (e) => {
+  const handleSearch = (e) => {
     e.preventDefault();
-    if (!searchLocation.trim()) {
-      fetchFutsals();
+    // If search is empty, show all
+    if (!searchQuery.trim()) {
+      setDisplayedFutsals(isExpanded ? futsals : futsals.slice(0, futsalsPerPage));
       return;
     }
-
-    try {
-      setLoading(true);
-      const response = await futsalService.getFutsalsByLocation(searchLocation);
-      if (response && response.data) {
-        setFutsals(response.data);
-        setIsExpanded(false); // Reset expanded state when searching
-      } else {
-        setFutsals([]);
-      }
-      setError(null);
-    } catch (err) {
-      console.error('Error searching futsals:', err);
-      setError('Failed to search futsals. Please try again later.');
-      setFutsals([]);
-    } finally {
-      setLoading(false);
-    }
+    // Filter by name or location (case-insensitive)
+    const filtered = futsals.filter(futsal =>
+      (futsal.name && futsal.name.toLowerCase().includes(searchQuery.toLowerCase())) ||
+      (futsal.location && futsal.location.toLowerCase().includes(searchQuery.toLowerCase()))
+    );
+    setDisplayedFutsals(isExpanded ? filtered : filtered.slice(0, futsalsPerPage));
   };
 
   const handleToggleFutsals = () => {
@@ -120,9 +110,9 @@ const BookFutsal = () => {
                     <MapPin className={styles.searchIcon} />
                     <input
                       type="text"
-                      placeholder="Search by location..."
-                      value={searchLocation}
-                      onChange={(e) => setSearchLocation(e.target.value)}
+                      placeholder="Search by name or location..."
+                      value={searchQuery}
+                      onChange={e => setSearchQuery(e.target.value)}
                     />
                   </div>
                   <button type="submit" className={styles.searchButton}>
