@@ -6,8 +6,12 @@ import { useAuthStore } from '../store/useAuthStore'
 
 
 const HomePage = () => {
-  const { logOut } = useAuthStore()
+  const { logOut, authUser } = useAuthStore()
   const navigate = useNavigate()
+
+  const handleLogin = (type) => {
+    navigate('/login')
+  }
 
   const handleLogout = () => {
     logOut()
@@ -29,17 +33,60 @@ const HomePage = () => {
           <div className={styles.navLinks}>
             <Link to="/" className={styles.active}>Home</Link>
             <Link to="/about-us">About Us</Link>
-          <Link to="/how-it-works">How It Works</Link>
+            <Link to="/how-it-works">How It Works</Link>
           </div>
           <div className={styles.navProfileLogout}>
-            <Link to="/profile" title="Profile" className={styles.profileLink}>
-              <User size={28} style={{ verticalAlign: 'middle' }} />
-            </Link>
-            <button className={styles.btnLogout} onClick={handleLogout}>
-              <LogOut size={22} style={{ verticalAlign: 'middle' }} />
-              <span style={{ fontWeight: 500 }}>Logout</span>
-            </button>
-            </div>
+            {authUser ? (
+              <>
+                <Link to="/profile" title="Profile" className={styles.profileLink}>
+                  <User size={28} style={{ verticalAlign: 'middle' }} />
+                </Link>
+                <button className={styles.btnLogout} onClick={handleLogout}>
+                  <LogOut size={22} style={{ verticalAlign: 'middle' }} />
+                  <span style={{ fontWeight: 500 }}>Logout</span>
+                </button>
+              </>
+            ) : (
+              <>
+                <Link to="/signup" className={styles.btnSignup} style={{
+                  padding: '10px 25px',
+                  borderRadius: 30,
+                  border: '2px solid #111',
+                  fontWeight: 600,
+                  fontSize: 14,
+                  cursor: 'pointer',
+                  backgroundColor: '#fff',
+                  color: '#111',
+                  marginRight: 8,
+                  transition: 'all 0.2s',
+                  boxShadow: 'none',
+                  textDecoration: 'none',
+                }}
+                onMouseOver={e => { e.target.style.backgroundColor = '#111'; e.target.style.color = '#fff'; }}
+                onMouseOut={e => { e.target.style.backgroundColor = '#fff'; e.target.style.color = '#111'; }}
+                >
+                  Sign Up
+                </Link>
+                <Link to="/login" className={styles.btnLogin} style={{
+                  padding: '10px 25px',
+                  borderRadius: 30,
+                  border: 'none',
+                  fontWeight: 600,
+                  fontSize: 14,
+                  cursor: 'pointer',
+                  backgroundColor: '#111',
+                  color: '#fff',
+                  transition: 'all 0.2s',
+                  textDecoration: 'none',
+                }}
+                onMouseOver={e => { e.target.style.backgroundColor = '#333'; }}
+                onMouseOut={e => { e.target.style.backgroundColor = '#111'; }}
+                >
+                  Log In
+                </Link>
+              </>
+            )}
+          </div>
         </nav>
         {/* Hero Content */}
         <div className={styles.heroContent}>
@@ -208,6 +255,42 @@ const HomePage = () => {
           </div>
         </div>
         <button className={styles.btnMoreTestimonials}>More Happy Customers</button>
+      </section>
+
+      <section className={styles.playersOrganizers}>
+        <h2>For Players & Organizers</h2>
+        <div className={styles.columnsContainer}>
+          <div className={`${styles.column} ${styles.playersColumn}`}>
+            <h3>For Players</h3>
+            <p>Join & Play Instantly</p>
+            <ul className={styles.featureList}>
+              <li>Create a detailed sports profile with your preferences</li>
+              <li>Browse nearby matches actively looking for extra players</li>
+              <li>Join matches that suit your skill and schedule</li>
+              <li>Schedule gaming sessions based on your availability</li>
+              <li>Build your reputation with reviews and ratings</li>
+            </ul>
+            <button className={styles.loginButton} onClick={() => handleLogin('player')}>
+              <User size={20} style={{marginRight: 8}} />
+              Login as Player
+            </button>
+          </div>
+          <div className={`${styles.column} ${styles.organizersColumn}`}>
+            <h3>For Organizers</h3>
+            <p>Host games & tournaments</p>
+            <ul className={styles.featureList}>
+              <li>Create and manage gaming events of any size</li>
+              <li>Set up tournaments with automatic bracket generation</li>
+              <li>Communicate with players through our messaging system</li>
+              <li>Schedule gaming sessions based on your availability</li>
+              <li>Build your reputation as a trusted organizer</li>
+            </ul>
+            <button className={styles.loginButton} onClick={() => handleLogin('organizer')}>
+              <User size={20} style={{marginRight: 8}} />
+              Login as Organizer
+            </button>
+          </div>
+        </div>
       </section>
 
       <footer>

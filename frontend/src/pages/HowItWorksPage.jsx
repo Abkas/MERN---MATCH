@@ -5,7 +5,7 @@ import { useAuthStore } from '../store/useAuthStore'
 import styles from '../pages/css/HowItWorks.module.css'
 
 const HowItWorksPage = () => {
-  const { logOut } = useAuthStore()
+  const { logOut, authUser } = useAuthStore()
   const navigate = useNavigate()
   const [showAllFeatures, setShowAllFeatures] = useState(false)
   const [showAllProcesses, setShowAllProcesses] = useState(false)
@@ -17,11 +17,7 @@ const HowItWorksPage = () => {
   }
 
   const handleLogin = (type) => {
-    if (type === 'player') {
-      navigate('/player-login')
-    } else if (type === 'organizer') {
-      navigate('/organizer-login')
-    }
+    navigate('/login')
   }
 
   const processes = [
@@ -130,13 +126,56 @@ const HowItWorksPage = () => {
             <Link to="/how-it-works" className={`${styles.navLink} ${styles.active_page}`}>How It Works</Link>
           </div>
           <div className={styles.navProfileLogout}>
-            <Link to="/profile" title="Profile" className={styles.profileLink}>
-              <User size={28} style={{ verticalAlign: 'middle' }} />
-            </Link>
-            <button className={styles.btnLogout} onClick={handleLogout}>
-              <LogOut size={22} style={{ verticalAlign: 'middle' }} />
-              <span style={{ fontWeight: 500 }}>Logout</span>
-            </button>
+            {authUser ? (
+              <>
+                <Link to="/profile" title="Profile" className={styles.profileLink}>
+                  <User size={28} style={{ verticalAlign: 'middle' }} />
+                </Link>
+                <button className={styles.btnLogout} onClick={handleLogout}>
+                  <LogOut size={22} style={{ verticalAlign: 'middle' }} />
+                  <span style={{ fontWeight: 500 }}>Logout</span>
+                </button>
+              </>
+            ) : (
+              <>
+                <Link to="/signup" className={styles.btnSignup} style={{
+                  padding: '10px 25px',
+                  borderRadius: 30,
+                  border: '2px solid #111',
+                  fontWeight: 600,
+                  fontSize: 14,
+                  cursor: 'pointer',
+                  backgroundColor: '#fff',
+                  color: '#111',
+                  marginRight: 8,
+                  transition: 'all 0.2s',
+                  boxShadow: 'none',
+                  textDecoration: 'none',
+                }}
+                onMouseOver={e => { e.target.style.backgroundColor = '#111'; e.target.style.color = '#fff'; }}
+                onMouseOut={e => { e.target.style.backgroundColor = '#fff'; e.target.style.color = '#111'; }}
+                >
+                  Sign Up
+                </Link>
+                <Link to="/login" className={styles.btnLogin} style={{
+                  padding: '10px 25px',
+                  borderRadius: 30,
+                  border: 'none',
+                  fontWeight: 600,
+                  fontSize: 14,
+                  cursor: 'pointer',
+                  backgroundColor: '#111',
+                  color: '#fff',
+                  transition: 'all 0.2s',
+                  textDecoration: 'none',
+                }}
+                onMouseOver={e => { e.target.style.backgroundColor = '#333'; }}
+                onMouseOut={e => { e.target.style.backgroundColor = '#111'; }}
+                >
+                  Log In
+                </Link>
+              </>
+            )}
           </div>
         </nav>
       </div>
