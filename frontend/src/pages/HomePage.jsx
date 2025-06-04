@@ -257,42 +257,6 @@ const HomePage = () => {
         <button className={styles.btnMoreTestimonials}>More Happy Customers</button>
       </section>
 
-      <section className={styles.playersOrganizers}>
-        <h2>For Players & Organizers</h2>
-        <div className={styles.columnsContainer}>
-          <div className={`${styles.column} ${styles.playersColumn}`}>
-            <h3>For Players</h3>
-            <p>Join & Play Instantly</p>
-            <ul className={styles.featureList}>
-              <li>Create a detailed sports profile with your preferences</li>
-              <li>Browse nearby matches actively looking for extra players</li>
-              <li>Join matches that suit your skill and schedule</li>
-              <li>Schedule gaming sessions based on your availability</li>
-              <li>Build your reputation with reviews and ratings</li>
-            </ul>
-            <button className={styles.loginButton} onClick={() => handleLogin('player')}>
-              <User size={20} style={{marginRight: 8}} />
-              Login as Player
-            </button>
-          </div>
-          <div className={`${styles.column} ${styles.organizersColumn}`}>
-            <h3>For Organizers</h3>
-            <p>Host games & tournaments</p>
-            <ul className={styles.featureList}>
-              <li>Create and manage gaming events of any size</li>
-              <li>Set up tournaments with automatic bracket generation</li>
-              <li>Communicate with players through our messaging system</li>
-              <li>Schedule gaming sessions based on your availability</li>
-              <li>Build your reputation as a trusted organizer</li>
-            </ul>
-            <button className={styles.loginButton} onClick={() => handleLogin('organizer')}>
-              <User size={20} style={{marginRight: 8}} />
-              Login as Organizer
-            </button>
-          </div>
-        </div>
-      </section>
-
       <footer>
         <div className={styles.footerLinks}>
           <Link to="#">About</Link>
