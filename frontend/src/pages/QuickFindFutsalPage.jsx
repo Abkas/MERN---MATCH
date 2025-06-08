@@ -135,58 +135,70 @@ const QuickFindFutsalPage = () => {
   // When Find Now is clicked, filter futsals and slots by price
   const handleFindNow = async () => {
     setFiltering(true);
-    setFilterActive(true);
-    // If all toggles are off, show all futsals (no filtering)
-    if (!priceActive && !distanceActive && !seatsActive) {
-      setFilteredFutsals(futsals.map(futsal => ({ ...futsal, slots: undefined })));
-      setFiltering(false);
-      return;
-    }
-    const minPrice = 0;
-    const maxPrice = getMaxPrice(price);
-    const today = new Date().toISOString().slice(0, 10);
-    // Calculate seats needed from slider
-    const seatsValue = (() => {
-      const idx = Math.round((seats / 100) * (seatsLabels.length - 1));
-      return parseInt(seatsLabels[idx], 10);
-    })();
-    const futsalWithSlots = await Promise.all(
-      futsals.map(async (futsal) => {
-        let slots = slotCache[futsal._id];
-        if (!slots) {
-          slots = await fetchSlotsForFutsal(futsal._id, today);
-          setSlotCache((prev) => ({ ...prev, [futsal._id]: slots }));
-        }
-        // Filter slots by active filters (price and seats)
-        const matchingSlots = slots.filter(slot => {
-          let ok = true;
-          if (priceActive) {
-            ok = ok && typeof slot.price === 'number' && slot.price >= minPrice && slot.price <= maxPrice;
+    setFilterActive(false); // Reset filterActive to force re-render
+
+    // Wait a tick to ensure state update
+    setTimeout(async () => {
+      setFilterActive(true);
+      // If all toggles are off, show all futsals and all slots (no filtering)
+      if (!priceActive && !seatsActive) {
+        setFilteredFutsals(
+          futsals.map(futsal => {
+            let slots = slotCache[futsal._id];
+            // If slots are not cached, just show futsal with no slots (or fetch if you want)
+            if (!slots) return { ...futsal, slots: undefined };
+            return { ...futsal, slots };
+          })
+        );
+        setFiltering(false);
+        return;
+      }
+
+      const today = new Date().toISOString().slice(0, 10);
+      const seatsValue = (() => {
+        const idx = Math.round((seats / 100) * (seatsLabels.length - 1));
+        return parseInt(seatsLabels[idx], 10);
+      })();
+
+      const futsalWithSlots = await Promise.all(
+        futsals.map(async (futsal) => {
+          let slots = slotCache[futsal._id];
+          if (!slots) {
+            slots = await fetchSlotsForFutsal(futsal._id, today);
+            setSlotCache((prev) => ({ ...prev, [futsal._id]: slots }));
           }
-          if (seatsActive) {
-            let currentPlayersCount = 0;
-            if (typeof slot.currentPlayers === 'number') {
-              currentPlayersCount = slot.currentPlayers;
-            } else if (Array.isArray(slot.players)) {
-              currentPlayersCount = slot.players.length;
+
+          // Apply filters only if their toggles are active
+          const matchingSlots = slots.filter(slot => {
+            let ok = true;
+            
+            // Only apply price filter if it's active
+            if (priceActive) {
+              const maxPrice = getMaxPrice(price);
+              ok = ok && typeof slot.price === 'number' && slot.price <= maxPrice;
             }
-            const availableSeats = typeof slot.maxPlayers === 'number'
-              ? slot.maxPlayers - currentPlayersCount
-              : undefined;
-            ok = ok && typeof availableSeats === 'number' && availableSeats >= seatsValue;
+
+            // Only apply seats filter if it's active
+            if (seatsActive) {
+              const currentPlayersCount = Array.isArray(slot.players) ? slot.players.length : (slot.currentPlayers || 0);
+              const availableSeats = slot.maxPlayers - currentPlayersCount;
+              ok = ok && availableSeats >= seatsValue;
+            }
+
+            return ok;
+          });
+
+          if (matchingSlots.length > 0) {
+            return { ...futsal, slots: matchingSlots };
           }
-          // (distanceActive logic can be added here if needed)
-          return ok;
-        });
-        if (matchingSlots.length > 0) {
-          return { ...futsal, slots: matchingSlots };
-        }
-        return null;
-      })
-    );
-    const filtered = futsalWithSlots.filter(Boolean);
-    setFilteredFutsals(filtered);
-    setFiltering(false);
+          return null;
+        })
+      );
+
+      const filtered = futsalWithSlots.filter(Boolean);
+      setFilteredFutsals(filtered);
+      setFiltering(false);
+    }, 0);
   };
 
   // Callback to receive slot info from QuickJoinSection
@@ -199,6 +211,21 @@ const QuickFindFutsalPage = () => {
     if (maxSlotPrice == null) return true;
     return futsalSlotMap[futsal._id] !== false;
   };
+
+  // Re-run filtering whenever toggles or slider values change
+  useEffect(() => {
+    if (filterActive) {
+      handleFindNow();
+    }
+  }, [priceActive, seatsActive, price, seats, filterActive]);
+
+  // Reset filters when toggles are turned off
+  useEffect(() => {
+    if (!priceActive && !seatsActive) {
+      setFilterActive(false);
+      setFilteredFutsals(futsals);
+    }
+  }, [priceActive, seatsActive, futsals]);
 
   return (
     <div className={styles.body}>
@@ -356,21 +383,24 @@ const QuickFindFutsalPage = () => {
                 <label>Price: <span className={styles.filterValue}>{getCurrentLabel(priceLabels, price)}</span></label>
                 <div className={styles.sliderContainer}>
                   <div className={styles.sliderTrack}>
-                    <div className={styles.sliderFill} style={{ width: `${price}%` }}></div>
+                    <div className={styles.sliderFill} style={{ width: `${price}%`, opacity: priceActive ? 1 : 0.3 }}></div>
                     <input
                       type="range"
                       min="0"
                       max="100"
                       value={price}
-                      onChange={e => setPrice(Number(e.target.value))}
+                      onChange={e => priceActive && setPrice(Number(e.target.value))}
                       className={styles.slider}
                       style={{
                         accentColor: priceActive ? '#007bff' : '#bbb',
                         background: priceActive ? undefined : '#eee',
+                        pointerEvents: priceActive ? 'auto' : 'none',
+                        opacity: priceActive ? 1 : 0.5,
                       }}
+                      disabled={!priceActive}
                     />
                   </div>
-                  <div className={styles.sliderLabels}>
+                  <div className={styles.sliderLabels} style={{ opacity: priceActive ? 1 : 0.5 }}>
                     {priceLabels.map(label => <span key={label}>{label}</span>)}
                   </div>
                 </div>
@@ -394,21 +424,24 @@ const QuickFindFutsalPage = () => {
                 <label>Seats Needed: <span className={styles.filterValue}>{getCurrentLabel(seatsLabels, seats)}</span></label>
                 <div className={styles.sliderContainer}>
                   <div className={styles.sliderTrack}>
-                    <div className={styles.sliderFill} style={{ width: `${seats}%` }}></div>
+                    <div className={styles.sliderFill} style={{ width: `${seats}%`, opacity: seatsActive ? 1 : 0.3 }}></div>
                     <input
                       type="range"
                       min="0"
                       max="100"
                       value={seats}
-                      onChange={e => setSeats(Number(e.target.value))}
+                      onChange={e => seatsActive && setSeats(Number(e.target.value))}
                       className={styles.slider}
                       style={{
                         accentColor: seatsActive ? '#007bff' : '#bbb',
                         background: seatsActive ? undefined : '#eee',
+                        pointerEvents: seatsActive ? 'auto' : 'none',
+                        opacity: seatsActive ? 1 : 0.5,
                       }}
+                      disabled={!seatsActive}
                     />
                   </div>
-                  <div className={styles.sliderLabels}>
+                  <div className={styles.sliderLabels} style={{ opacity: seatsActive ? 1 : 0.5 }}>
                     {seatsLabels.map(label => <span key={label}>{label}</span>)}
                   </div>
                 </div>
@@ -450,7 +483,7 @@ const QuickFindFutsalPage = () => {
                       futsal={futsal}
                       slots={futsal.slots}
                       minPrice={0}
-                      maxPrice={getMaxPrice(price)}
+                      maxPrice={priceActive ? getMaxPrice(price) : undefined}
                       availableOnly={true}
                     />
                   );

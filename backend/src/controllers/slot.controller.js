@@ -125,11 +125,13 @@ const joinSlot = asyncHandler(async (req, res) => {
         await slot.addPlayer(playerId);
     }
 
+    // Reload slot to get updated currentPlayers and players
+    const updatedSlot = await Slot.findById(slot._id);
+
     // Update slot status if full
-    if (slot.isFull()) {
-        slot.status = SLOT_STATUS.FULL;
-        await slot.save();
-        
+    if (updatedSlot.isFull()) {
+        updatedSlot.status = SLOT_STATUS.FULL;
+        await updatedSlot.save();
         // Update associated game status
         const game = await Game.findOne({ slot: slotId });
         if (game) {
@@ -140,7 +142,7 @@ const joinSlot = asyncHandler(async (req, res) => {
 
     return res
         .status(200)
-        .json(new ApiResponse(200, slot, 'Player added to slot successfully'));
+        .json(new ApiResponse(200, updatedSlot, 'Player added to slot successfully'));
 })
 
 const deleteSlot = asyncHandler(async (req, res) => {

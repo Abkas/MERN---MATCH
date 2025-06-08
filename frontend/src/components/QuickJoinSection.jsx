@@ -76,12 +76,16 @@ const QuickJoinSection = ({ futsal, maxPrice, onHasSlots }) => {
     slots.filter(slot => {
       const timeStatus = getSlotTimeStatus(slot, selectedDate);
       const notFull = (slot.currentPlayers || 0) < slot.maxPlayers;
-      const priceOk = typeof maxPrice === 'number' ? slot.price <= maxPrice : true;
+      const priceOk = maxPrice !== undefined ? slot.price <= maxPrice : true;
+      const availableSeats = slot.maxPlayers - (slot.currentPlayers || 0);
+      const seatsOk = availableSeats > 0;
+
       return (
         slot.status === 'available' &&
         timeStatus === 'upcoming' &&
         notFull &&
-        priceOk
+        priceOk &&
+        seatsOk
       );
     }), [slots, selectedDate, maxPrice]);
 
