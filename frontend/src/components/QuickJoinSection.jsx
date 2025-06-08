@@ -7,7 +7,7 @@ import SeatSelectionModal from './SeatSelectionModal';
 import { getSlotTimeStatus } from '../utils/slotTimeStatus';
 
 // Accept maxPrice as prop
-const QuickJoinSection = ({ futsal, maxPrice, onHasSlots }) => {
+const QuickJoinSection = ({ futsal, maxPrice, onHasSlots, requiredSeats }) => {
   const [isExpanded, setIsExpanded] = useState(false);
   const [slots, setSlots] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -75,19 +75,18 @@ const QuickJoinSection = ({ futsal, maxPrice, onHasSlots }) => {
   const filteredSlots = useMemo(() =>
     slots.filter(slot => {
       const timeStatus = getSlotTimeStatus(slot, selectedDate);
-      const notFull = (slot.currentPlayers || 0) < slot.maxPlayers;
+      const currentPlayersCount = Array.isArray(slot.players) ? slot.players.length : (slot.currentPlayers || 0);
+      const availableSeats = slot.maxPlayers - currentPlayersCount;
+      const hasEnoughSeats = requiredSeats ? availableSeats >= requiredSeats : availableSeats > 0;
       const priceOk = maxPrice !== undefined ? slot.price <= maxPrice : true;
-      const availableSeats = slot.maxPlayers - (slot.currentPlayers || 0);
-      const seatsOk = availableSeats > 0;
 
       return (
         slot.status === 'available' &&
         timeStatus === 'upcoming' &&
-        notFull &&
-        priceOk &&
-        seatsOk
+        hasEnoughSeats &&
+        priceOk
       );
-    }), [slots, selectedDate, maxPrice]);
+    }), [slots, selectedDate, maxPrice, requiredSeats]);
 
   // Notify parent if this futsal has any slots after filtering
   useEffect(() => {
@@ -114,7 +113,7 @@ const QuickJoinSection = ({ futsal, maxPrice, onHasSlots }) => {
         </button>
         <div className={styles.venueInfo}>
           <span className={styles.infoTag}>
-            {slots.filter(slot => slot.status === 'available').length} Slots Available
+            {filteredSlots.length} Slots Available
           </span>
           <span className={styles.infoTag}>
             ₹{futsal.price || '2000'} per court

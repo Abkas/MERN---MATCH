@@ -180,14 +180,18 @@ const QuickFindFutsalPage = () => {
 
             // Only apply seats filter if it's active
             if (seatsActive) {
+              // Calculate available seats
               const currentPlayersCount = Array.isArray(slot.players) ? slot.players.length : (slot.currentPlayers || 0);
               const availableSeats = slot.maxPlayers - currentPlayersCount;
+              
+              // Only show slots that have enough available seats
               ok = ok && availableSeats >= seatsValue;
             }
 
             return ok;
           });
 
+          // Only return futsals that have matching slots
           if (matchingSlots.length > 0) {
             return { ...futsal, slots: matchingSlots };
           }
@@ -477,6 +481,10 @@ const QuickFindFutsalPage = () => {
               ) : (
                 filteredFutsals.map(futsal => {
                   console.log('Rendering futsal:', futsal.name, 'with slots:', futsal.slots);
+                  const seatsValue = (() => {
+                    const idx = Math.round((seats / 100) * (seatsLabels.length - 1));
+                    return parseInt(seatsLabels[idx], 10);
+                  })();
                   return (
                     <QuickJoinSection
                       key={futsal._id}
@@ -485,6 +493,7 @@ const QuickFindFutsalPage = () => {
                       minPrice={0}
                       maxPrice={priceActive ? getMaxPrice(price) : undefined}
                       availableOnly={true}
+                      requiredSeats={seatsActive ? seatsValue : undefined}
                     />
                   );
                 })
