@@ -10,6 +10,8 @@ import {Followers} from '../models/followers.model.js'
 import mongoose from 'mongoose'
 import { generateAccessToken } from '../utils/jwt-token.js' 
 import bcrypt from 'bcrypt'
+import { Slot } from '../models/slot.model.js'
+import { Game } from '../models/game.model.js'
 
 const signUpUser = async (req, res) => {
   const { username, email, password, role } = req.body;
@@ -464,6 +466,55 @@ const updateUserLocation = asyncHandler(async (req, res) => {
   );
 });
 
+const moveToHistory = asyncHandler(async(req, res) => {
+    const { slotIds } = req.body;
+    const userId = req.user._id;
+
+    if (!slotIds || !Array.isArray(slotIds)) {
+        throw new ApiError(400, 'Slot IDs are required and must be an array');
+    }
+
+    try {
+        // Create game records for each slot
+        const games = await Promise.all(slotIds.map(async (slotId) => {
+            const slot = await Slot.findById(slotId).populate('futsal');
+            if (!slot) {
+                throw new ApiError(404, `Slot ${slotId} not found`);
+            }
+
+            // Create a new game record with 'completed' status instead of 'ended'
+            const game = await Game.create({
+                futsal: slot.futsal._id,
+                slot: slotId,
+                players: slot.players,
+                status: 'ended',
+                time: slot.time,
+                date: slot.date
+            });
+
+            return game;
+        }));
+
+        // Add games to user's match history
+        const user = await User.findByIdAndUpdate(
+            userId,
+            { $push: { matchHistory: { $each: games.map(game => game._id) } } },
+            { new: true }
+        );
+
+        if (!user) {
+            throw new ApiError(404, 'User not found');
+        }
+
+        return res
+            .status(200)
+            .json(new ApiResponse(200, { games }, 'Matches moved to history successfully'));
+    } catch (error) {
+        console.error('Error in moveToHistory:', error);
+        throw new ApiError(500, error.message || 'Failed to move matches to history');
+    }
+});
+
 export {
     registerUser,
     loginUser,
@@ -476,5 +527,6 @@ export {
     getGameHistory,
     signUpUser,
     checkAuth,
-    updateUserLocation
+    updateUserLocation,
+    moveToHistory
 }

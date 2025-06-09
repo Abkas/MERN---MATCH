@@ -11,7 +11,8 @@ import {
     updateAccountDetails,
     updateUserAvatar,
     checkAuth,
-    updateUserLocation
+    updateUserLocation,
+    moveToHistory
 } from '../controllers/user.controller.js'
 import {upload} from '../middlewares/multer.middleware.js'
 import {verifyJWT} from '../middlewares/auth.middleware.js'
@@ -60,6 +61,10 @@ router
 router
 .route('/history')
 .get(verifyJWT, getGameHistory)
+
+router
+.route('/move-to-history')
+.post(verifyJWT, moveToHistory)
 
 router
 .route('/register')

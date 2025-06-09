@@ -21,9 +21,59 @@ const PUpcomingMatchesPage = () => {
     const fetchJoinedSlots = async () => {
         try {
             setLoading(true)
+            console.log('Fetching joined slots...');
             const response = await axiosInstance.get('/slots/player/joined')
             if (response.data.success) {
-                setJoinedSlots(response.data.message)
+                const slots = response.data.message;
+                console.log('All slots:', slots);
+                
+                // Filter out ended matches and move them to history
+                const endedSlots = slots.filter(slot => {
+                    const timeStatus = getSlotTimeStatus(slot, slot.date);
+                    console.log('Slot status:', slot._id, timeStatus);
+                    return timeStatus === 'ended';
+                });
+                
+                console.log('Ended slots to move:', endedSlots);
+                
+                // Move ended slots to history
+                if (endedSlots.length > 0) {
+                    try {
+                        // Use the same axiosInstance with the current proxy setup
+                        const moveResponse = await axiosInstance.post('/users/move-to-history', {
+                            slotIds: endedSlots.map(slot => slot._id)
+                        }, {
+                            headers: {
+                                'Content-Type': 'application/json'
+                            }
+                        });
+                        
+                        console.log('Move to history response:', moveResponse.data);
+                        if (moveResponse.data.success) {
+                            toast.success(`Moved ${endedSlots.length} ended match(es) to history`);
+                        }
+                    } catch (err) {
+                        console.error('Error moving matches to history:', err);
+                        // Log more details about the error
+                        console.error('Error details:', {
+                            message: err.message,
+                            response: err.response?.data,
+                            status: err.response?.status,
+                            url: err.config?.url,
+                            headers: err.config?.headers
+                        });
+                        toast.error('Failed to move ended matches to history');
+                    }
+                }
+
+                // Only show non-ended matches
+                const activeSlots = slots.filter(slot => {
+                    const timeStatus = getSlotTimeStatus(slot, slot.date);
+                    return timeStatus !== 'ended';
+                });
+                
+                console.log('Active slots to display:', activeSlots);
+                setJoinedSlots(activeSlots);
             } else {
                 toast.error('Failed to fetch joined slots')
             }
