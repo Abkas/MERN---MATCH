@@ -64,6 +64,21 @@ const UserSchema = new Schema(
         ref: 'OrganizerProfile'
         },
 
+        location: {
+            latitude: {
+                type: Number,
+                default: null
+            },
+            longitude: {
+                type: Number,
+                default: null
+            },
+            lastUpdated: {
+                type: Date,
+                default: null
+            }
+        }
+
 },{timestamps: true})
 
 UserSchema.pre('save', async function(next) {

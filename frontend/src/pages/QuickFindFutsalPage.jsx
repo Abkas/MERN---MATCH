@@ -5,6 +5,8 @@ import FutsalCard from '../components/FutsalCard'
 import futsalService from '../services/futsalService'
 import QuickJoinSection from '../components/QuickJoinSection'
 import { axiosInstance } from '../lib/axios';
+import { getCurrentLocation, calculateDistance, formatDistance } from '../utils/locationUtils';
+import toast from 'react-hot-toast';
 
 const QuickFindFutsalPage = () => {
   // State for filter values
@@ -40,7 +42,7 @@ const QuickFindFutsalPage = () => {
   const [availableOnly, setAvailableOnly] = useState(true);
 
   // Independent toggles for each filter
-  const [distanceFilterActive, setDistanceFilterActive] = useState(true);
+  const [distanceFilterActive, setDistanceFilterActive] = useState(false);
   const [priceFilterActive, setPriceFilterActive] = useState(true);
   const [seatsFilterActive, setSeatsFilterActive] = useState(true);
 
@@ -66,6 +68,99 @@ const QuickFindFutsalPage = () => {
     if (value < 75) return 200;
     return 1000000; // 250+ means no upper limit
   };
+
+  const [userLocation, setUserLocation] = useState(null);
+  const [maxDistance, setMaxDistance] = useState(5); // in km
+
+  // Get user's location when component mounts
+  useEffect(() => {
+    const fetchUserLocation = async () => {
+      try {
+        // Check if geolocation is supported
+        if (!navigator.geolocation) {
+          console.error('Geolocation is not supported by your browser');
+          toast.error('Location services are not supported by your browser');
+          return;
+        }
+
+        // Check if we have permission
+        const permissionStatus = await navigator.permissions.query({ name: 'geolocation' });
+        console.log('Location permission status:', permissionStatus.state);
+
+        if (permissionStatus.state === 'denied') {
+          console.error('Location permission denied');
+          toast.error('Please enable location services in your browser settings');
+          return;
+        }
+
+        // Get location
+        const location = await getCurrentLocation();
+        console.log('1. User Location Retrieved:', {
+          latitude: location.latitude,
+          longitude: location.longitude,
+          timestamp: new Date().toLocaleString()
+        });
+        
+        setUserLocation(location);
+        
+        // Update user's location in the database
+        console.log('2. Sending location to backend:', {
+          latitude: location.latitude,
+          longitude: location.longitude
+        });
+        
+        const response = await axiosInstance.post('/users/update-location', {
+          latitude: location.latitude,
+          longitude: location.longitude
+        });
+        
+        console.log('3. Backend Response:', response.data);
+        console.log('4. Location update status:', response.data.success ? 'Success' : 'Failed');
+
+        // Show success toast with location
+        toast.success(`Location saved: ${location.latitude.toFixed(6)}, ${location.longitude.toFixed(6)}`, {
+          duration: 4000,
+          position: 'top-center',
+          style: {
+            background: '#333',
+            color: '#fff',
+            fontSize: '14px'
+          }
+        });
+
+        // Store in sessionStorage for this session
+        sessionStorage.setItem('userLocation', JSON.stringify(location));
+        console.log('5. Location stored in sessionStorage');
+
+        // Listen for permission changes
+        permissionStatus.addEventListener('change', () => {
+          console.log('Location permission changed:', permissionStatus.state);
+          if (permissionStatus.state === 'granted') {
+            fetchUserLocation(); // Retry getting location
+          }
+        });
+
+      } catch (error) {
+        console.error('Error in location update process:', {
+          message: error.message,
+          response: error.response?.data,
+          status: error.response?.status
+        });
+        
+        if (error.code === 1) {
+          toast.error('Please enable location services in your browser settings');
+        } else if (error.code === 2) {
+          toast.error('Location information is unavailable');
+        } else if (error.code === 3) {
+          toast.error('Location request timed out');
+        } else {
+          toast.error('Could not get your location. Please try again.');
+        }
+      }
+    };
+
+    fetchUserLocation();
+  }, []);
 
   useEffect(() => {
     fetchFutsals();
@@ -132,20 +227,18 @@ const QuickFindFutsalPage = () => {
     setShowSuggestions(false);
   };
 
-  // When Find Now is clicked, filter futsals and slots by price
+  // Update handleFindNow to use the current location for distance calculations
   const handleFindNow = async () => {
+    console.log('Current user location for filtering:', userLocation);
     setFiltering(true);
-    setFilterActive(false); // Reset filterActive to force re-render
+    setFilterActive(false);
 
-    // Wait a tick to ensure state update
     setTimeout(async () => {
       setFilterActive(true);
-      // If all toggles are off, show all futsals and all slots (no filtering)
-      if (!priceActive && !seatsActive) {
+      if (!priceActive && !seatsActive && !distanceFilterActive) {
         setFilteredFutsals(
           futsals.map(futsal => {
             let slots = slotCache[futsal._id];
-            // If slots are not cached, just show futsal with no slots (or fetch if you want)
             if (!slots) return { ...futsal, slots: undefined };
             return { ...futsal, slots };
           })
@@ -162,38 +255,51 @@ const QuickFindFutsalPage = () => {
 
       const futsalWithSlots = await Promise.all(
         futsals.map(async (futsal) => {
+          // Always calculate distance if we have user location
+          let distance = null;
+          if (userLocation && futsal.location) {
+            distance = calculateDistance(
+              userLocation.latitude,
+              userLocation.longitude,
+              futsal.location.latitude,
+              futsal.location.longitude
+            );
+            
+            // Skip futsals that are too far if distance filter is active
+            if (distanceFilterActive && distance > maxDistance) {
+              return null;
+            }
+          }
+
           let slots = slotCache[futsal._id];
           if (!slots) {
             slots = await fetchSlotsForFutsal(futsal._id, today);
             setSlotCache((prev) => ({ ...prev, [futsal._id]: slots }));
           }
 
-          // Apply filters only if their toggles are active
           const matchingSlots = slots.filter(slot => {
             let ok = true;
             
-            // Only apply price filter if it's active
             if (priceActive) {
               const maxPrice = getMaxPrice(price);
               ok = ok && typeof slot.price === 'number' && slot.price <= maxPrice;
             }
 
-            // Only apply seats filter if it's active
             if (seatsActive) {
-              // Calculate available seats
               const currentPlayersCount = Array.isArray(slot.players) ? slot.players.length : (slot.currentPlayers || 0);
               const availableSeats = slot.maxPlayers - currentPlayersCount;
-              
-              // Only show slots that have enough available seats
               ok = ok && availableSeats >= seatsValue;
             }
 
             return ok;
           });
 
-          // Only return futsals that have matching slots
           if (matchingSlots.length > 0) {
-            return { ...futsal, slots: matchingSlots };
+            return { 
+              ...futsal, 
+              slots: matchingSlots,
+              distance: distance ? formatDistance(distance) : null
+            };
           }
           return null;
         })
@@ -329,15 +435,15 @@ const QuickFindFutsalPage = () => {
           <div className={styles.filters}>
             <h2>Quick Filters</h2>
             <div className={styles.filterSliders}>
-              {/* Distance Filter Group */}
+              {/* Distance Filter */}
               <div className={styles.filterGroup} style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
                 <div
-                  onClick={() => setDistanceActive((prev) => !prev)}
+                  onClick={() => setDistanceFilterActive((prev) => !prev)}
                   style={{
                     width: 18,
                     height: 18,
                     borderRadius: 4,
-                    background: distanceActive ? '#2ecc40' : '#bbb',
+                    background: distanceFilterActive ? '#2ecc40' : '#bbb',
                     marginRight: 8,
                     cursor: 'pointer',
                     border: '1px solid #888',
@@ -345,26 +451,30 @@ const QuickFindFutsalPage = () => {
                   }}
                   title="Toggle distance filter"
                 ></div>
-                <label>Distance: <span className={styles.filterValue}>{getCurrentLabel(distanceLabels, distance)}</span></label>
+                <label>Distance: <span className={styles.filterValue}>{maxDistance}km</span></label>
                 <div className={styles.sliderContainer}>
                   <div className={styles.sliderTrack}>
-                    <div className={styles.sliderFill} style={{ width: `${distance}%` }}></div>
+                    <div className={styles.sliderFill} style={{ width: `${(maxDistance / 10) * 100}%`, opacity: distanceFilterActive ? 1 : 0.3 }}></div>
                     <input
                       type="range"
-                      min="0"
-                      max="100"
-                      value={distance}
-                      onChange={e => setDistance(Number(e.target.value))}
+                      min="1"
+                      max="10"
+                      value={maxDistance}
+                      onChange={e => distanceFilterActive && setMaxDistance(Number(e.target.value))}
                       className={styles.slider}
                       style={{
-                        accentColor: distanceActive ? '#007bff' : '#bbb',
-                        // fallback for browsers not supporting accentColor
-                        background: distanceActive ? undefined : '#eee',
+                        accentColor: distanceFilterActive ? '#007bff' : '#bbb',
+                        background: distanceFilterActive ? undefined : '#eee',
+                        pointerEvents: distanceFilterActive ? 'auto' : 'none',
+                        opacity: distanceFilterActive ? 1 : 0.5,
                       }}
+                      disabled={!distanceFilterActive}
                     />
                   </div>
-                  <div className={styles.sliderLabels}>
-                    {distanceLabels.map(label => <span key={label}>{label}</span>)}
+                  <div className={styles.sliderLabels} style={{ opacity: distanceFilterActive ? 1 : 0.5 }}>
+                    <span>1km</span>
+                    <span>5km</span>
+                    <span>10km</span>
                   </div>
                 </div>
               </div>

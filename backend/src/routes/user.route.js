@@ -10,7 +10,8 @@ import {
     getUserProfileFollow,
     updateAccountDetails,
     updateUserAvatar,
-    checkAuth
+    checkAuth,
+    updateUserLocation
 } from '../controllers/user.controller.js'
 import {upload} from '../middlewares/multer.middleware.js'
 import {verifyJWT} from '../middlewares/auth.middleware.js'
@@ -76,5 +77,8 @@ router
 .route('/check')
 .get(verifyJWT, checkAuth)
 
+router
+.route('/update-location')
+.post(verifyJWT, updateUserLocation)
 
 export default router

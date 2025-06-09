@@ -435,6 +435,34 @@ const checkAuth = asyncHandler(async(req,res) =>{
     }
 })
 
+const updateUserLocation = asyncHandler(async (req, res) => {
+  const { latitude, longitude } = req.body;
+  const userId = req.user._id;
+
+  if (!latitude || !longitude) {
+    throw new ApiError(400, "Latitude and longitude are required");
+  }
+
+  const user = await User.findByIdAndUpdate(
+    userId,
+    {
+      location: {
+        latitude,
+        longitude,
+        lastUpdated: new Date()
+      }
+    },
+    { new: true }
+  );
+
+  if (!user) {
+    throw new ApiError(404, "User not found");
+  }
+
+  return res.status(200).json(
+    new ApiResponse(200, user, "Location updated successfully")
+  );
+});
 
 export {
     registerUser,
@@ -447,5 +475,6 @@ export {
     getUserProfileFollow,
     getGameHistory,
     signUpUser,
-    checkAuth
+    checkAuth,
+    updateUserLocation
 }

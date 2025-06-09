@@ -118,6 +118,11 @@ const QuickJoinSection = ({ futsal, maxPrice, onHasSlots, requiredSeats }) => {
           <span className={styles.infoTag}>
             ₹{futsal.price || '2000'} per court
           </span>
+          {futsal.distance && (
+            <span className={styles.infoTag}>
+              {futsal.distance} away
+            </span>
+          )}
         </div>
       </div>
 
