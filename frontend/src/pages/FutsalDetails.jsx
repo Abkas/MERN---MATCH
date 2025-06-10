@@ -18,6 +18,7 @@ const FutsalDetails = () => {
   const [selectedDate, setSelectedDate] = useState(new Date().toISOString().split('T')[0]);
   const [selectedSlot, setSelectedSlot] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isSlotsVisible, setIsSlotsVisible] = useState(true);
 
   useEffect(() => {
     const fetchFutsalData = async () => {
@@ -327,11 +328,33 @@ const FutsalDetails = () => {
                 {futsalData.name}
               </h1>
               <div style={{ display: 'flex', flexWrap: 'wrap', gap: 32, alignItems: 'center', marginBottom: 10, justifyContent: 'center' }}>
-                <span style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: 20, textShadow: '0 2px 8px #1118' }}>
-                  <i className="fas fa-map-marker-alt" style={{ color: '#fff' }}></i> {futsalData.location}
+                <span style={{ 
+                  display: 'flex', 
+                  alignItems: 'center', 
+                  gap: 8, 
+                  fontSize: 20, 
+                  textShadow: '0 2px 8px #1118',
+                  background: 'rgba(0, 0, 0, 0.5)',
+                  padding: '8px 16px',
+                  borderRadius: '8px',
+                  backdropFilter: 'blur(5px)'
+                }}>
+                  <i className="fas fa-map-marker-alt" style={{ color: '#fff' }}></i> 
+                  <span style={{ color: '#fff', fontWeight: 600 }}>{futsalData.location || 'Location not specified'}</span>
                 </span>
-                <span style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: 20, textShadow: '0 2px 8px #1118' }}>
-                  <i className="far fa-clock" style={{ color: '#fff' }}></i> {futsalData.openingHours}
+                <span style={{ 
+                  display: 'flex', 
+                  alignItems: 'center', 
+                  gap: 8, 
+                  fontSize: 20, 
+                  textShadow: '0 2px 8px #1118',
+                  background: 'rgba(0, 0, 0, 0.5)',
+                  padding: '8px 16px',
+                  borderRadius: '8px',
+                  backdropFilter: 'blur(5px)'
+                }}>
+                  <i className="far fa-clock" style={{ color: '#fff' }}></i> 
+                  <span style={{ color: '#fff', fontWeight: 600 }}>{futsalData.openingHours || 'Hours not specified'}</span>
                 </span>
               </div>
               <div style={{ display: 'flex', flexWrap: 'wrap', gap: 24, marginTop: 10 }}>
@@ -345,10 +368,48 @@ const FutsalDetails = () => {
 
         {/* BOOKING SECTION */}
         <section className={styles.bookingSection}>
-          <div className={styles.container} style={{ maxWidth: 900, margin: '0 auto', background: '#fff', borderRadius: 18, boxShadow: '0 4px 24px #2563eb11', padding: '2.5rem 2rem', marginBottom: 36, border: '1.5px solid #e3e8f0' }}>
-            <div className={styles.bookingHeader} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 18 }}>
-              <button className={styles.registerBtn} style={{ background: '#43a047', color: '#fff', borderRadius: 8, padding: '10px 24px', fontWeight: 700, fontSize: 16, boxShadow: '0 2px 8px #43a04722', border: 'none', display: 'flex', alignItems: 'center', gap: 8 }}>
-                <i className="fas fa-user-plus"></i> Join / Register Futsal
+          <div className={styles.container} style={{ 
+            maxWidth: 900, 
+            margin: '0 auto', 
+            background: '#fff', 
+            borderRadius: 18, 
+            boxShadow: '0 4px 24px rgba(0,0,0,0.1)', 
+            padding: '2.5rem 2rem', 
+            marginBottom: 36, 
+            border: '1.5px solid #e2e8f0' 
+          }}>
+            <div className={styles.bookingHeader} style={{ 
+              display: 'flex', 
+              alignItems: 'center', 
+              justifyContent: 'space-between', 
+              marginBottom: 24,
+              padding: '0 1rem'
+            }}>
+              <button 
+                className={styles.toggleSlotsBtn}
+                onClick={() => setIsSlotsVisible(!isSlotsVisible)}
+                style={{ 
+                  background: '#000', 
+                  color: '#fff', 
+                  borderRadius: 8, 
+                  padding: '12px 24px', 
+                  fontWeight: 700, 
+                  fontSize: 16, 
+                  boxShadow: '0 2px 8px rgba(0,0,0,0.2)', 
+                  border: 'none', 
+                  display: 'flex', 
+                  alignItems: 'center', 
+                  gap: 8,
+                  transition: 'all 0.3s ease',
+                  cursor: 'pointer',
+                  ':hover': {
+                    transform: 'translateY(-2px)',
+                    boxShadow: '0 4px 12px rgba(0,0,0,0.3)'
+                  }
+                }}
+              >
+                <i className={`fas ${isSlotsVisible ? 'fa-times' : 'fa-calendar-alt'}`}></i>
+                {isSlotsVisible ? 'Close Slots' : 'View Slots'}
               </button>
               <div className={styles.dateNavigation}>
                 <input
@@ -357,93 +418,269 @@ const FutsalDetails = () => {
                   onChange={(e) => setSelectedDate(e.target.value)}
                   min={new Date().toISOString().split('T')[0]}
                   max={new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString().split('T')[0]}
-                  style={{ padding: '8px 16px', borderRadius: 6, border: '1.5px solid #e3e8f0', fontSize: 16 }}
+                  style={{ 
+                    padding: '12px 20px', 
+                    borderRadius: 8, 
+                    border: '1.5px solid #e2e8f0', 
+                    fontSize: 16,
+                    background: '#f8fafc',
+                    color: '#1e293b',
+                    fontWeight: 600,
+                    boxShadow: '0 2px 4px rgba(0,0,0,0.05)'
+                  }}
                 />
               </div>
             </div>
 
-            <div className={styles.venueDetails}>
-              {loading ? (
-                <div className={styles.loading}>Loading slots...</div>
-              ) : slots.length === 0 ? (
-                <div className={styles.noSlots} style={{ color: '#888', fontSize: 18, textAlign: 'center', padding: '2rem 0' }}>No slots available for this date</div>
-              ) : (
-                <div className={styles.timeSlots} style={{ marginTop: 18 }}>
-                  <table style={{ width: '100%', borderCollapse: 'collapse', background: '#f8fafc', borderRadius: 12, overflow: 'hidden', boxShadow: '0 2px 8px #2563eb08' }}>
-                    <thead>
-                      <tr style={{ background: '#f1f5fb' }}>
-                        <th style={{ padding: 14, fontWeight: 700, fontSize: 16, color: '#2563eb' }}><Clock size={16} /> Time</th>
-                        <th style={{ padding: 14, fontWeight: 700, fontSize: 16, color: '#2563eb' }}><Users size={16} /> Players</th>
-                        <th style={{ padding: 14, fontWeight: 700, fontSize: 16, color: '#2563eb' }}><DollarSign size={16} /> Price</th>
-                        <th style={{ padding: 14, fontWeight: 700, fontSize: 16, color: '#2563eb' }}>Status</th>
-                        <th style={{ padding: 14, fontWeight: 700, fontSize: 16, color: '#2563eb' }}>Action</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {slots.map((slot) => {
-                        const timeStatus = getSlotTimeStatus(slot, selectedDate);
-                        let statusLabel = '';
-                        let statusClass = '';
-                        if (timeStatus === 'ended') {
-                          statusLabel = 'Ended';
-                          statusClass = styles.statusEnded;
-                        } else if (timeStatus === 'playing') {
-                          statusLabel = 'Playing';
-                          statusClass = styles.statusPlaying;
-                        } else if (timeStatus === 'soon') {
-                          statusLabel = 'Starting Soon';
-                          statusClass = styles.statusSoon;
-                        } else {
-                          statusLabel = slot.status;
-                          statusClass = styles[`status${slot.status.charAt(0).toUpperCase() + slot.status.slice(1)}`] || '';
-                        }
-                        const canJoin = timeStatus === 'upcoming' && slot.status === 'available';
-                        return (
-                          <tr key={slot._id} style={{ background: '#fff', borderBottom: '1px solid #e3e8f0' }}>
-                            <td style={{ padding: 14, fontWeight: 600, color: '#222' }}>{slot.time}</td>
-                            <td style={{ padding: 14, fontWeight: 600, color: '#43a047' }}>{slot.currentPlayers || 0}/{slot.maxPlayers}</td>
-                            <td style={{ padding: 14, fontWeight: 600, color: '#fbc02d' }}>₹{slot.price}</td>
-                            <td style={{ padding: 14 }}>
-                              <span className={`${styles.status} ${statusClass}`} style={{ fontWeight: 700, fontSize: 14, padding: '4px 12px', borderRadius: 6 }}>{statusLabel}</span>
-                            </td>
-                            <td style={{ padding: 14 }}>
-                              <button
-                                className={`${styles.btnJoinNow} ${!canJoin ? styles.btnJoinNowDisabled : ''}`}
-                                style={{ background: canJoin ? '#2563eb' : '#e3e8f0', color: canJoin ? '#fff' : '#888', borderRadius: 8, padding: '8px 18px', fontWeight: 700, border: 'none', boxShadow: canJoin ? '0 2px 8px #2563eb22' : 'none', cursor: canJoin ? 'pointer' : 'not-allowed', transition: 'background 0.2s' }}
-                                onClick={() => canJoin && handleJoinNow(slot)}
-                                disabled={!canJoin}
-                              >
-                                Join Now
-                              </button>
-                            </td>
-                          </tr>
-                        );
-                      })}
-                    </tbody>
-                  </table>
-                </div>
-              )}
-            </div>
+            {isSlotsVisible && (
+              <div className={styles.venueDetails}>
+                {loading ? (
+                  <div className={styles.loading} style={{ 
+                    color: '#000', 
+                    fontSize: 18, 
+                    textAlign: 'center', 
+                    padding: '2rem 0',
+                    fontWeight: 600
+                  }}>Loading slots...</div>
+                ) : slots.length === 0 ? (
+                  <div className={styles.noSlots} style={{ 
+                    color: '#64748b', 
+                    fontSize: 18, 
+                    textAlign: 'center', 
+                    padding: '2rem 0',
+                    background: '#f8fafc',
+                    borderRadius: 12,
+                    border: '1px dashed #e2e8f0'
+                  }}>No slots available for this date</div>
+                ) : (
+                  <div className={styles.timeSlots} style={{ marginTop: 24 }}>
+                    <table style={{ 
+                      width: '100%', 
+                      borderCollapse: 'separate',
+                      borderSpacing: '0 8px',
+                      background: 'transparent'
+                    }}>
+                      <thead>
+                        <tr>
+                          <th style={{ 
+                            padding: '16px', 
+                            fontWeight: 700, 
+                            fontSize: 16, 
+                            color: '#000',
+                            background: '#f8fafc',
+                            borderRadius: '8px 0 0 8px',
+                            textAlign: 'left',
+                            borderBottom: '2px solid #000'
+                          }}><Clock size={18} style={{ marginRight: 8 }} /> Time</th>
+                          <th style={{ 
+                            padding: '16px', 
+                            fontWeight: 700, 
+                            fontSize: 16, 
+                            color: '#000',
+                            background: '#f8fafc',
+                            textAlign: 'left',
+                            borderBottom: '2px solid #000'
+                          }}><Users size={18} style={{ marginRight: 8 }} /> Players</th>
+                          <th style={{ 
+                            padding: '16px', 
+                            fontWeight: 700, 
+                            fontSize: 16, 
+                            color: '#000',
+                            background: '#f8fafc',
+                            textAlign: 'left',
+                            borderBottom: '2px solid #000'
+                          }}><DollarSign size={18} style={{ marginRight: 8 }} /> Price</th>
+                          <th style={{ 
+                            padding: '16px', 
+                            fontWeight: 700, 
+                            fontSize: 16, 
+                            color: '#000',
+                            background: '#f8fafc',
+                            textAlign: 'left',
+                            borderBottom: '2px solid #000'
+                          }}>Status</th>
+                          <th style={{ 
+                            padding: '16px', 
+                            fontWeight: 700, 
+                            fontSize: 16, 
+                            color: '#000',
+                            background: '#f8fafc',
+                            borderRadius: '0 8px 8px 0',
+                            textAlign: 'left',
+                            borderBottom: '2px solid #000'
+                          }}>Action</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {slots.map((slot) => {
+                          const timeStatus = getSlotTimeStatus(slot, selectedDate);
+                          let statusLabel = '';
+                          let statusClass = '';
+                          if (timeStatus === 'ended') {
+                            statusLabel = 'Ended';
+                            statusClass = styles.statusEnded;
+                          } else if (timeStatus === 'playing') {
+                            statusLabel = 'Playing';
+                            statusClass = styles.statusPlaying;
+                          } else if (timeStatus === 'soon') {
+                            statusLabel = 'Starting Soon';
+                            statusClass = styles.statusSoon;
+                          } else {
+                            statusLabel = slot.status;
+                            statusClass = styles[`status${slot.status.charAt(0).toUpperCase() + slot.status.slice(1)}`] || '';
+                          }
+                          const canJoin = timeStatus === 'upcoming' && slot.status === 'available';
+                          return (
+                            <tr key={slot._id} style={{ 
+                              background: '#fff', 
+                              boxShadow: '0 2px 8px rgba(0,0,0,0.05)',
+                              borderRadius: 8,
+                              transition: 'transform 0.2s ease, box-shadow 0.2s ease',
+                              ':hover': {
+                                transform: 'translateY(-2px)',
+                                boxShadow: '0 4px 12px rgba(0,0,0,0.1)'
+                              }
+                            }}>
+                              <td style={{ 
+                                padding: '16px', 
+                                fontWeight: 600, 
+                                color: '#000',
+                                borderRadius: '8px 0 0 8px',
+                                borderBottom: '1px solid #e2e8f0'
+                              }}>{slot.time}</td>
+                              <td style={{ 
+                                padding: '16px', 
+                                fontWeight: 600, 
+                                color: '#000',
+                                borderBottom: '1px solid #e2e8f0'
+                              }}>{slot.currentPlayers || 0}/{slot.maxPlayers}</td>
+                              <td style={{ 
+                                padding: '16px', 
+                                fontWeight: 600, 
+                                color: '#000',
+                                borderBottom: '1px solid #e2e8f0'
+                              }}>NPR {slot.price}</td>
+                              <td style={{ 
+                                padding: '16px',
+                                borderBottom: '1px solid #e2e8f0'
+                              }}>
+                                <span className={`${styles.status} ${statusClass}`} style={{ 
+                                  fontWeight: 700, 
+                                  fontSize: 14, 
+                                  padding: '6px 16px', 
+                                  borderRadius: 6,
+                                  display: 'inline-block',
+                                  background: statusLabel === 'Available' ? '#000' : '#e2e8f0',
+                                  color: statusLabel === 'Available' ? '#fff' : '#000'
+                                }}>{statusLabel}</span>
+                              </td>
+                              <td style={{ 
+                                padding: '16px',
+                                borderRadius: '0 8px 8px 0',
+                                borderBottom: '1px solid #e2e8f0'
+                              }}>
+                                <button
+                                  className={`${styles.btnJoinNow} ${!canJoin ? styles.btnJoinNowDisabled : ''}`}
+                                  style={{ 
+                                    background: canJoin ? '#000' : '#e2e8f0', 
+                                    color: canJoin ? '#fff' : '#64748b', 
+                                    borderRadius: 8, 
+                                    padding: '10px 24px', 
+                                    fontWeight: 700, 
+                                    border: 'none', 
+                                    boxShadow: canJoin ? '0 2px 8px rgba(0,0,0,0.2)' : 'none', 
+                                    cursor: canJoin ? 'pointer' : 'not-allowed', 
+                                    transition: 'all 0.3s ease',
+                                    ':hover': canJoin ? {
+                                      background: '#333',
+                                      transform: 'translateY(-2px)',
+                                      boxShadow: '0 4px 12px rgba(0,0,0,0.3)'
+                                    } : {}
+                                  }}
+                                  onClick={() => canJoin && handleJoinNow(slot)}
+                                  disabled={!canJoin}
+                                >
+                                  {canJoin ? 'Join Now' : 'Not Available'}
+                                </button>
+                              </td>
+                            </tr>
+                          );
+                        })}
+                      </tbody>
+                    </table>
+                  </div>
+                )}
+              </div>
+            )}
           </div>
         </section>
 
         {/* ABOUT SECTION */}
         <section className={styles.aboutSection}>
-          <div className={styles.container} style={{ maxWidth: 900, margin: '0 auto', background: '#fff', borderRadius: 18, boxShadow: '0 4px 24px #2563eb11', padding: '2.5rem 2rem', marginBottom: 36, border: '1.5px solid #e3e8f0' }}>
+          <div className={styles.container} style={{ 
+            maxWidth: 900, 
+            margin: '0 auto', 
+            background: '#fff', 
+            borderRadius: 18, 
+            boxShadow: '0 4px 24px rgba(0,0,0,0.1)', 
+            padding: '2.5rem 2rem', 
+            marginBottom: 36, 
+            border: '1.5px solid #e2e8f0' 
+          }}>
             <div className={styles.aboutContent}>
-              <h2 style={{ fontWeight: 800, color: '#2563eb', marginBottom: 12 }}>About Us:</h2>
-              <p style={{ fontSize: 17, color: '#444', marginBottom: 18 }}>{futsalData.description}</p>
+              <h2 style={{ 
+                fontWeight: 800, 
+                color: '#000', 
+                marginBottom: 20,
+                fontSize: '1.8rem',
+                textAlign: 'center'
+              }}>About Us</h2>
+              <p style={{ 
+                fontSize: 17, 
+                color: '#475569', 
+                marginBottom: 24,
+                lineHeight: '1.7',
+                textAlign: 'center',
+                maxWidth: '800px',
+                margin: '0 auto 24px'
+              }}>{futsalData.description}</p>
             </div>
-            <div className={styles.features} style={{ display: 'flex', flexWrap: 'wrap', gap: 16, marginBottom: 10 }}>
+            <div className={styles.features} style={{ 
+              display: 'flex', 
+              flexWrap: 'wrap', 
+              gap: 16, 
+              marginTop: 24,
+              justifyContent: 'center'
+            }}>
               {futsalData.features && futsalData.features.length > 0 ? (
                 futsalData.features.map((feature, index) => (
-                  <div key={index} className={styles.feature} style={{ background: '#f1f5fb', color: '#2563eb', borderRadius: 8, padding: '8px 18px', fontWeight: 600, display: 'flex', alignItems: 'center', gap: 8 }}>
-                    <i className="fas fa-check-circle"></i>
+                  <div key={index} className={styles.feature} style={{ 
+                    background: '#f8fafc', 
+                    color: '#000', 
+                    borderRadius: 8, 
+                    padding: '12px 24px', 
+                    fontWeight: 600, 
+                    display: 'flex', 
+                    alignItems: 'center', 
+                    gap: 8,
+                    transition: 'all 0.3s ease',
+                    border: '1px solid #e2e8f0',
+                    ':hover': {
+                      transform: 'translateY(-2px)',
+                      boxShadow: '0 4px 12px rgba(0,0,0,0.1)'
+                    }
+                  }}>
+                    <i className="fas fa-check-circle" style={{ color: '#000' }}></i>
                     <span>{feature}</span>
                   </div>
                 ))
               ) : (
-                <p className={styles.noFeatures} style={{ color: '#888' }}>No features listed</p>
+                <p className={styles.noFeatures} style={{ 
+                  color: '#64748b',
+                  fontSize: 16,
+                  textAlign: 'center',
+                  width: '100%'
+                }}>No features listed</p>
               )}
             </div>
           </div>
@@ -451,14 +688,56 @@ const FutsalDetails = () => {
 
         {/* OWNER SECTION */}
         <section className={styles.ownerSection}>
-          <div className={styles.container} style={{ maxWidth: 900, margin: '0 auto', background: '#fff', borderRadius: 18, boxShadow: '0 4px 24px #2563eb11', padding: '2.5rem 2rem', marginBottom: 36, border: '1.5px solid #e3e8f0' }}>
-            <h2 style={{ fontWeight: 800, color: '#2563eb', marginBottom: 18 }}>Meet the Owner:</h2>
-            <div className={styles.ownerProfile} style={{ display: 'flex', alignItems: 'center', gap: 32 }}>
-              <div className={styles.ownerImage}>
+          <div className={styles.container} style={{ 
+            maxWidth: 900, 
+            margin: '0 auto', 
+            background: 'transparent', 
+            borderRadius: 0, 
+            boxShadow: 'none', 
+            padding: '0', 
+            marginBottom: 36, 
+            border: 'none',
+            display: 'flex', 
+            flexDirection: 'column', 
+            alignItems: 'center' 
+          }}>
+            <h2 style={{ 
+              fontWeight: 800, 
+              color: '#fff', 
+              marginBottom: 24,
+              fontSize: '1.8rem',
+              textAlign: 'center'
+            }}>Meet the Owner</h2>
+            <div className={styles.ownerProfile} style={{ 
+              display: 'flex', 
+              alignItems: 'center', 
+              gap: 32,
+              background: '#000',
+              padding: '2rem',
+              borderRadius: '12px',
+              boxShadow: '0 2px 8px rgba(0,0,0,0.05)',
+              width: '100%'
+            }}>
+              <div className={styles.ownerImage} style={{
+                position: 'relative',
+                transition: 'transform 0.3s ease'
+              }}>
                 <img
                   src={futsalData.owner.image}
                   alt={futsalData.owner.name}
-                  style={{ width: 90, height: 90, borderRadius: '50%', objectFit: 'cover', border: '3px solid #2563eb', background: '#f1f5fb' }}
+                  style={{ 
+                    width: 150, 
+                    height: 150, 
+                    borderRadius: '50%', 
+                    objectFit: 'cover',
+                    border: 'none',
+                    background: '#f8fafc',
+                    transition: 'transform 0.3s ease, box-shadow 0.3s ease',
+                    ':hover': {
+                      transform: 'scale(1.05)',
+                      boxShadow: '0 4px 12px rgba(0,0,0,0.2)'
+                    }
+                  }}
                   onError={(e) => {
                     e.target.onerror = null;
                     e.target.src = '/default-owner.png';
@@ -466,27 +745,123 @@ const FutsalDetails = () => {
                 />
               </div>
               <div style={{ flex: 1 }}>
-                <h3 style={{ fontWeight: 700, fontSize: 22, marginBottom: 6 }}>{futsalData.owner.name}, <span style={{ fontWeight: 400, fontSize: 18 }}>Founder - {futsalData.name}</span></h3>
-                <p className={styles.ownerBio} style={{ color: '#444', fontSize: 16, marginBottom: 10 }}>{futsalData.owner.bio}</p>
-                <div className={styles.ownerContact} style={{ display: 'flex', alignItems: 'center', gap: 24, marginBottom: 10 }}>
-                  <div className={styles.contactItem} style={{ color: '#43a047', fontWeight: 600, display: 'flex', alignItems: 'center', gap: 6 }}>
+                <h3 style={{ 
+                  fontWeight: 700, 
+                  fontSize: 24, 
+                  marginBottom: 8,
+                  color: '#fff'
+                }}>
+                  {futsalData.owner.name}
+                  <span style={{ 
+                    fontWeight: 500, 
+                    fontSize: 18,
+                    color: '#ccc',
+                    display: 'block',
+                    marginTop: '4px'
+                  }}>
+                    Founder - {futsalData.name}
+                  </span>
+                </h3>
+                <p className={styles.ownerBio} style={{ 
+                  color: '#e2e8f0', 
+                  fontSize: 16, 
+                  marginBottom: 16,
+                  lineHeight: '1.6'
+                }}>
+                  {futsalData.owner.bio}
+                </p>
+                <div className={styles.ownerContact} style={{ 
+                  display: 'flex', 
+                  alignItems: 'center', 
+                  gap: 24, 
+                  marginBottom: 16,
+                  flexWrap: 'wrap'
+                }}>
+                  <div className={styles.contactItem} style={{ 
+                    color: '#000', 
+                    fontWeight: 600, 
+                    display: 'flex', 
+                    alignItems: 'center', 
+                    gap: 8,
+                    background: '#f8fafc',
+                    padding: '8px 16px',
+                    borderRadius: '8px',
+                    border: '1px solid #e2e8f0'
+                  }}>
                     <i className="fas fa-phone"></i>
                     <span>{futsalData.owner.phone}</span>
                   </div>
                   {futsalData.owner.email && (
-                    <div className={styles.contactItem} style={{ color: '#2563eb', fontWeight: 600, display: 'flex', alignItems: 'center', gap: 6 }}>
+                    <div className={styles.contactItem} style={{ 
+                      color: '#000', 
+                      fontWeight: 600, 
+                      display: 'flex', 
+                      alignItems: 'center', 
+                      gap: 8,
+                      background: '#f8fafc',
+                      padding: '8px 16px',
+                      borderRadius: '8px',
+                      border: '1px solid #e2e8f0'
+                    }}>
                       <i className="fas fa-envelope"></i>
                       <span>{futsalData.owner.email}</span>
                     </div>
                   )}
                 </div>
-                {/* Optionally show more owner info if available */}
-                {futsalData.owner && futsalData.owner.additionalInfo && (
-                  <div style={{ color: '#888', fontSize: 15, marginBottom: 8 }}>{futsalData.owner.additionalInfo}</div>
+                {futsalData.owner.additionalInfo && (
+                  <div style={{ 
+                    color: '#e2e8f0', 
+                    fontSize: 15, 
+                    marginBottom: 16,
+                    padding: '12px',
+                    background: 'rgba(255,255,255,0.1)',
+                    borderRadius: '8px',
+                    border: '1px solid rgba(255,255,255,0.2)'
+                  }}>
+                    {futsalData.owner.additionalInfo}
+                  </div>
                 )}
-                <div className={styles.ownerActions} style={{ display: 'flex', gap: 12 }}>
-                  <button className={styles.addFriendBtn} style={{ background: '#2563eb', color: '#fff', borderRadius: 8, padding: '8px 18px', fontWeight: 600, border: 'none', boxShadow: '0 2px 8px #2563eb22', cursor: 'pointer' }}>Add Friend</button>
-                  <button className={styles.messageBtn} style={{ background: '#fff', color: '#2563eb', border: '1.5px solid #2563eb', borderRadius: 8, padding: '8px 18px', fontWeight: 600, cursor: 'pointer' }}>Message</button>
+                <div className={styles.ownerActions} style={{ 
+                  display: 'flex', 
+                  gap: 12,
+                  marginTop: '16px'
+                }}>
+                  <button className={styles.addFriendBtn} style={{ 
+                    background: '#4FC0D4', 
+                    color: '#fff', 
+                    borderRadius: 8, 
+                    padding: '10px 20px', 
+                    fontWeight: 600, 
+                    border: 'none', 
+                    boxShadow: '0 2px 8px rgba(0,0,0,0.2)',
+                    cursor: 'pointer',
+                    transition: 'all 0.3s ease',
+                    ':hover': {
+                      background: '#3FB1C7',
+                      transform: 'translateY(-2px)',
+                      boxShadow: '0 4px 12px rgba(0,0,0,0.3)'
+                    }
+                  }}>
+                    Add Friend
+                  </button>
+                  <button className={styles.messageBtn} style={{ 
+                    background: '#90EE90', 
+                    color: '#000', 
+                    border: 'none', 
+                    borderRadius: 8, 
+                    padding: '10px 20px', 
+                    fontWeight: 600, 
+                    cursor: 'pointer',
+                    boxShadow: '0 2px 8px rgba(0,0,0,0.2)',
+                    transition: 'all 0.3s ease',
+                    ':hover': {
+                      background: '#7ACD7A',
+                      transform: 'translateY(-2px)',
+                      boxShadow: '0 4px 12px rgba(0,0,0,0.3)'
+                    }
+                  }}>
+                    Message
+                  </button>
                 </div>
               </div>
             </div>
@@ -495,18 +870,43 @@ const FutsalDetails = () => {
 
         {/* LOCATION SECTION */}
         <section className={styles.locationSection}>
-          <div className={styles.container} style={{ maxWidth: 900, margin: '0 auto', background: '#fff', borderRadius: 18, boxShadow: '0 4px 24px #2563eb11', padding: '2.5rem 2rem', marginBottom: 36, border: '1.5px solid #e3e8f0', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-            <h2 style={{ fontWeight: 800, color: '#2563eb', marginBottom: 18, textAlign: 'center', width: '100%' }}>Find Us:</h2>
-            <div className={styles.locationMap} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 24, width: '100%' }}>
+          <div className={styles.container} style={{ 
+            maxWidth: 900, 
+            margin: '0 auto', 
+            background: '#fff', 
+            borderRadius: 18, 
+            boxShadow: '0 4px 24px rgba(0,0,0,0.1)', 
+            padding: '2.5rem 2rem', 
+            marginBottom: 36, 
+            border: '1.5px solid #e2e8f0', 
+            display: 'flex', 
+            flexDirection: 'column', 
+            alignItems: 'center' 
+          }}>
+            <h2 style={{ 
+              fontWeight: 800, 
+              color: '#000', 
+              marginBottom: 24,
+              fontSize: '1.8rem',
+              textAlign: 'center' 
+            }}>Find Us</h2>
+
+            <div className={styles.locationMap} style={{ 
+              display: 'flex', 
+              alignItems: 'center', 
+              justifyContent: 'center', 
+              gap: 24, 
+              width: '100%' 
+            }}>
               {(() => {
                 let mapLinkRaw = (futsalData.mapImage || '').trim();
-                // If user pasted full <iframe ...> tag, extract src
                 let mapLink = mapLinkRaw;
                 const iframeMatch = mapLinkRaw.match(/<iframe[^>]*src=["']([^"']+)["']/i);
                 if (iframeMatch) {
                   mapLink = iframeMatch[1];
                 }
-                // Try to extract coordinates from the embed or link
+
+                // Extract coordinates
                 let lat = null, lng = null;
                 const pbCoordMatch = mapLink.match(/!3d([\d.\-]+)!4d([\d.\-]+)/);
                 if (pbCoordMatch) {
@@ -525,91 +925,128 @@ const FutsalDetails = () => {
                     }
                   }
                 }
-                // Map rendering logic (no locationName display)
-                return (
-                  <div style={{ width: '100%' }}>
-                    {/* Map rendering logic below (unchanged, no locationName) */}
-                    {(() => {
-                      if (lat && lng) {
-                        const apiKey = 'YOUR_GOOGLE_MAPS_API_KEY';
-                        const staticMap = `https://maps.googleapis.com/maps/api/staticmap?center=${lat},${lng}&zoom=16&size=600x300&markers=color:red%7Clabel:F%7C${lat},${lng}&key=${apiKey}`;
-                        const markerEmbed = `https://www.google.com/maps?q=${lat},${lng}&z=16&output=embed`;
-                        if (apiKey && apiKey !== 'YOUR_GOOGLE_MAPS_API_KEY') {
-                          return (
-                            <img src={staticMap} alt="Futsal Location" style={{ width: 600, height: 300, borderRadius: 16, boxShadow: '0 2px 12px #2563eb22', margin: '0 auto', display: 'block' }} />
-                          );
-                        } else {
-                          return (
-                            <iframe
-                              src={markerEmbed}
-                              width="600"
-                              height="300"
-                              style={{ border: 0, borderRadius: 16, boxShadow: '0 2px 12px #2563eb22', display: 'block', margin: '0 auto' }}
-                              allowFullScreen=""
-                              loading="lazy"
-                              referrerPolicy="no-referrer-when-downgrade"
-                              title="Futsal Map with Marker"
-                            ></iframe>
-                          );
-                        }
-                      }
-                      const isEmbed = mapLink.startsWith('https://') && mapLink.includes('/maps/embed');
-                      const isGoogleMaps = mapLink.startsWith('https://') && mapLink.includes('google.com/maps');
-                      if (!mapLink || mapLink === '/default-map.png') {
-                        return (
-                          <div style={{ color: 'orange', fontWeight: 700, fontSize: 16, textAlign: 'center', width: '100%' }}>
-                            No map link provided. Please update the futsal profile with a Google Maps link.
-                          </div>
-                        );
-                      }
-                      if (isEmbed) {
-                        return (
+
+                // If we have coordinates, create an embedded map
+                if (lat && lng) {
+                  const embedUrl = `https://www.google.com/maps/embed/v1/place?key=AIzaSyBFw0Qbyq9zTFTd-tUY6dZWTgaQzuU17R8&q=${lat},${lng}`;
+                  return (
+                    <div style={{ width: '100%', textAlign: 'center' }}>
+                      <div style={{
+                        width: '100%',
+                        height: 400,
+                        borderRadius: 16,
+                        overflow: 'hidden',
+                        border: '2px solid #e2e8f0',
+                        background: '#f8fafc',
+                        position: 'relative'
+                      }}>
+                        <iframe
+                          src={embedUrl}
+                          width="100%"
+                          height="100%"
+                          style={{ border: 0 }}
+                          allowFullScreen=""
+                          loading="lazy"
+                          referrerPolicy="no-referrer-when-downgrade"
+                          title="Futsal Location"
+                        ></iframe>
+                      </div>
+                    </div>
+                  );
+                }
+
+                // If we have a direct map link
+                if (mapLink && mapLink !== '/default-map.png') {
+                  // Check if it's already an embed URL
+                  if (mapLink.includes('/maps/embed/')) {
+                    return (
+                      <div style={{ width: '100%', textAlign: 'center' }}>
+                        <div style={{
+                          width: '100%',
+                          height: 400,
+                          borderRadius: 16,
+                          overflow: 'hidden',
+                          border: '2px solid #e2e8f0',
+                          background: '#f8fafc',
+                          position: 'relative'
+                        }}>
                           <iframe
                             src={mapLink}
-                            width="400"
-                            height="260"
-                            style={{ border: 0, borderRadius: 16, boxShadow: '0 2px 12px #2563eb22', display: 'block', margin: '0 auto' }}
+                            width="100%"
+                            height="100%"
+                            style={{ border: 0 }}
                             allowFullScreen=""
                             loading="lazy"
                             referrerPolicy="no-referrer-when-downgrade"
-                            title="Futsal Map"
+                            title="Futsal Location"
                           ></iframe>
-                        );
-                      } else if (isGoogleMaps) {
-                        return (
-                          <a
-                            href={mapLink}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            style={{ color: '#2563eb', fontWeight: 600, textDecoration: 'underline', fontSize: 18, display: 'block', textAlign: 'center', width: '100%' }}
-                            onClick={e => { e.stopPropagation(); }}
-                          >
-                            View on Google Maps
-                          </a>
-                        );
-                      } else {
-                        return (
-                          <div style={{
-                            width: 400,
-                            height: 260,
-                            borderRadius: 16,
-                            border: '2px dashed #2563eb',
-                            background: '#f1f5fb',
-                            display: 'flex',
-                            alignItems: 'center',
-                            justifyContent: 'center',
-                            color: '#2563eb',
-                            fontWeight: 700,
-                            fontSize: 20,
-                            flexShrink: 0,
-                            margin: '0 auto',
-                            textAlign: 'center'
-                          }}>
-                            <span style={{ opacity: 0.5 }}>Map will appear here</span>
-                          </div>
-                        );
-                      }
-                    })()}
+                        </div>
+                      </div>
+                    );
+                  }
+
+                  // If it's a regular Google Maps URL, convert it to embed
+                  const embedUrl = mapLink.replace('https://www.google.com/maps', 'https://www.google.com/maps/embed/v1/place') + '&key=AIzaSyBFw0Qbyq9zTFTd-tUY6dZWTgaQzuU17R8';
+                  return (
+                    <div style={{ width: '100%', textAlign: 'center' }}>
+                      <div style={{
+                        width: '100%',
+                        height: 400,
+                        borderRadius: 16,
+                        overflow: 'hidden',
+                        border: '2px solid #e2e8f0',
+                        background: '#f8fafc',
+                        position: 'relative'
+                      }}>
+                        <iframe
+                          src={embedUrl}
+                          width="100%"
+                          height="100%"
+                          style={{ border: 0 }}
+                          allowFullScreen=""
+                          loading="lazy"
+                          referrerPolicy="no-referrer-when-downgrade"
+                          title="Futsal Location"
+                        ></iframe>
+                      </div>
+                    </div>
+                  );
+                }
+
+                // Fallback for no map data
+                return (
+                  <div style={{ width: '100%', textAlign: 'center' }}>
+                    <div style={{
+                      width: '100%',
+                      height: 400,
+                      borderRadius: 16,
+                      border: '2px dashed #e2e8f0',
+                      background: '#f8fafc',
+                      display: 'flex',
+                      flexDirection: 'column',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      gap: 16,
+                      padding: '20px'
+                    }}>
+                      <i className="fas fa-map" style={{ 
+                        fontSize: 48, 
+                        color: '#64748b',
+                        marginBottom: 16
+                      }}></i>
+                      <h3 style={{ 
+                        fontSize: 20, 
+                        fontWeight: 700, 
+                        color: '#64748b',
+                        marginBottom: 8
+                      }}>Location Not Available</h3>
+                      <p style={{ 
+                        color: '#64748b',
+                        maxWidth: '400px'
+                      }}>
+                        The location details for this futsal are not available at the moment.
+                      </p>
+                    </div>
                   </div>
                 );
               })()}
