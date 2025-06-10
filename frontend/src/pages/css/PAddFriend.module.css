@@ -34,7 +34,7 @@
 }
 
 /* Header */
-.body header {
+header {
   background-color: var(--bg-white);
   box-shadow: var(--shadow-sm);
   padding: 1rem 2rem;
@@ -43,7 +43,7 @@
   justify-content: space-between;
   position: sticky;
   top: 0;
-  width:100vw;
+  width: 100vw;
   z-index: 100;
 }
 
@@ -52,7 +52,7 @@
   width: auto;
 }
 
-.body header nav ul {
+header nav ul {
   display: flex;
   gap: 2rem;
   list-style: none;
@@ -60,7 +60,7 @@
   padding: 0;
 }
 
-.body header nav ul li a {
+header nav ul li a {
   font-weight: 500;
   color: var(--text-primary);
   position: relative;
@@ -68,11 +68,11 @@
   transition: color 0.2s ease;
 }
 
-.body header nav ul li a:hover {
+header nav ul li a:hover {
   color: var(--primary);
 }
 
-.body header nav ul li a::after {
+header nav ul li a::after {
   content: "";
   position: absolute;
   bottom: -5px;
@@ -83,7 +83,7 @@
   transition: width 0.3s ease;
 }
 
-.body header nav ul li a:hover::after {
+header nav ul li a:hover::after {
   width: 100%;
 }
 
@@ -108,26 +108,27 @@
   color: var(--primary);
 }
 
-.notification {
-  position: relative;
-}
-
-.notification::after {
-  content: "";
-  position: absolute;
-  top: 0;
-  right: 0;
-  width: 8px;
-  height: 8px;
-  background-color: var(--primary);
+.notification, .profileIcon {
+  width: 40px;
+  height: 40px;
   border-radius: 50%;
-  border: 2px solid var(--bg-white);
+  background-color: #0d0d0d;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
 }
 
-.profileIcon {
-  display: flex;
-  align-items: center;
-  justify-content: center;
+.notification:hover, .profileIcon:hover {
+  background-color: #333;
+}
+
+.notification svg, .profileIcon svg {
+  width: 20px;
+  height: 20px;
+  color: #fff;
+  stroke-width: 2;
 }
 
 /* Container */

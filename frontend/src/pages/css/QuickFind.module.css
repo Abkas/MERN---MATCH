@@ -64,7 +64,7 @@
 .navIcons {
     display: flex;
     gap: 20px;
-    color: #e0e0e0;
+    align-items: center;
 }
 
 .notification, .profile {
@@ -76,12 +76,18 @@
     justify-content: center;
     align-items: center;
     cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.notification:hover, .profile:hover {
+    background-color: #333;
 }
 
 .notification svg, .profile svg {
     width: 20px;
     height: 20px;
     color: #fff;
+    stroke-width: 2;
 }
 
 /* Main Content */
