@@ -109,31 +109,26 @@
 }
 
 .notification, .profileIcon {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.notification {
-  position: relative;
-}
-
-.notification::after {
-  content: "";
-  position: absolute;
-  top: 0;
-  right: 0;
-  width: 8px;
-  height: 8px;
-  background-color: var(--primary);
+  width: 40px;
+  height: 40px;
   border-radius: 50%;
-  border: 2px solid var(--bg-white);
+  background-color: #0d0d0d;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
 }
 
-.profileIcon {
-  display: flex;
-  align-items: center;
-  justify-content: center;
+.notification:hover, .profileIcon:hover {
+  background-color: #333;
+}
+
+.notification svg, .profileIcon svg {
+  width: 20px;
+  height: 20px;
+  color: #fff;
+  stroke-width: 2;
 }
 
 /* Container */

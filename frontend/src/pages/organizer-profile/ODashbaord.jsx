@@ -79,7 +79,7 @@ const ODashboard = () => {  const { logOut, authUser } = useAuthStore()
         <nav>
           <ul>
             <li><Link to="/futsalhome">Home</Link></li>
-            <li><Link to="bookfutsal">Book Futsal</Link></li>
+            <li><Link to="/bookfutsal">Book Futsal</Link></li>
             <li><Link to="/tournaments">Tournaments</Link></li>
             <li><Link to="/quickmatch">Quick Match</Link></li>
           </ul>

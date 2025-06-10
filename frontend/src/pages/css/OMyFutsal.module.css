@@ -521,9 +521,26 @@
 }
 
 .notification, .profileIcon {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background-color: #0d0d0d;
   display: flex;
-  align-items: center;
   justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.notification:hover, .profileIcon:hover {
+  background-color: #333;
+}
+
+.notification svg, .profileIcon svg {
+  width: 20px;
+  height: 20px;
+  color: #fff;
+  stroke-width: 2;
 }
 
 /* Responsive Design - Keeping sidebar fixed */
