@@ -368,7 +368,8 @@
 .timeInputs {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 1rem;
+  gap: 1.5rem;
+  margin-bottom: 0.5rem;
 }
 
 .timeInputGroup {
@@ -383,20 +384,55 @@
   font-weight: 500;
 }
 
-.timeInputGroup .iconInput input {
-  padding-left: 2.5rem;
+.timePicker {
+  position: relative;
+  width: 100%;
+}
+
+.timePicker select {
+  width: 100%;
+  padding: 0.75rem 1rem 0.75rem 2.5rem;
+  border: 1.5px solid var(--border-light);
+  border-radius: var(--radius);
   font-size: 1rem;
   color: var(--text-primary);
-}
-
-.timeInputGroup .iconInput input::-webkit-calendar-picker-indicator {
+  background-color: white;
   cursor: pointer;
-  opacity: 0.6;
-  transition: opacity 0.2s ease;
+  appearance: none;
+  transition: all 0.2s ease;
 }
 
-.timeInputGroup .iconInput input::-webkit-calendar-picker-indicator:hover {
-  opacity: 1;
+.timePicker select:hover {
+  border-color: var(--primary);
+}
+
+.timePicker select:focus {
+  outline: none;
+  border-color: var(--primary);
+  box-shadow: 0 0 0 2px rgba(65, 105, 225, 0.1);
+}
+
+.timeIcon {
+  position: absolute;
+  left: 1rem;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--text-secondary);
+  pointer-events: none;
+}
+
+.fieldNote {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+  margin-top: 0.5rem;
+}
+
+.fieldNote svg {
+  color: var(--text-secondary);
+  flex-shrink: 0;
 }
 
 /* Responsive Design */

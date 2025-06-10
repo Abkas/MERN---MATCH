@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import styles from '../css/ODashboard.module.css'
 import { Link, useNavigate } from 'react-router-dom'
-import { LogOut, User, Calendar, MapPin, Clock, Users, DollarSign, Star } from 'lucide-react'
+import { LogOut, User, Calendar, MapPin, Clock, Users, DollarSign, Star, Plus } from 'lucide-react'
 import { useAuthStore } from '../../store/useAuthStore'
 import { axiosInstance } from '../../lib/axios'
 import toast from 'react-hot-toast'
@@ -344,25 +344,72 @@ const ODashboard = () => {  const { logOut, authUser } = useAuthStore()
                 </div>
               ) : (
                 <div className={styles.noFutsals} style={{ 
-                  background: '#f9fafb', 
-                  borderRadius: '12px', 
-                  padding: '40px 20px',
+                  background: 'white', 
+                  borderRadius: '16px', 
+                  padding: '40px',
                   textAlign: 'center',
-                  marginBottom: '30px'
+                  marginBottom: '30px',
+                  border: '2px solid #e5e7eb',
+                  boxShadow: '0 4px 6px rgba(0, 0, 0, 0.05)',
+                  maxWidth: '600px',
+                  margin: '0 auto 30px'
                 }}>
-                  <p style={{ color: '#6b7280', marginBottom: '16px' }}>You haven't added any futsals yet.</p>
+                  <div style={{ 
+                    background: '#f3f4f6',
+                    width: '64px',
+                    height: '64px',
+                    borderRadius: '12px',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    margin: '0 auto 20px'
+                  }}>
+                    <Plus size={32} color="#374151" />
+                  </div>
+                  <h3 style={{ 
+                    fontSize: '1.5rem', 
+                    fontWeight: '700', 
+                    color: '#111827',
+                    marginBottom: '12px'
+                  }}>No Futsals Yet</h3>
+                  <p style={{ 
+                    color: '#6b7280', 
+                    marginBottom: '24px',
+                    maxWidth: '400px',
+                    margin: '0 auto 24px',
+                    lineHeight: '1.5'
+                  }}>
+                    Start your journey by adding your first futsal. You'll be able to manage slots, track bookings, and grow your business.
+                  </p>
                   <button 
-                    onClick={() => navigate('/create-futsal')} 
+                    onClick={() => navigate('/organizer-futsals')} 
                     style={{ 
                       background: '#2563eb',
                       color: 'white',
                       border: 'none',
-                      borderRadius: '6px',
-                      padding: '10px 20px',
+                      borderRadius: '8px',
+                      padding: '12px 24px',
+                      fontSize: '1rem',
                       fontWeight: '600',
-                      cursor: 'pointer'
+                      cursor: 'pointer',
+                      transition: 'all 0.2s',
+                      display: 'inline-flex',
+                      alignItems: 'center',
+                      gap: '8px',
+                      boxShadow: '0 2px 4px rgba(37, 99, 235, 0.1)'
+                    }}
+                    onMouseOver={(e) => {
+                      e.currentTarget.style.background = '#1d4ed8';
+                      e.currentTarget.style.transform = 'translateY(-1px)';
+                      e.currentTarget.style.boxShadow = '0 4px 6px rgba(37, 99, 235, 0.2)';
+                    }}
+                    onMouseOut={(e) => {
+                      e.currentTarget.style.background = '#2563eb';
+                      e.currentTarget.style.transform = 'translateY(0)';
+                      e.currentTarget.style.boxShadow = '0 2px 4px rgba(37, 99, 235, 0.1)';
                     }}
                   >
+                    <Plus size={20} />
                     Add Your First Futsal
                   </button>
                 </div>

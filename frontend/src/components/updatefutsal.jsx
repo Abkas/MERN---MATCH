@@ -315,33 +315,55 @@ const UpdateFutsal = () => {
                 <div className={styles.timeInputs}>
                   <div className={styles.timeInputGroup}>
                     <label htmlFor="openingHoursFrom">From</label>
-                    <div className={styles.iconInput}>
-                      <Clock size={16} />
-                      <input 
-                        type="time" 
+                    <div className={styles.timePicker}>
+                      <select 
                         id="openingHoursFrom" 
                         name="openingHoursFrom" 
                         value={formData.openingHoursFrom} 
-                        onChange={handleInputChange} 
-                        required 
-                      />
+                        onChange={handleInputChange}
+                        required
+                      >
+                        <option value="">Select time</option>
+                        {Array.from({ length: 24 }, (_, i) => {
+                          const hour = i.toString().padStart(2, '0');
+                          return (
+                            <option key={`from-${hour}`} value={`${hour}:00`}>
+                              {`${hour}:00`}
+                            </option>
+                          );
+                        })}
+                      </select>
+                      <Clock size={16} className={styles.timeIcon} />
                     </div>
                   </div>
                   <div className={styles.timeInputGroup}>
                     <label htmlFor="openingHoursTo">To</label>
-                    <div className={styles.iconInput}>
-                      <Clock size={16} />
-                      <input 
-                        type="time" 
+                    <div className={styles.timePicker}>
+                      <select 
                         id="openingHoursTo" 
                         name="openingHoursTo" 
                         value={formData.openingHoursTo} 
-                        onChange={handleInputChange} 
-                        required 
-                      />
+                        onChange={handleInputChange}
+                        required
+                      >
+                        <option value="">Select time</option>
+                        {Array.from({ length: 24 }, (_, i) => {
+                          const hour = i.toString().padStart(2, '0');
+                          return (
+                            <option key={`to-${hour}`} value={`${hour}:00`}>
+                              {`${hour}:00`}
+                            </option>
+                          );
+                        })}
+                      </select>
+                      <Clock size={16} className={styles.timeIcon} />
                     </div>
                   </div>
                 </div>
+                <p className={styles.fieldNote}>
+                  <Clock size={14} />
+                  Select your futsal's operating hours. Slots will be automatically generated within these hours.
+                </p>
               </div>
             </div>
           )}

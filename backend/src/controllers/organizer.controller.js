@@ -106,12 +106,10 @@ const getFutsalsByOrganizer = asyncHandler(async (req, res) => {
         .populate('tournaments')
         .populate('slots')
 
-    if (!futsals || futsals.length === 0) {
-        throw new ApiError(404, 'No futsals found for this organizer');
-    }
+    // Return empty array instead of throwing error
     return res
         .status(200)
-        .json(new ApiResponse(200, futsals, 'Futsals fetched successfully'));
+        .json(new ApiResponse(200, futsals || [], 'Futsals fetched successfully'));
 })
 
 
