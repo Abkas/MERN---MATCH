@@ -1,20 +1,75 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 import styles from '../css/ODashboard.module.css'
 import { Link, useNavigate } from 'react-router-dom'
-import { LogOut, User } from 'lucide-react'
+import { LogOut, User, Calendar, MapPin, Clock, Users, DollarSign, Star } from 'lucide-react'
 import { useAuthStore } from '../../store/useAuthStore'
+import { axiosInstance } from '../../lib/axios'
+import toast from 'react-hot-toast'
 
-const ODashboard = () => {
-  const { logOut } = useAuthStore()
+const ODashboard = () => {  const { logOut, authUser } = useAuthStore()
   const navigate = useNavigate()
+  const [organizerData, setOrganizerData] = useState(null)
+  const [futsals, setFutsals] = useState([])
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState(null)
+  const [organizerBio, setOrganizerBio] = useState("")  // Added state for bio
 
   const handleLogout = () => {
     logOut()
     navigate('/login')
   }
 
+  // Fetch organizer profile data
+  useEffect(() => {
+    const fetchOrganizerData = async () => {
+      setLoading(true)
+      try {
+        const [profileResponse, futsalsResponse] = await Promise.all([
+          axiosInstance.get('/organizer/organizer-profile'),
+          axiosInstance.get('/organizer/organizer-futsals')
+        ]);          console.log('Profile data:', profileResponse.data);
+        console.log('Futsals data:', futsalsResponse.data);
+        
+        // Extract bio from the response
+        let bio = "";
+        
+        if (profileResponse.data?.data?.organizerProfile?.bio) {
+          bio = profileResponse.data.data.organizerProfile.bio;
+        } else if (profileResponse.data?.message?.organizerProfile?.bio) {
+          bio = profileResponse.data.message.organizerProfile.bio;
+        }
+        
+        console.log('Bio extracted:', bio);
+        setOrganizerBio(bio);
+        
+        if (profileResponse.data.success) {
+          setOrganizerData(profileResponse.data.data);
+        }
+        
+        if (futsalsResponse.data.success) {
+          setFutsals(futsalsResponse.data.message);
+        }
+      } catch (err) {
+        console.error('Error fetching organizer data:', err);
+        setError('Failed to load organizer data');
+        toast.error('Failed to load your data');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchOrganizerData();
+  }, []);
   return (
     <div className={styles.body}>
+      <style>
+        {`
+          @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+          }
+        `}
+      </style>
       <header>
         <div className={styles.logo}>
           <Link to="/">
@@ -77,10 +132,425 @@ const ODashboard = () => {
               </button>
             </li>
           </ul>
-        </aside>
-        <main>
-          <h1> FUTSAL DASHBOARD:</h1>
-          {/* history main content goes here */}
+        </aside>        <main className={styles.mainContent} style={{ padding: '30px' }}>
+          <h1 className={styles.dashboardTitle} style={{ fontSize: '2.2rem', fontWeight: 800, color: '#232946', marginBottom: '30px' }}>
+            Futsal Organizer Dashboard
+          </h1>
+          
+          {loading ? (
+            <div className={styles.loadingContainer} style={{ textAlign: 'center', padding: '50px' }}>
+              <div className={styles.spinner} style={{ 
+                border: '4px solid rgba(0, 0, 0, 0.1)',
+                borderLeft: '4px solid #2563eb',
+                borderRadius: '50%',
+                width: '40px',
+                height: '40px',
+                animation: 'spin 1s linear infinite',
+                margin: '0 auto 20px'
+              }}></div>
+              <p>Loading your dashboard data...</p>
+            </div>
+          ) : error ? (
+            <div className={styles.errorContainer} style={{ 
+              background: '#fee2e2', 
+              color: '#b91c1c', 
+              padding: '20px', 
+              borderRadius: '8px',
+              textAlign: 'center'
+            }}>
+              <p>{error}</p>
+              <button 
+                onClick={() => window.location.reload()} 
+                style={{ 
+                  background: '#b91c1c', 
+                  color: 'white', 
+                  padding: '8px 16px', 
+                  borderRadius: '4px',
+                  border: 'none',
+                  marginTop: '10px',
+                  cursor: 'pointer'
+                }}
+              >
+                Try Again
+              </button>
+            </div>
+          ) : (
+            <div className={styles.dashboardContent}>
+              {/* Organizer Profile Card */}
+              <div className={styles.profileCard} style={{ 
+                background: 'white', 
+                borderRadius: '12px', 
+                padding: '24px',
+                boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
+                marginBottom: '30px',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '24px'
+              }}>
+                <div className={styles.profileImage} style={{ 
+                  width: '120px', 
+                  height: '120px', 
+                  borderRadius: '60px',
+                  overflow: 'hidden',
+                  border: '3px solid #e5e7eb'
+                }}>
+                  <img 
+                    src={authUser?.avatar || '/avatar.jpg'} 
+                    alt="Profile" 
+                    style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                  />
+                </div>
+                <div className={styles.profileInfo}>
+                  <h2 style={{ fontSize: '1.8rem', fontWeight: '700', marginBottom: '8px' }}>
+                    {authUser?.username || "Organizer"}
+                  </h2>                  <p style={{ color: '#6b7280', fontSize: '1rem', marginBottom: '12px' }}>
+                    {organizerBio || organizerData?.organizerProfile?.bio || "No bio available"}
+                  </p>
+                  <div className={styles.profileStats} style={{ display: 'flex', gap: '16px' }}>
+                    <div className={styles.stat} style={{ 
+                      background: '#f3f4f6', 
+                      padding: '8px 16px', 
+                      borderRadius: '8px',
+                      fontSize: '0.875rem'
+                    }}>
+                      <span style={{ fontWeight: '600' }}>Email:</span> {authUser?.email}
+                    </div>
+                    <div className={styles.stat} style={{ 
+                      background: '#f3f4f6', 
+                      padding: '8px 16px', 
+                      borderRadius: '8px',
+                      fontSize: '0.875rem'
+                    }}>
+                      <span style={{ fontWeight: '600' }}>Phone:</span> {authUser?.phoneNumber || "Not provided"}
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Futsals Section */}
+              <h2 style={{ fontSize: '1.5rem', fontWeight: '700', marginBottom: '16px', color: '#374151' }}>
+                Your Futsals ({futsals?.length || 0})
+              </h2>
+              
+              {futsals?.length > 0 ? (
+                <div className={styles.futsalsGrid} style={{ 
+                  display: 'grid', 
+                  gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))', 
+                  gap: '24px',
+                  marginBottom: '30px'
+                }}>
+                  {futsals.map(futsal => (
+                    <div key={futsal._id} className={styles.futsalCard} style={{ 
+                      background: 'white', 
+                      borderRadius: '12px', 
+                      padding: '20px',
+                      boxShadow: '0 4px 6px rgba(0, 0, 0, 0.05)',
+                      border: '1px solid #e5e7eb'
+                    }}>
+                      <div className={styles.futsalHeader} style={{ 
+                        display: 'flex', 
+                        justifyContent: 'space-between',
+                        marginBottom: '16px'
+                      }}>
+                        <h3 style={{ fontSize: '1.25rem', fontWeight: '700' }}>{futsal.name}</h3>
+                        <div className={styles.rating} style={{ 
+                          display: 'flex', 
+                          alignItems: 'center',
+                          color: '#f59e0b',
+                          fontWeight: '600',
+                          fontSize: '0.875rem',
+                          gap: '4px'
+                        }}>
+                          <Star size={16} />
+                          <span>{futsal.rating?.toFixed(1) || "New"}</span>
+                        </div>
+                      </div>
+                      
+                      <div className={styles.futsalDetails} style={{ 
+                        display: 'grid', 
+                        gridTemplateColumns: '1fr 1fr', 
+                        gap: '12px',
+                        marginBottom: '16px'
+                      }}>
+                        <div className={styles.detail} style={{ 
+                          display: 'flex',
+                          alignItems: 'center',
+                          gap: '8px',
+                          fontSize: '0.875rem',
+                          color: '#4b5563'
+                        }}>
+                          <MapPin size={16} />
+                          <span>{futsal.location}</span>
+                        </div>
+                        <div className={styles.detail} style={{ 
+                          display: 'flex',
+                          alignItems: 'center',
+                          gap: '8px',
+                          fontSize: '0.875rem',
+                          color: '#4b5563'
+                        }}>
+                          <Clock size={16} />
+                          <span>{futsal.openingHours || "Not specified"}</span>
+                        </div>                        <div className={styles.detail} style={{ 
+                          display: 'flex',
+                          alignItems: 'center',
+                          gap: '8px',
+                          fontSize: '0.875rem',
+                          color: '#4b5563'
+                        }}>
+                          <DollarSign size={16} />
+                          <span>₹{futsal.price || "Not set"}</span>
+                        </div>
+                      </div>
+                      
+                      <div className={styles.futsalActions} style={{ 
+                        display: 'flex', 
+                        gap: '12px'
+                      }}>                        <button 
+                          onClick={() => navigate('/organizer-futsals')}
+                          style={{ 
+                            flex: 1,
+                            background: '#2563eb',
+                            color: 'white',
+                            border: 'none',
+                            borderRadius: '6px',
+                            padding: '8px 16px',
+                            fontSize: '0.875rem',
+                            fontWeight: '600',
+                            cursor: 'pointer'
+                          }}
+                        >
+                          My Futsals
+                        </button>
+                        <button 
+                          onClick={() => navigate('/organizer-slots')}
+                          style={{ 
+                            flex: 1,
+                            background: '#f3f4f6',
+                            color: '#374151',
+                            border: '1px solid #d1d5db',
+                            borderRadius: '6px',
+                            padding: '8px 16px',
+                            fontSize: '0.875rem',
+                            fontWeight: '600',
+                            cursor: 'pointer'
+                          }}
+                        >
+                          Manage Slots
+                        </button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <div className={styles.noFutsals} style={{ 
+                  background: '#f9fafb', 
+                  borderRadius: '12px', 
+                  padding: '40px 20px',
+                  textAlign: 'center',
+                  marginBottom: '30px'
+                }}>
+                  <p style={{ color: '#6b7280', marginBottom: '16px' }}>You haven't added any futsals yet.</p>
+                  <button 
+                    onClick={() => navigate('/create-futsal')} 
+                    style={{ 
+                      background: '#2563eb',
+                      color: 'white',
+                      border: 'none',
+                      borderRadius: '6px',
+                      padding: '10px 20px',
+                      fontWeight: '600',
+                      cursor: 'pointer'
+                    }}
+                  >
+                    Add Your First Futsal
+                  </button>
+                </div>
+              )}
+
+                            {/* Analytics & Metrics Section - Greyed out placeholders */}
+              <div style={{ marginTop: '40px' }}>
+                <h3 style={{ fontSize: '1.5rem', fontWeight: '700', marginBottom: '16px', color: '#374151' }}>
+                  Analytics & Metrics
+                </h3>
+                <div style={{ 
+                  display: 'grid', 
+                  gridTemplateColumns: 'repeat(auto-fill, minmax(250px, 1fr))', 
+                  gap: '20px',
+                  marginBottom: '30px'
+                }}>                  {/* Reviews Box */}
+                  <div style={{ 
+                    background: '#f3f4f6', 
+                    borderRadius: '12px', 
+                    padding: '24px',
+                    border: '1px solid #e5e7eb',
+                    opacity: '0.6',
+                    cursor: 'not-allowed',
+                    position: 'relative',
+                    overflow: 'hidden'
+                  }}
+                  onMouseEnter={(e) => e.currentTarget.querySelector('.overlay').style.opacity = '1'}
+                  onMouseLeave={(e) => e.currentTarget.querySelector('.overlay').style.opacity = '0'}
+                  >
+                    <div className="overlay" style={{
+                      position: 'absolute',
+                      top: 0,
+                      left: 0,
+                      width: '100%',
+                      height: '100%',
+                      background: 'rgba(17, 24, 39, 0.7)',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      opacity: 0,
+                      transition: 'opacity 0.3s ease',
+                      zIndex: 10,
+                      borderRadius: '12px',
+                    }}>
+                      <span style={{ 
+                        color: 'white', 
+                        fontWeight: '700', 
+                        fontSize: '1.25rem',
+                        letterSpacing: '0.05em'
+                      }}>COMING SOON</span>
+                    </div>
+                    <h4 style={{ fontSize: '1.1rem', fontWeight: '600', color: '#6b7280', marginBottom: '12px' }}>
+                      Customer Reviews
+                    </h4>
+                    <div style={{ height: '120px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                      <Star size={48} color="#9ca3af" />
+                    </div>
+                  </div>                  {/* Bookings Box */}
+                  <div style={{ 
+                    background: '#f3f4f6', 
+                    borderRadius: '12px', 
+                    padding: '24px',
+                    border: '1px solid #e5e7eb',
+                    opacity: '0.6',
+                    cursor: 'not-allowed',
+                    position: 'relative',
+                    overflow: 'hidden'
+                  }}
+                  onMouseEnter={(e) => e.currentTarget.querySelector('.overlay').style.opacity = '1'}
+                  onMouseLeave={(e) => e.currentTarget.querySelector('.overlay').style.opacity = '0'}
+                  >
+                    <div className="overlay" style={{
+                      position: 'absolute',
+                      top: 0,
+                      left: 0,
+                      width: '100%',
+                      height: '100%',
+                      background: 'rgba(17, 24, 39, 0.7)',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      opacity: 0,
+                      transition: 'opacity 0.3s ease',
+                      zIndex: 10,
+                      borderRadius: '12px',
+                    }}>
+                      <span style={{ 
+                        color: 'white', 
+                        fontWeight: '700', 
+                        fontSize: '1.25rem',
+                        letterSpacing: '0.05em'
+                      }}>COMING SOON</span>
+                    </div>
+                    <h4 style={{ fontSize: '1.1rem', fontWeight: '600', color: '#6b7280', marginBottom: '12px' }}>
+                      Monthly Bookings
+                    </h4>
+                    <div style={{ height: '120px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                      <Calendar size={48} color="#9ca3af" />
+                    </div>
+                  </div>                  {/* Revenue Box */}
+                  <div style={{ 
+                    background: '#f3f4f6', 
+                    borderRadius: '12px', 
+                    padding: '24px',
+                    border: '1px solid #e5e7eb',
+                    opacity: '0.6',
+                    cursor: 'not-allowed',
+                    position: 'relative',
+                    overflow: 'hidden'
+                  }}
+                  onMouseEnter={(e) => e.currentTarget.querySelector('.overlay').style.opacity = '1'}
+                  onMouseLeave={(e) => e.currentTarget.querySelector('.overlay').style.opacity = '0'}
+                  >
+                    <div className="overlay" style={{
+                      position: 'absolute',
+                      top: 0,
+                      left: 0,
+                      width: '100%',
+                      height: '100%',
+                      background: 'rgba(17, 24, 39, 0.7)',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      opacity: 0,
+                      transition: 'opacity 0.3s ease',
+                      zIndex: 10,
+                      borderRadius: '12px',
+                    }}>
+                      <span style={{ 
+                        color: 'white', 
+                        fontWeight: '700', 
+                        fontSize: '1.25rem',
+                        letterSpacing: '0.05em'
+                      }}>COMING SOON</span>
+                    </div>
+                    <h4 style={{ fontSize: '1.1rem', fontWeight: '600', color: '#6b7280', marginBottom: '12px' }}>
+                      Revenue
+                    </h4>
+                    <div style={{ height: '120px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                      <DollarSign size={48} color="#9ca3af" />
+                    </div>
+                  </div>                  {/* Customer Stats Box */}
+                  <div style={{ 
+                    background: '#f3f4f6', 
+                    borderRadius: '12px', 
+                    padding: '24px',
+                    border: '1px solid #e5e7eb',
+                    opacity: '0.6',
+                    cursor: 'not-allowed',
+                    position: 'relative',
+                    overflow: 'hidden'
+                  }}
+                  onMouseEnter={(e) => e.currentTarget.querySelector('.overlay').style.opacity = '1'}
+                  onMouseLeave={(e) => e.currentTarget.querySelector('.overlay').style.opacity = '0'}
+                  >
+                    <div className="overlay" style={{
+                      position: 'absolute',
+                      top: 0,
+                      left: 0,
+                      width: '100%',
+                      height: '100%',
+                      background: 'rgba(17, 24, 39, 0.7)',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      opacity: 0,
+                      transition: 'opacity 0.3s ease',
+                      zIndex: 10,
+                      borderRadius: '12px',
+                    }}>
+                      <span style={{ 
+                        color: 'white', 
+                        fontWeight: '700', 
+                        fontSize: '1.25rem',
+                        letterSpacing: '0.05em'
+                      }}>COMING SOON</span>
+                    </div>
+                    <h4 style={{ fontSize: '1.1rem', fontWeight: '600', color: '#6b7280', marginBottom: '12px' }}>
+                      Customer Stats
+                    </h4>
+                    <div style={{ height: '120px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                      <Users size={48} color="#9ca3af" />
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
         </main>
       </div>
     </div>

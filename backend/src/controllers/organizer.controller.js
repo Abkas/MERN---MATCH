@@ -189,13 +189,17 @@ const getOrganizerProfile = asyncHandler(async (req, res) => {
     if (!user) {
         return res.status(404).json(new ApiResponse(404, {}, 'User not found'));
     }
-    const organizerProfile = await OrganizerProfile.findOne({ user: userId });
-    const responseData = {
+    const organizerProfile = await OrganizerProfile.findOne({ user: userId });    const responseData = {
         user: user ? user.toObject() : {},
         organizerProfile: organizerProfile ? organizerProfile.toObject() : {}
     };
-    // Fix: Place responseData in the data field, message as string
-    return res.status(200).json(new ApiResponse(200, responseData, 'Organizer profile (all raw data, frontend merges with blueprint)'));
+    
+    // Fix: Make sure we're using the correct ApiResponse structure
+    return res.status(200).json(new ApiResponse(
+        200, 
+        responseData, 
+        'Organizer profile retrieved successfully'
+    ));
 });
 
 // PATCH /organizer/update-profile
@@ -239,15 +243,17 @@ const updateOrganizerProfile = asyncHandler(async (req, res) => {
         organizerProfile = new OrganizerProfile({ user: userId });
     }
     Object.assign(organizerProfile, organizerUpdates);
-    await organizerProfile.save();
-
-    // Return updated data
+    await organizerProfile.save();    // Return updated data
     const user = await User.findById(userId).select('-password');
     const updatedOrganizerProfile = await OrganizerProfile.findOne({ user: userId });
 
-    // FIX: Swap message and data arguments for ApiResponse
+    const responseData = {
+        user,
+        organizerProfile: updatedOrganizerProfile
+    };
+
     return res.status(200).json(
-        new ApiResponse(200, 'Organizer profile updated successfully', { user, organizerProfile: updatedOrganizerProfile })
+        new ApiResponse(200, responseData, 'Organizer profile updated successfully')
     );
 });
 
