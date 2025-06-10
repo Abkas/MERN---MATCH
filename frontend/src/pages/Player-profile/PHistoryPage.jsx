@@ -20,11 +20,12 @@ const PHistoryPage = () => {
     const fetchHistorySlots = async () => {
         try {
             setLoading(true)
-            console.log('Fetching history slots...');
+            console.log('Fetching player match history...')
             const response = await axiosInstance.get('/users/history')
-            console.log('History response:', response.data);
+            console.log('Match history response:', response.data)
             
             if (response.data.success) {
+                // This now only contains slots where the player actually participated and the match ended
                 setHistorySlots(response.data.message)
             } else {
                 toast.error('Failed to fetch match history')
@@ -72,12 +73,10 @@ const PHistoryPage = () => {
                     </Link>
                 </div>
             </header>
-            <div className={styles.container}>
-                <aside className={styles.sidebar}>
+            <div className={styles.container}>                <aside className={styles.sidebar}>
                     <ul className={styles.sidebarMenu}>
                         <li><Link to="/player-dashboard">Dashboard</Link></li>
-                        <li><Link to="/profile">Profile</Link></li>
-                        <li><Link to="/player-addfriend">Add Friends</Link></li>
+                        <li><Link to="/profile">Profile</Link></li>                        <li><Link to="/player-addfriend" style={{ color: '#9ca3af' }}>Add Friends</Link></li>
                         <li><Link to="/player-history" className={styles.active}>History</Link></li>
                         <li><Link to="/player-upcomingmatches">Upcoming Matches</Link></li>
                         <li>

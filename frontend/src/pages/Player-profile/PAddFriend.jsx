@@ -71,7 +71,7 @@ const PAddFriend = () => {
           <ul className={styles.sidebarMenu}>
             <li><Link to="/player-dashboard">Dashboard</Link></li>
             <li><Link to="/profile">Profile</Link></li>
-            <li><Link to="/player-addfriend" className={styles.active}>Add Friends</Link></li>
+            <li><Link to="/player-addfriend" className={styles.active} style={{ color: '#9ca3af' }}>Add Friends</Link></li>
             <li><Link to="/player-history">History</Link></li>
             <li>
               <Link to="/player-upcomingmatches">Upcoming Matches</Link>
@@ -82,10 +82,33 @@ const PAddFriend = () => {
                           </button>
             </li>
           </ul>
-        </aside>
-        <main>
-          <h1>ADD FRIENDS</h1>
-          {/* Add Friends main content goes here */}
+        </aside>        <main className={styles.mainContent}>
+          <div style={{
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            justifyContent: 'center',
+            height: '70vh',
+            textAlign: 'center',
+            padding: '2rem'
+          }}>
+            <h1 style={{
+              fontSize: '2.5rem',
+              fontWeight: '700',
+              marginBottom: '1rem',
+              color: '#2563eb'
+            }}>Coming Soon!</h1>
+            
+            <p style={{
+              fontSize: '1.2rem',
+              maxWidth: '600px',
+              lineHeight: '1.6',
+              color: '#6b7280',
+              marginBottom: '2rem'
+            }}>
+              You will be able to add friends soon.
+            </p>
+          </div>
         </main>
       </div>
     </div>

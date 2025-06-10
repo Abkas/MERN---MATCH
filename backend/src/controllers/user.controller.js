@@ -375,57 +375,25 @@ const getUserProfileFollow = asyncHandler(async(req,res) =>{
 })
 
 const getGameHistory = asyncHandler(async(req,res)=>{
-    const user = await User.aggregate([
-        {
-            $match: {
-                _id: new mongoose.Types.ObjectId(req.user._id)
-            }
-        },{
-            $lookup :{
-                from: 'games',
-                localField: 'matchHistory',
-                foreignField: '_id',
-                as: 'matchHistory',
-                pipeline:[
-                    {
-                        $lookup:{
-                            from:'playerprofiles',
-                            localField: 'players',
-                            foreignField: '_id',
-                            as:'players',
-                            pipeline:[
-                                {
-                                    $project:{
-                                        futsal:1,
-                                        result:1,
-                                        players:{
-                                            _id:1,
-                                        },                         
-                                    }
-                                }
-                            ]
-                        }
-                    },
-                    {
-                        $addFields:{
-                            players:{
-                                $first:'$players'
-                            }
-                        }
-                    }
-                ]
-            }
-        }
-
-    ])
-
-    if (!user || user.length === 0) {
-        throw new ApiError(404, 'User not found or has no match history');
+    const userId = req.user._id;
+    
+    try {
+        // Find all slots where this player was in the players array
+        // and the slot status is ended
+        const slots = await Slot.find({
+            players: userId,
+            status: 'ended'  // Only get ended slots
+        })
+        .populate('futsal', 'name location') // Get futsal details
+        .sort({ date: -1, time: 1 }); // Sort by date desc, time asc
+        
+        return res
+            .status(200)
+            .json(new ApiResponse(200, slots, 'Match history fetched successfully'));
+    } catch (error) {
+        console.error('Error fetching player history:', error);
+        throw new ApiError(500, 'Failed to fetch match history');
     }
-
-    return res
-    .status(200)
-    .json(new ApiResponse(200, user[0].matchHistory, 'Match history fetched sucessfully'))
 })
 
 const checkAuth = asyncHandler(async(req,res) =>{

@@ -137,10 +137,8 @@ const PUpcomingMatchesPage = () => {
             </header>
             <div className={styles.container}>
                 <aside className={styles.sidebar}>
-                    <ul className={styles.sidebarMenu}>
-                        <li><Link to="/player-dashboard">Dashboard</Link></li>
-                        <li><Link to="/profile">Profile</Link></li>
-                        <li><Link to="/player-addfriend">Add Friends</Link></li>
+                    <ul className={styles.sidebarMenu}>                        <li><Link to="/player-dashboard">Dashboard</Link></li>
+                        <li><Link to="/profile">Profile</Link></li>                        <li><Link to="/player-addfriend" style={{ color: '#9ca3af' }}>Add Friends</Link></li>
                         <li><Link to="/player-history">History</Link></li>
                         <li><Link to="/player-upcomingmatches" className={styles.active}>Upcoming Matches</Link></li>
                         <li>
