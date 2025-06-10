@@ -41,7 +41,7 @@ const [formData, setFormData] = React.useState({
       <div className={styles.signupCard}>
         <div className={styles.logoSection}>
           <div className={styles.logoCircle}>
-            <img src="/signup/signup.jpg" alt="Match Point Logo" />
+            <img src="/signup/signup.jpg" alt="Match Point Logo" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
           </div>
         </div>  
 
@@ -118,7 +118,7 @@ const [formData, setFormData] = React.useState({
           <span className={styles.divider}>|</span>
           <a href="#">Privacy Policy</a>
           <span className={styles.divider}>|</span>
-          <span className={styles.copyright}>@ 2024 logo.com All Rights Reserved</span>
+          <span className={styles.copyright}>@ 2025 logo.com All Rights Reserved</span>
         </div>
       </footer>
     </div>
