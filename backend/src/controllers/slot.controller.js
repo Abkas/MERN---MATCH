@@ -335,6 +335,59 @@ const cancelSlotBooking = asyncHandler(async (req, res) => {
     }
 });
 
+const updateSlotsPrice = asyncHandler(async (req, res) => {
+    const { futsalId } = req.params;
+    const { date, price } = req.body;
+
+    console.log('Update price request:', {
+        futsalId,
+        date,
+        price,
+        body: req.body
+    });
+
+    if (!date || !price) {
+        console.error('Missing required fields:', { date, price });
+        throw new ApiError(400, "Date and price are required");
+    }
+
+    const futsal = await Futsal.findById(futsalId);
+    if (!futsal) {
+        console.error('Futsal not found:', futsalId);
+        throw new ApiError(404, "Futsal not found");
+    }
+
+    console.log('Found futsal:', futsal._id);
+
+    try {
+        // Update all slots for the given date
+        const result = await Slot.updateMany(
+            { futsal: futsalId, date },
+            { $set: { price: price } }
+        );
+
+        console.log('Update result:', result);
+
+        if (result.modifiedCount === 0) {
+            console.log('No slots found to update');
+            return res.status(200).json(
+                new ApiResponse(200, [], "No slots found to update")
+            );
+        }
+
+        // Get updated slots
+        const updatedSlots = await Slot.find({ futsal: futsalId, date });
+        console.log('Updated slots count:', updatedSlots.length);
+
+        return res.status(200).json(
+            new ApiResponse(200, updatedSlots, "Slots price updated successfully")
+        );
+    } catch (error) {
+        console.error('Error updating slots price:', error);
+        throw new ApiError(500, error.message || "Error updating slots price");
+    }
+});
+
 export {
     createSlot,
     updateSlot,
@@ -345,5 +398,6 @@ export {
     addSlot,
     resetSlots,
     getPlayerJoinedSlots,
-    cancelSlotBooking
+    cancelSlotBooking,
+    updateSlotsPrice
 }

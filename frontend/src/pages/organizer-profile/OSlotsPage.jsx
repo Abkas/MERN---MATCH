@@ -38,6 +38,11 @@ const OSlotsPage = () => {
     price: 500,
     status: 'available'
   });
+  const [availableTimeSlots, setAvailableTimeSlots] = useState([]);
+  const [isSettingPrice, setIsSettingPrice] = useState(false);
+  const [newPrice, setNewPrice] = useState('');
+  const [isEditingPrice, setIsEditingPrice] = useState(false);
+  const [currentPrice, setCurrentPrice] = useState('');
 
   // Fetch all futsals for organizer
   useEffect(() => {
@@ -140,6 +145,50 @@ const OSlotsPage = () => {
     });
   };
 
+  // Generate available time slots
+  useEffect(() => {
+    if (!futsal) return;
+    
+    const slots = [];
+    const startHour = 5; // 5 AM
+    const endHour = 23; // 11 PM
+    
+    for (let hour = startHour; hour < endHour; hour++) {
+      const timeStr = `${hour.toString().padStart(2, '0')}:00`;
+      const isAvailable = !slots.some(slot => slot.time === timeStr);
+      if (isAvailable) {
+        slots.push({
+          time: timeStr,
+          label: `${hour.toString().padStart(2, '0')}:00 - ${(hour + 1).toString().padStart(2, '0')}:00`
+        });
+      }
+    }
+    
+    setAvailableTimeSlots(slots);
+  }, [futsal, slots]);
+
+  const handleTimeSelect = (type, time) => {
+    setNewSlot(prev => {
+      const newTime = time;
+      const otherTime = type === 'start' ? prev.endTime : prev.startTime;
+      
+      // Validate time selection
+      if (type === 'start' && otherTime && newTime >= otherTime) {
+        toast.error('Start time must be before end time');
+        return prev;
+      }
+      if (type === 'end' && otherTime && newTime <= otherTime) {
+        toast.error('End time must be after start time');
+        return prev;
+      }
+      
+      return {
+        ...prev,
+        [type === 'start' ? 'startTime' : 'endTime']: newTime
+      };
+    });
+  };
+
   const handleAddSlot = async () => {
     if (!futsal) return;
     try {
@@ -217,21 +266,46 @@ const OSlotsPage = () => {
     }
   };
 
-  const handleResetSlots = async () => {
+  const handleSetPrice = async () => {
     if (!futsal) return;
     try {
       setLoading(true);
-      const response = await axiosInstance.post(`/slots/${futsal._id}/slots/reset`, { date: selectedDate });
+      console.log('Starting price update with:', {
+        futsalId: futsal._id,
+        date: selectedDate,
+        price: parseInt(currentPrice)
+      });
+
+      const response = await axiosInstance.patch(`/slots/${futsal._id}/update-slots-price`, { 
+        date: selectedDate,
+        price: parseInt(currentPrice)
+      });
+
+      console.log('Price update response:', response.data);
+
       if (response.data.success) {
-        toast.success('Slots reset successfully');
+        toast.success('Price updated for all upcoming slots');
         // Refetch slots
         const res = await axiosInstance.get(`/slots/${futsal._id}/slots`, { params: { date: selectedDate } });
         setSlots(res.data.message || []);
+        setIsEditingPrice(false);
+        setCurrentPrice('');
       } else {
-        toast.error('Failed to reset slots');
+        console.error('Price update failed:', response.data);
+        toast.error(response.data.message || 'Failed to update price');
       }
     } catch (err) {
-      toast.error('Failed to reset slots');
+      console.error('Price update error details:', {
+        message: err.message,
+        response: err.response?.data,
+        status: err.response?.status,
+        config: {
+          url: err.config?.url,
+          method: err.config?.method,
+          data: err.config?.data
+        }
+      });
+      toast.error(err.response?.data?.message || 'Failed to update price. Please try again.');
     } finally {
       setLoading(false);
     }
@@ -471,14 +545,93 @@ const OSlotsPage = () => {
                         max={maxDateStr}
                         style={{ border: '1px solid #000', borderRadius: '4px', padding: '8px' }}
                       />
-                      <button className={styles.resetButton} onClick={handleResetSlots} disabled={loading} style={{ 
-                        background: '#000', 
-                        color: '#fff',
-                        border: 'none',
-                        padding: '8px 16px',
-                        borderRadius: '4px',
-                        cursor: 'pointer'
-                      }}>Reset Slots</button>
+                      {isEditingPrice ? (
+                        <div style={{ 
+                          display: 'flex', 
+                          alignItems: 'center', 
+                          gap: '8px',
+                          background: '#f8fafc',
+                          padding: '8px 12px',
+                          borderRadius: '4px',
+                          border: '1px solid #000'
+                        }}>
+                          <span style={{ color: '#666' }}>₹</span>
+                          <input
+                            type="number"
+                            value={currentPrice}
+                            onChange={(e) => setCurrentPrice(e.target.value)}
+                            style={{
+                              width: '80px',
+                              border: 'none',
+                              background: 'transparent',
+                              fontSize: '14px',
+                              outline: 'none'
+                            }}
+                            autoFocus
+                            onKeyDown={(e) => {
+                              if (e.key === 'Enter') {
+                                handleSetPrice();
+                              } else if (e.key === 'Escape') {
+                                setIsEditingPrice(false);
+                                setCurrentPrice('');
+                              }
+                            }}
+                          />
+                          <button
+                            onClick={handleSetPrice}
+                            disabled={!currentPrice || loading}
+                            style={{
+                              background: '#000',
+                              color: '#fff',
+                              border: 'none',
+                              padding: '4px 8px',
+                              borderRadius: '4px',
+                              cursor: !currentPrice || loading ? 'not-allowed' : 'pointer',
+                              opacity: !currentPrice || loading ? 0.5 : 1
+                            }}
+                          >
+                            {loading ? '...' : '✓'}
+                          </button>
+                          <button
+                            onClick={() => {
+                              setIsEditingPrice(false);
+                              setCurrentPrice('');
+                            }}
+                            style={{
+                              background: 'transparent',
+                              color: '#666',
+                              border: 'none',
+                              padding: '4px 8px',
+                              cursor: 'pointer'
+                            }}
+                          >
+                            ✕
+                          </button>
+                        </div>
+                      ) : (
+                        <button 
+                          className={styles.setPriceButton} 
+                          onClick={() => {
+                            setIsEditingPrice(true);
+                            setCurrentPrice('');
+                          }}
+                          disabled={loading}
+                          style={{ 
+                            background: '#f8fafc', 
+                            color: '#000',
+                            border: '1px solid #000',
+                            padding: '8px 16px',
+                            borderRadius: '4px',
+                            cursor: 'pointer',
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: '8px'
+                          }}
+                        >
+                          <DollarSign size={16} />
+                          Price: ₹{slots[0]?.price || '0'}
+                        </button>
+                      )}
                     </div>
                   </div>
                   <button className={styles.addSlotBtn} onClick={() => setIsAddingSlot(true)} style={{
@@ -536,16 +689,39 @@ const OSlotsPage = () => {
                             </td>
                             <td style={{ padding: '16px', fontWeight: 600, color: '#000', borderBottom: '1px solid #e2e8f0' }}>
                               {editingSlot?._id === slot._id ? (
-                                <input
-                                  type="number"
-                                  min="0"
-                                  value={editingSlot.price}
-                                  onChange={(e) => handleEditChange('price', parseInt(e.target.value))}
-                                  className={styles.editInput}
-                                  style={{ border: '1px solid #000', borderRadius: '4px', padding: '8px' }}
-                                />
+                                <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                                  <span style={{ color: '#666' }}>₹</span>
+                                  <input
+                                    type="number"
+                                    min="0"
+                                    value={editingSlot.price}
+                                    onChange={(e) => handleEditChange('price', parseInt(e.target.value))}
+                                    className={styles.editInput}
+                                    style={{ 
+                                      border: '1px solid #000', 
+                                      borderRadius: '4px', 
+                                      padding: '8px',
+                                      width: '100px'
+                                    }}
+                                  />
+                                </div>
                               ) : (
-                                `₹${slot.price}`
+                                <div 
+                                  onClick={() => handleEditStart(slot)}
+                                  style={{ 
+                                    display: 'flex', 
+                                    alignItems: 'center', 
+                                    gap: '4px',
+                                    cursor: 'pointer',
+                                    padding: '4px 8px',
+                                    borderRadius: '4px',
+                                    background: '#f8fafc',
+                                    border: '1px solid #e2e8f0'
+                                  }}
+                                >
+                                  <span style={{ color: '#666' }}>₹</span>
+                                  <span>{slot.price}</span>
+                                </div>
                               )}
                             </td>
                             <td style={{ padding: '16px', borderBottom: '1px solid #e2e8f0' }}>
@@ -588,67 +764,96 @@ const OSlotsPage = () => {
                   <div className={styles.addSlotForm}>
                     <div className={styles.formGroup}>
                       <label>Start Time</label>
-                      <input
-                        type="time"
+                      <select
                         value={newSlot.startTime}
-                        onChange={(e) => setNewSlot({...newSlot, startTime: e.target.value})}
-                        className={styles.timeInput}
-                        min="05:00"
-                        max="22:00"
-                      />
+                        onChange={(e) => handleTimeSelect('start', e.target.value)}
+                        style={{
+                          width: '100%',
+                          padding: '8px 12px',
+                          border: '1px solid #000',
+                          borderRadius: '4px',
+                          fontSize: '14px'
+                        }}
+                      >
+                        <option value="">Select start time</option>
+                        {availableTimeSlots.map((slot) => (
+                          <option 
+                            key={slot.time} 
+                            value={slot.time}
+                            disabled={newSlot.endTime && slot.time >= newSlot.endTime}
+                          >
+                            {slot.label}
+                          </option>
+                        ))}
+                      </select>
                     </div>
+                    
                     <div className={styles.formGroup}>
                       <label>End Time</label>
-                      <input
-                        type="time"
+                      <select
                         value={newSlot.endTime}
-                        onChange={(e) => setNewSlot({...newSlot, endTime: e.target.value})}
-                        className={styles.timeInput}
-                        min="06:00"
-                        max="23:00"
-                      />
+                        onChange={(e) => handleTimeSelect('end', e.target.value)}
+                        style={{
+                          width: '100%',
+                          padding: '8px 12px',
+                          border: '1px solid #000',
+                          borderRadius: '4px',
+                          fontSize: '14px'
+                        }}
+                        disabled={!newSlot.startTime}
+                      >
+                        <option value="">Select end time</option>
+                        {availableTimeSlots.map((slot) => (
+                          <option 
+                            key={slot.time} 
+                            value={slot.time}
+                            disabled={!newSlot.startTime || slot.time <= newSlot.startTime}
+                          >
+                            {slot.label}
+                          </option>
+                        ))}
+                      </select>
                     </div>
+                    
                     <div className={styles.formGroup}>
                       <label>Max Players</label>
                       <input
                         type="number"
-                        value={newSlot.maxPlayers}
-                        onChange={(e) => setNewSlot({...newSlot, maxPlayers: parseInt(e.target.value)})}
                         min="1"
                         max="20"
+                        value={newSlot.maxPlayers}
+                        onChange={(e) => setNewSlot(prev => ({ ...prev, maxPlayers: parseInt(e.target.value) }))}
                         className={styles.numberInput}
-                        placeholder="Enter max players (1-20)"
                       />
                     </div>
+                    
                     <div className={styles.formGroup}>
-                      <label>Price (₹)</label>
+                      <label>Price (Rs)</label>
                       <input
                         type="number"
-                        value={newSlot.price}
-                        onChange={(e) => setNewSlot({...newSlot, price: parseInt(e.target.value)})}
                         min="0"
+                        value={newSlot.price}
+                        onChange={(e) => setNewSlot(prev => ({ ...prev, price: parseInt(e.target.value) }))}
                         className={styles.numberInput}
-                        placeholder="Enter price"
                       />
                     </div>
-                    <div className={styles.formGroup}>
-                      <label>Status</label>
-                      <select
-                        value={newSlot.status}
-                        onChange={(e) => setNewSlot({...newSlot, status: e.target.value})}
-                        className={styles.selectInput}
-                      >
-                        <option value="available">Available</option>
-                        <option value="booked">Booked</option>
-                        <option value="full">Full</option>
-                        <option value="reserved">Reserved</option>
-                        <option value="ended">Ended</option>
-                        <option value="nofull">No Full</option>
-                      </select>
-                    </div>
+                    
                     <div className={styles.formActions}>
-                      <button className={styles.cancelButton} onClick={() => setIsAddingSlot(false)}>Cancel</button>
-                      <button className={styles.saveButton} onClick={handleAddSlot}>Add Slot</button>
+                      <button
+                        type="button"
+                        onClick={() => setIsAddingSlot(false)}
+                        className={styles.cancelButton}
+                      >
+                        Cancel
+                      </button>
+                      <button
+                        type="button"
+                        onClick={handleAddSlot}
+                        className={styles.saveButton}
+                        disabled={!newSlot.startTime || !newSlot.endTime}
+                      >
+                        Add Slot
+                      </button>
                     </div>
                   </div>
                 )}

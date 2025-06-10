@@ -1,43 +1,55 @@
 import { Router } from 'express';
+import { verifyJWT } from '../middlewares/auth.middleware.js';
 import {
-    getSlotsByDate,
+    createSlot,
     updateSlot,
-    deleteSlot,
-    addSlot,
+    getSlotsByFutsal,
     joinSlot,
+    deleteSlot,
+    getSlotsByDate,
+    addSlot,
     resetSlots,
     getPlayerJoinedSlots,
-    cancelSlotBooking
+    cancelSlotBooking,
+    updateSlotsPrice
 } from '../controllers/slot.controller.js';
-import { verifyJWT } from '../middlewares/auth.middleware.js';
 
 const router = Router();
 
 // Protected routes - require authentication
 router.use(verifyJWT);
 
-// Get slots for a specific date
-router.get('/:futsalId/slots', getSlotsByDate);
-
-// Get slots joined by the current player
-router.get('/player/joined', getPlayerJoinedSlots);
-
-// Cancel a slot booking
-router.delete('/:slotId/cancel', cancelSlotBooking);
-
-// Add a new slot
-router.post('/:futsalId/slots', addSlot);
+// Create a new slot
+router.post('/:futsalId/slots', createSlot);
 
 // Update a slot
 router.patch('/:futsalId/slots/:slotId', updateSlot);
 
-// Delete a slot
-router.delete('/:futsalId/slots/:slotId', deleteSlot);
+// Get slots by futsal
+router.get('/:futsalId/slots', getSlotsByFutsal);
 
 // Join a slot
 router.post('/:futsalId/slots/:slotId/join', joinSlot);
 
-// Reset slots for a date
+// Delete a slot
+router.delete('/:futsalId/slots/:slotId', deleteSlot);
+
+// Get slots by date
+router.get('/:futsalId/slots/date', getSlotsByDate);
+
+// Add a new slot
+router.post('/:futsalId/slots/add', addSlot);
+
+// Reset slots
 router.post('/:futsalId/slots/reset', resetSlots);
+
+// Get player's joined slots
+router.get('/player/slots', getPlayerJoinedSlots);
+
+// Cancel slot booking
+router.delete('/slots/:slotId/cancel', cancelSlotBooking);
+
+// Update price for all slots on a date
+router.patch('/:futsalId/update-slots-price', updateSlotsPrice);
 
 export default router; 
