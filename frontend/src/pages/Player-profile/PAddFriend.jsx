@@ -70,17 +70,15 @@ const PAddFriend = () => {
         <aside className={styles.sidebar}>
           <ul className={styles.sidebarMenu}>
             <li><Link to="/player-dashboard">Dashboard</Link></li>
-            <li><Link to="/profile">Profile</Link></li>
+            <li><Link to="/player-profile">Profile</Link></li>
             <li><Link to="/player-addfriend" className={styles.active} style={{ color: '#9ca3af' }}>Add Friends</Link></li>
             <li><Link to="/player-history">History</Link></li>
+            <li><Link to="/player-upcomingmatches">Upcoming Matches</Link></li>
             <li>
-              <Link to="/player-upcomingmatches">Upcoming Matches</Link>
+              <button className={styles.logoutBtn} onClick={handleLogout}>
+                Logout
+              </button>
             </li>
-                         <li>
-                             <button className={styles.logoutBtn} onClick={handleLogout}>
-                                 Logout
-                             </button>
-                         </li>
           </ul>
         </aside>        
         <main className={styles.mainContent}>

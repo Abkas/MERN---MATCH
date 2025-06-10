@@ -48,7 +48,7 @@ const PHistoryPage = () => {
                 <aside className={styles.sidebar}>
                     <ul className={styles.sidebarMenu}>
                         <li><Link to="/player-dashboard">Dashboard</Link></li>
-                        <li><Link to="/profile">Profile</Link></li>
+                        <li><Link to="/player-profile">Profile</Link></li>
                         <li><Link to="/player-addfriend" style={{ color: '#9ca3af' }}>Add Friends</Link></li>
                         <li><Link to="/player-history" className={styles.active}>History</Link></li>
                         <li><Link to="/player-upcomingmatches">Upcoming Matches</Link></li>

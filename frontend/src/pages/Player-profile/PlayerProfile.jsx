@@ -102,8 +102,10 @@ const PlayerProfile = () => {
       </header>
       <div className={styles.container}>
         <aside className={styles.sidebar}>
-          <ul className={styles.sidebarMenu}>            <li><Link to="/player-dashboard">Dashboard</Link></li>
-            <li><Link to="#" className={styles.active}>Profile</Link></li>            <li><Link to="/player-addfriend" style={{ color: '#9ca3af' }}>Add Friends</Link></li>
+          <ul className={styles.sidebarMenu}>
+            <li><Link to="/player-dashboard">Dashboard</Link></li>
+            <li><Link to="/player-profile" className={styles.active}>Profile</Link></li>
+            <li><Link to="/player-addfriend" style={{ color: '#9ca3af' }}>Add Friends</Link></li>
             <li><Link to="/player-history">History</Link></li>
             <li><Link to="/player-upcomingmatches">Upcoming Matches</Link></li>
             <li>
@@ -114,7 +116,7 @@ const PlayerProfile = () => {
         <main style={{ maxWidth: 900, margin: '0 auto', padding: '3rem 0' }}>
           <div className={styles.profileHeaderRow} style={{ marginBottom: 40 }}>
             <h1 style={{ fontSize: '2.5rem', fontWeight: 800, color: '#232946', letterSpacing: 1 }}>Player Profile</h1>
-            <Link to="/update-profile">
+            <Link to="/player-update-profile">
               <button className={styles.updateAccountBtn} style={{ fontSize: 18, padding: '0.8rem 2.2rem', borderRadius: 12, fontWeight: 700, boxShadow: '0 2px 8px #6366f122' }}>Update Account</button>
             </Link>
           </div>

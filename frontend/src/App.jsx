@@ -80,17 +80,23 @@ const App = () => {
 
         <Route path="/futsal/:id" element={authUser?<FutsalDetails />:<Navigate to = '/login'/>} />
       
-        <Route path = '/update-profile' element= {authUser?<PlayerUpdateProfile />: <Navigate to='/login'/>} />        <Route path = '/organizer-dashboard' element= {authUser?<ODashboard />: <Navigate to='/login'/>} />
+        <Route path = '/update-profile' element= {authUser?<PlayerUpdateProfile />: <Navigate to='/login'/>} />
+        <Route path = '/organizer-dashboard' element= {authUser?<ODashboard />: <Navigate to='/login'/>} />
         <Route path = '/organizer-addfriend' element= {authUser?<OAddFriend />: <Navigate to='/login'/>} />
         <Route path = '/organizer-history' element= {authUser?<OHistory />: <Navigate to='/login'/>} />
         <Route path = '/organizer-futsals' element= {authUser?<OMyFutsal />: <Navigate to='/login'/>} />
         <Route path = '/organizer-slots' element= {authUser?<OSlotsPage />: <Navigate to='/login'/>} />
-
         <Route path = '/update-futsal' element= {authUser?<UpdateFutsal />: <Navigate to='/login'/>} />
-        <Route path="/profile" element={authUser ? <Linkprofile /> : <Navigate to="/login" />} />
+        
+        {/* Player Profile Routes */}
+        <Route path="/player-profile" element={authUser ? <PlayerProfile /> : <Navigate to="/login" />} />
+        <Route path="/player-profile/:id" element={authUser ? <PlayerProfile /> : <Navigate to="/login" />} />
+        <Route path="/player-update-profile" element={authUser ? <PlayerUpdateProfile /> : <Navigate to="/login" />} />
+        
+        {/* Organizer Profile Routes */}
         <Route path="/organizer-profile/:id" element={authUser ? <OrganizerProfile /> : <Navigate to="/login" />} />
         <Route path="/organizer-update-profile" element={authUser ? <OrganizerUpdateProfile /> : <Navigate to="/login" />} />
-        <Route path="/player-profile/:id" element={authUser ? <PlayerProfile /> : <Navigate to="/login" />} />
+        <Route path="/profile" element={authUser ? <Linkprofile /> : <Navigate to="/login" />} />
       </Routes>
 
       <Toaster />
