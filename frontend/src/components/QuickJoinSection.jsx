@@ -6,6 +6,19 @@ import toast from 'react-hot-toast';
 import SeatSelectionModal from './SeatSelectionModal';
 import { getSlotTimeStatus } from '../utils/slotTimeStatus';
 
+// Helper function to check if a slot is within opening hours
+const isSlotWithinOpeningHours = (slot, futsal) => {
+  if (!futsal?.openingHours) return true; // If no opening hours set, consider all slots available
+
+  const [openingTime, closingTime] = futsal.openingHours.split(' - ').map(time => {
+    const [hours, minutes] = time.split(':').map(Number);
+    return hours;
+  });
+
+  const [slotStartTime] = slot.time.split('-')[0].split(':').map(Number);
+  return slotStartTime >= openingTime && slotStartTime < closingTime;
+};
+
 // Accept maxPrice as prop
 const QuickJoinSection = ({ futsal, maxPrice, onHasSlots, requiredSeats }) => {
   const [isExpanded, setIsExpanded] = useState(false);
@@ -79,14 +92,16 @@ const QuickJoinSection = ({ futsal, maxPrice, onHasSlots, requiredSeats }) => {
       const availableSeats = slot.maxPlayers - currentPlayersCount;
       const hasEnoughSeats = requiredSeats ? availableSeats >= requiredSeats : availableSeats > 0;
       const priceOk = maxPrice !== undefined ? slot.price <= maxPrice : true;
+      const isWithinHours = isSlotWithinOpeningHours(slot, futsal);
 
       return (
         slot.status === 'available' &&
         timeStatus === 'upcoming' &&
         hasEnoughSeats &&
-        priceOk
+        priceOk &&
+        isWithinHours
       );
-    }), [slots, selectedDate, maxPrice, requiredSeats]);
+    }), [slots, selectedDate, maxPrice, requiredSeats, futsal]);
 
   // Notify parent if this futsal has any slots after filtering
   useEffect(() => {
@@ -158,9 +173,14 @@ const QuickJoinSection = ({ futsal, maxPrice, onHasSlots, requiredSeats }) => {
                 <tbody>
                   {filteredSlots.map((slot) => {
                     const timeStatus = getSlotTimeStatus(slot, selectedDate);
+                    const isWithinHours = isSlotWithinOpeningHours(slot, futsal);
                     let statusLabel = '';
                     let statusClass = '';
-                    if (timeStatus === 'ended') {
+
+                    if (!isWithinHours) {
+                      statusLabel = 'Unavailable';
+                      statusClass = styles.statusUnavailable;
+                    } else if (timeStatus === 'ended') {
                       statusLabel = 'Ended';
                       statusClass = styles.statusEnded;
                     } else if (timeStatus === 'playing') {
@@ -173,7 +193,7 @@ const QuickJoinSection = ({ futsal, maxPrice, onHasSlots, requiredSeats }) => {
                       statusLabel = slot.status;
                       statusClass = styles[`status${slot.status.charAt(0).toUpperCase() + slot.status.slice(1)}`] || '';
                     }
-                    const canJoin = timeStatus === 'upcoming' && slot.status === 'available';
+                    const canJoin = isWithinHours && timeStatus === 'upcoming' && slot.status === 'available';
                     return (
                       <tr key={slot._id} style={{ 
                         background: '#fff', 

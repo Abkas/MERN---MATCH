@@ -9,6 +9,19 @@ import { Calendar, ChevronDown, ChevronUp, Clock, Users, DollarSign } from 'luci
 import SeatSelectionModal from '../components/SeatSelectionModal'
 import { getSlotTimeStatus } from '../utils/slotTimeStatus'
 
+// Helper function to check if a slot is within opening hours
+const isSlotWithinOpeningHours = (slot, futsal) => {
+  if (!futsal?.openingHours) return true; // If no opening hours set, consider all slots available
+
+  const [openingTime, closingTime] = futsal.openingHours.split(' - ').map(time => {
+    const [hours, minutes] = time.split(':').map(Number);
+    return hours;
+  });
+
+  const [slotStartTime] = slot.time.split('-')[0].split(':').map(Number);
+  return slotStartTime >= openingTime && slotStartTime < closingTime;
+};
+
 const FutsalDetails = () => {
   const { id } = useParams();
   const [futsalData, setFutsalData] = useState(null);
@@ -516,9 +529,14 @@ const FutsalDetails = () => {
                       <tbody>
                         {slots.map((slot) => {
                           const timeStatus = getSlotTimeStatus(slot, selectedDate);
+                          const isWithinHours = isSlotWithinOpeningHours(slot, futsalData);
                           let statusLabel = '';
                           let statusClass = '';
-                          if (timeStatus === 'ended') {
+
+                          if (!isWithinHours) {
+                            statusLabel = 'Unavailable';
+                            statusClass = styles.statusUnavailable;
+                          } else if (timeStatus === 'ended') {
                             statusLabel = 'Ended';
                             statusClass = styles.statusEnded;
                           } else if (timeStatus === 'playing') {
@@ -531,7 +549,9 @@ const FutsalDetails = () => {
                             statusLabel = slot.status;
                             statusClass = styles[`status${slot.status.charAt(0).toUpperCase() + slot.status.slice(1)}`] || '';
                           }
-                          const canJoin = timeStatus === 'upcoming' && slot.status === 'available';
+
+                          const canJoin = isWithinHours && timeStatus === 'upcoming' && slot.status === 'available';
+                          
                           return (
                             <tr key={slot._id} style={{ 
                               background: '#fff', 
@@ -566,44 +586,34 @@ const FutsalDetails = () => {
                                 padding: '16px',
                                 borderBottom: '1px solid #e2e8f0'
                               }}>
-                                <span className={`${styles.status} ${statusClass}`} style={{ 
-                                  fontWeight: 700, 
-                                  fontSize: 14, 
-                                  padding: '6px 16px', 
-                                  borderRadius: 6,
-                                  display: 'inline-block',
-                                  background: statusLabel === 'Available' ? '#000' : '#e2e8f0',
-                                  color: statusLabel === 'Available' ? '#fff' : '#000'
-                                }}>{statusLabel}</span>
+                                <span className={`${styles.status} ${statusClass}`}>{statusLabel}</span>
                               </td>
                               <td style={{ 
                                 padding: '16px',
                                 borderRadius: '0 8px 8px 0',
                                 borderBottom: '1px solid #e2e8f0'
                               }}>
-                                <button
-                                  className={`${styles.btnJoinNow} ${!canJoin ? styles.btnJoinNowDisabled : ''}`}
-                                  style={{ 
-                                    background: canJoin ? '#000' : '#e2e8f0', 
-                                    color: canJoin ? '#fff' : '#64748b', 
-                                    borderRadius: 8, 
-                                    padding: '10px 24px', 
-                                    fontWeight: 700, 
-                                    border: 'none', 
-                                    boxShadow: canJoin ? '0 2px 8px rgba(0,0,0,0.2)' : 'none', 
-                                    cursor: canJoin ? 'pointer' : 'not-allowed', 
-                                    transition: 'all 0.3s ease',
-                                    ':hover': canJoin ? {
-                                      background: '#333',
-                                      transform: 'translateY(-2px)',
-                                      boxShadow: '0 4px 12px rgba(0,0,0,0.3)'
-                                    } : {}
-                                  }}
-                                  onClick={() => canJoin && handleJoinNow(slot)}
-                                  disabled={!canJoin}
-                                >
-                                  {canJoin ? 'Join Now' : 'Not Available'}
-                                </button>
+                                {canJoin ? (
+                                  <button 
+                                    onClick={() => handleJoinNow(slot)}
+                                    className={styles.btnJoinNow}
+                                  >
+                                    Join Now
+                                  </button>
+                                ) : (
+                                  <button 
+                                    className={`${styles.btnJoinNow} ${styles.btnJoinNowDisabled}`}
+                                    disabled
+                                  >
+                                    {!isWithinHours ? 'Outside Hours' : 
+                                     timeStatus === 'ended' ? 'Ended' :
+                                     timeStatus === 'playing' ? 'In Progress' :
+                                     timeStatus === 'soon' ? 'Starting Soon' :
+                                     slot.status === 'full' ? 'Full' :
+                                     slot.status === 'booked' ? 'Booked' :
+                                     'Unavailable'}
+                                  </button>
+                                )}
                               </td>
                             </tr>
                           );

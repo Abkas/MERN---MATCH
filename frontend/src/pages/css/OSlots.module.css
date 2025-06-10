@@ -433,6 +433,12 @@
   color: #f57c00;
 }
 
+.statusUnavailable {
+  background-color: #f3f4f6 !important;
+  color: #6b7280 !important;
+  cursor: not-allowed;
+}
+
 .editInput, .editSelect {
   width: 100%;
   padding: 8px;

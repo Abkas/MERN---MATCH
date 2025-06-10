@@ -7,6 +7,19 @@ import axios from 'axios'
 import toast from 'react-hot-toast'
 import { axiosInstance } from '../../lib/axios'
 
+// Helper function to check if a slot is within opening hours
+const isSlotWithinOpeningHours = (slot, futsal) => {
+  if (!futsal?.openingHours) return true; // If no opening hours set, consider all slots available
+
+  const [openingTime, closingTime] = futsal.openingHours.split(' - ').map(time => {
+    const [hours, minutes] = time.split(':').map(Number);
+    return hours;
+  });
+
+  const [slotStartTime] = slot.time.split('-')[0].split(':').map(Number);
+  return slotStartTime >= openingTime && slotStartTime < closingTime;
+};
+
 const OSlotsPage = () => {
   const navigate = useNavigate();
   const { logOut, authUser, fetchFutsals } = useAuthStore();
@@ -259,6 +272,34 @@ const OSlotsPage = () => {
     return 'upcoming';
   };
 
+  // Update the slot display logic
+  const getSlotStatus = (slot) => {
+    const timeStatus = getSlotTimeStatus(slot);
+    const isWithinHours = isSlotWithinOpeningHours(slot, futsal);
+
+    if (!isWithinHours) {
+      return {
+        label: 'Unavailable',
+        class: styles.statusUnavailable,
+        canEdit: false
+      };
+    }
+
+    if (timeStatus === 'ended') {
+      return {
+        label: 'Ended',
+        class: styles.statusEnded,
+        canEdit: false
+      };
+    }
+
+    return {
+      label: slot.status,
+      class: styles[`status${slot.status.charAt(0).toUpperCase() + slot.status.slice(1)}`] || '',
+      canEdit: true
+    };
+  };
+
   // UI rendering
   return (
     <div className={styles.body}>
@@ -469,7 +510,7 @@ const OSlotsPage = () => {
                     </thead>
                     <tbody>
                       {slots.map((slot, index) => {
-                        const timeStatus = getSlotTimeStatus(slot);
+                        const { label, class: statusClass, canEdit } = getSlotStatus(slot);
                         return (
                           <tr key={slot._id || `${selectedDate}-${slot.time}-${index}`} style={{ 
                             background: '#fff', 
@@ -508,33 +549,22 @@ const OSlotsPage = () => {
                               )}
                             </td>
                             <td style={{ padding: '16px', borderBottom: '1px solid #e2e8f0' }}>
-                              {timeStatus === 'ended' && (
-                                <span className={`${styles.status} ${styles.statusEnded}`} style={{ background: '#f8fafc', color: '#000', padding: '4px 8px', borderRadius: '4px', fontSize: '14px' }}>Ended</span>
-                              )}
-                              {timeStatus === 'playing' && (
-                                <span className={`${styles.status} ${styles.statusPlaying}`} style={{ background: '#f8fafc', color: '#000', padding: '4px 8px', borderRadius: '4px', fontSize: '14px' }}>Playing</span>
-                              )}
-                              {timeStatus === 'soon' && (
-                                <span className={`${styles.status} ${styles.statusSoon}`} style={{ background: '#f8fafc', color: '#000', padding: '4px 8px', borderRadius: '4px', fontSize: '14px' }}>Starting Soon</span>
-                              )}
-                              {timeStatus === 'upcoming' && (
-                                editingSlot?._id === slot._id ? (
-                                  <select
-                                    value={editingSlot.status}
-                                    onChange={(e) => handleEditChange('status', e.target.value)}
-                                    className={styles.editSelect}
-                                    style={{ border: '1px solid #000', borderRadius: '4px', padding: '8px' }}
-                                  >
-                                    <option value="available">Available</option>
-                                    <option value="booked">Booked</option>
-                                    <option value="full">Full</option>
-                                    <option value="reserved">Reserved</option>
-                                    <option value="ended">Ended</option>
-                                    <option value="nofull">No Full</option>
-                                  </select>
-                                ) : (
-                                  <span className={`${styles.status} ${styles[`status${slot.status.charAt(0).toUpperCase() + slot.status.slice(1)}`]}`} style={{ background: '#f8fafc', color: '#000', padding: '4px 8px', borderRadius: '4px', fontSize: '14px' }}>{slot.status}</span>
-                                )
+                              {editingSlot?._id === slot._id && canEdit ? (
+                                <select
+                                  value={editingSlot.status}
+                                  onChange={(e) => handleEditChange('status', e.target.value)}
+                                  className={styles.editSelect}
+                                  style={{ border: '1px solid #000', borderRadius: '4px', padding: '8px' }}
+                                >
+                                  <option value="available">Available</option>
+                                  <option value="booked">Booked</option>
+                                  <option value="full">Full</option>
+                                  <option value="reserved">Reserved</option>
+                                  <option value="ended">Ended</option>
+                                  <option value="nofull">No Full</option>
+                                </select>
+                              ) : (
+                                <span className={`${styles.status} ${statusClass}`} style={{ background: '#f8fafc', color: '#000', padding: '4px 8px', borderRadius: '4px', fontSize: '14px' }}>{label}</span>
                               )}
                             </td>
                             <td style={{ padding: '16px', borderBottom: '1px solid #e2e8f0' }}>
@@ -544,7 +574,7 @@ const OSlotsPage = () => {
                                   <button onClick={handleEditCancel} style={{ background: '#f8fafc', color: '#000', border: '1px solid #000', padding: '8px 16px', borderRadius: '4px', cursor: 'pointer' }}>Cancel</button>
                                 </div>
                               ) : (
-                                <button onClick={() => handleEditStart(slot)} style={{ background: '#000', color: '#fff', border: 'none', padding: '8px 16px', borderRadius: '4px', cursor: 'pointer' }}>Edit</button>
+                                canEdit && <button onClick={() => handleEditStart(slot)} style={{ background: '#000', color: '#fff', border: 'none', padding: '8px 16px', borderRadius: '4px', cursor: 'pointer' }}>Edit</button>
                               )}
                             </td>
                           </tr>

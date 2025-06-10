@@ -588,6 +588,12 @@ button {
   color: #2e7d32;
 }
 
+.statusUnavailable {
+  background-color: #f3f4f6 !important;
+  color: #6b7280 !important;
+  cursor: not-allowed;
+}
+
 .btnJoinNow {
   background-color: #2563eb;
   color: white;
