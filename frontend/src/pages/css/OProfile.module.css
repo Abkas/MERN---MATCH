@@ -174,3 +174,30 @@
     grid-template-columns: 1fr;
   }
 }
+
+/* User Actions for navbar */
+.userActions {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+.userActions a {
+  color: var(--text-secondary, #4b5563);
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.userActions a:hover {
+  color: var(--primary, #10b981);
+}
+
+.notification, .profileIcon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}

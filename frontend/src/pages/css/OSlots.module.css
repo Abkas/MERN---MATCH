@@ -95,7 +95,7 @@
 }
 
 .userActions a {
-  color: var(--text-secondary);
+  color: var(--text-secondary, #4b5563);
   position: relative;
   display: flex;
   align-items: center;
@@ -105,7 +105,13 @@
 }
 
 .userActions a:hover {
-  color: var(--primary);
+  color: var(--primary, #10b981);
+}
+
+.notification, .profileIcon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .notification {
