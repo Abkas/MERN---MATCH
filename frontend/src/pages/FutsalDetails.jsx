@@ -57,6 +57,8 @@ const FutsalDetails = () => {
           throw new Error('Invalid futsal data received');
         }
 
+        console.log('Raw futsalData.organizer received by frontend:', futsalData.organizer);
+
         // Map backend data to frontend structure
         const mappedData = {
           name: futsalData.name || 'Unnamed Futsal',
@@ -69,8 +71,8 @@ const FutsalDetails = () => {
           features: futsalData.plusPoints || [],
           owner: {
             name: futsalData.organizer?.fullName || futsalData.ownerName || 'Unknown Owner',
-            image: futsalData.organizer?.profilePicture || '/default-owner.png',
-            bio: futsalData.organizer?.bio || futsalData.ownerDescription || 'No bio available',
+            image: futsalData.organizer?.avatar || '/default-owner.png',
+            bio: futsalData.organizer?.organizerProfile?.bio || futsalData.ownerDescription || 'No bio available',
             phone: futsalData.organizer?.phoneNumber || 'Contact not available',
             email: futsalData.organizer?.email || 'Email not available',
             additionalInfo: futsalData.organizer?.additionalInfo || 'No additional info',
@@ -817,19 +819,6 @@ const FutsalDetails = () => {
                   </div>
                 )}
               </div>
-              {futsalData.owner.additionalInfo && (
-                <div style={{ 
-                  color: '#e2e8f0', 
-                  fontSize: 15, 
-                  marginBottom: 12,
-                  padding: '10px',
-                  background: 'rgba(255,255,255,0.1)',
-                  borderRadius: '8px',
-                  border: '1px solid rgba(255,255,255,0.2)'
-                }}>
-                  {futsalData.owner.additionalInfo}
-                </div>
-              )}
               <div className={styles.ownerActions} style={{ 
                 display: 'flex', 
                 gap: 10,

@@ -60,8 +60,15 @@ export const getFutsalById = async (req, res) => {
         console.log('Fetching futsal with ID:', id); // Debug log
         
         const futsal = await Futsal.findById(id)
-            .select('name location description futsalPhoto openingHours gamesOrganized plusPoints mapLink price rating isAwarded ownerName ownerDescription')
-            .populate('organizer', 'username fullName profilePicture email phoneNumber bio')
+            .select('name location description futsalPhoto openingHours gamesOrganized plusPoints mapLink price rating isAwarded')
+            .populate({
+                path: 'organizer',
+                select: 'username fullName avatar email phoneNumber organizerProfile',
+                populate: {
+                    path: 'organizerProfile',
+                    select: 'bio'
+                }
+            })
             .populate('slots')
             .populate({
                 path: 'reviews',
@@ -78,6 +85,7 @@ export const getFutsalById = async (req, res) => {
         }
 
         console.log('Fetched futsal:', futsal); // Debug log
+        console.log('Fetched organizer data:', futsal.organizer); // Add this line to log organizer data
 
         return res.status(200).json(
             new ApiResponse(200, futsal, "Futsal retrieved successfully")
