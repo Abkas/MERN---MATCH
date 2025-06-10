@@ -60,7 +60,8 @@ export const getFutsalById = async (req, res) => {
         console.log('Fetching futsal with ID:', id); // Debug log
         
         const futsal = await Futsal.findById(id)
-            .populate('organizer', 'username fullName profilePicture')
+            .select('name location description futsalPhoto openingHours gamesOrganized plusPoints mapLink price rating isAwarded ownerName ownerDescription')
+            .populate('organizer', 'username fullName profilePicture email phoneNumber bio')
             .populate('slots')
             .populate({
                 path: 'reviews',

@@ -68,10 +68,10 @@ const FutsalDetails = () => {
           totalTournaments: futsalData.tournaments?.length || 0,
           features: futsalData.plusPoints || [],
           owner: {
-            name: futsalData.ownerName || 'Unknown Owner',
+            name: futsalData.organizer?.fullName || futsalData.ownerName || 'Unknown Owner',
             image: futsalData.organizer?.profilePicture || '/default-owner.png',
-            bio: futsalData.ownerDescription || 'No bio available',
-            phone: futsalData.organizer?.phone || 'Contact not available',
+            bio: futsalData.organizer?.bio || futsalData.ownerDescription || 'No bio available',
+            phone: futsalData.organizer?.phoneNumber || 'Contact not available',
             email: futsalData.organizer?.email || 'Email not available',
             additionalInfo: futsalData.organizer?.additionalInfo || 'No additional info',
           },
@@ -627,61 +627,67 @@ const FutsalDetails = () => {
             marginBottom: 36, 
             border: '1.5px solid #e2e8f0' 
           }}>
-            <div className={styles.aboutContent}>
-              <h2 style={{ 
-                fontWeight: 800, 
-                color: '#000', 
-                marginBottom: 20,
-                fontSize: '1.8rem',
-                textAlign: 'center'
-              }}>About Us</h2>
-              <p style={{ 
-                fontSize: 17, 
-                color: '#475569', 
-                marginBottom: 24,
-                lineHeight: '1.7',
-                textAlign: 'center',
-                maxWidth: '800px',
-                margin: '0 auto 24px'
-              }}>{futsalData.description}</p>
-            </div>
-            <div className={styles.features} style={{ 
-              display: 'flex', 
-              flexWrap: 'wrap', 
-              gap: 16, 
-              marginTop: 24,
-              justifyContent: 'center'
-            }}>
-              {futsalData.features && futsalData.features.length > 0 ? (
-                futsalData.features.map((feature, index) => (
-                  <div key={index} className={styles.feature} style={{ 
-                    background: '#f8fafc', 
-                    color: '#000', 
-                    borderRadius: 8, 
-                    padding: '12px 24px', 
-                    fontWeight: 600, 
-                    display: 'flex', 
-                    alignItems: 'center', 
-                    gap: 8,
-                    transition: 'all 0.3s ease',
-                    border: '1px solid #e2e8f0',
-                    ':hover': {
-                      transform: 'translateY(-2px)',
-                      boxShadow: '0 4px 12px rgba(0,0,0,0.1)'
-                    }
-                  }}>
-                    <i className="fas fa-check-circle" style={{ color: '#000' }}></i>
-                    <span>{feature}</span>
-                  </div>
-                ))
-              ) : (
-                <p className={styles.noFeatures} style={{ 
-                  color: '#64748b',
-                  fontSize: 16,
-                  textAlign: 'center',
-                  width: '100%'
-                }}>No features listed</p>
-              )}
+            <h2 style={{ 
+              fontWeight: 800, 
+              color: '#000', 
+              marginBottom: 24,
+              fontSize: '1.8rem',
+              textAlign: 'left'
+            }}>About Us:</h2>
+            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '2rem', justifyContent: 'space-between' }}>
+              <div className={styles.aboutContent} style={{ flex: '1 1 55%', minWidth: '300px' }}>
+                <p style={{ 
+                  fontSize: 17, 
+                  color: '#000',
+                  lineHeight: '1.7',
+                  textAlign: 'left',
+                  margin: 0
+                }}>{futsalData.description}</p>
+              </div>
+              <div className={styles.features} style={{ 
+                flex: '1 1 40%', 
+                minWidth: '250px',
+                background: '#E0FFE0',
+                borderRadius: 12,
+                border: '1px solid #7CFC00',
+                padding: '1.5rem',
+                boxShadow: '0 2px 10px rgba(0,0,0,0.08)',
+                display: 'flex',
+                flexDirection: 'column',
+                gap: 12
+              }}>
+                {futsalData.features && futsalData.features.length > 0 ? (
+                  futsalData.features.map((feature, index) => (
+                    <div key={index} className={styles.feature} style={{ 
+                      background: 'transparent',
+                      color: '#000',
+                      borderRadius: 0, 
+                      padding: '0', 
+                      fontWeight: 600, 
+                      display: 'flex', 
+                      alignItems: 'center', 
+                      gap: 10,
+                      transition: 'none',
+                      border: 'none',
+                      boxShadow: 'none',
+                      ':hover': {
+                        transform: 'none',
+                        boxShadow: 'none'
+                      }
+                    }}>
+                      <i className="fas fa-check-square" style={{ color: '#00C000', fontSize: 20 }}></i>
+                      <span>{feature}</span>
+                    </div>
+                  ))
+                ) : (
+                  <p className={styles.noFeatures} style={{ 
+                    color: '#64748b',
+                    fontSize: 16,
+                    textAlign: 'center',
+                    width: '100%'
+                  }}>No features listed</p>
+                )}
+              </div>
             </div>
           </div>
         </section>
@@ -707,16 +713,18 @@ const FutsalDetails = () => {
               marginBottom: 24,
               fontSize: '1.8rem',
               textAlign: 'center'
-            }}>Meet the Owner</h2>
+            }}>Meet the Owner:</h2>
             <div className={styles.ownerProfile} style={{ 
               display: 'flex', 
+              flexDirection: 'column',
               alignItems: 'center', 
-              gap: 32,
-              background: '#000',
-              padding: '2rem',
+              gap: 16,
+              background: '#1A1A1A', // Dark background for the main owner profile box
+              padding: '1.5rem',
               borderRadius: '12px',
-              boxShadow: '0 2px 8px rgba(0,0,0,0.05)',
-              width: '100%'
+              boxShadow: '0 4px 24px rgba(0,0,0,0.3)',
+              width: '100%',
+              textAlign: 'center'
             }}>
               <div className={styles.ownerImage} style={{
                 position: 'relative',
@@ -744,125 +752,125 @@ const FutsalDetails = () => {
                   }}
                 />
               </div>
-              <div style={{ flex: 1 }}>
-                <h3 style={{ 
-                  fontWeight: 700, 
-                  fontSize: 24, 
-                  marginBottom: 8,
-                  color: '#fff'
+              <h3 style={{ 
+                fontWeight: 700, 
+                fontSize: 24, 
+                marginBottom: 0,
+                color: '#fff'
+              }}>
+                {futsalData.owner.name}
+                <span style={{ 
+                  fontWeight: 500, 
+                  fontSize: 18,
+                  color: '#ccc',
+                  display: 'block',
+                  marginTop: '4px'
                 }}>
-                  {futsalData.owner.name}
-                  <span style={{ 
-                    fontWeight: 500, 
-                    fontSize: 18,
-                    color: '#ccc',
-                    display: 'block',
-                    marginTop: '4px'
-                  }}>
-                    Founder - {futsalData.name}
-                  </span>
-                </h3>
-                <p className={styles.ownerBio} style={{ 
-                  color: '#e2e8f0', 
-                  fontSize: 16, 
-                  marginBottom: 16,
-                  lineHeight: '1.6'
-                }}>
-                  {futsalData.owner.bio}
-                </p>
-                <div className={styles.ownerContact} style={{ 
+                  Founder - {futsalData.name}
+                </span>
+              </h3>
+              <p className={styles.ownerBio} style={{ 
+                color: '#e2e8f0', 
+                fontSize: 16, 
+                marginBottom: 12,
+                lineHeight: '1.6',
+                textAlign: 'center'
+              }}>
+                {futsalData.owner.bio}
+              </p>
+              <div className={styles.ownerContact} style={{ 
+                display: 'flex', 
+                alignItems: 'center', 
+                justifyContent: 'center',
+                gap: 16, 
+                marginBottom: 12,
+                flexWrap: 'wrap'
+              }}>
+                <div className={styles.contactItem} style={{ 
+                  color: '#fff', 
+                  fontWeight: 600, 
                   display: 'flex', 
                   alignItems: 'center', 
-                  gap: 24, 
-                  marginBottom: 16,
-                  flexWrap: 'wrap'
+                  gap: 8,
+                  background: 'rgba(255,255,255,0.1)',
+                  padding: '8px 16px',
+                  borderRadius: '8px',
+                  border: '1px solid rgba(255,255,255,0.2)'
                 }}>
+                  <i className="fas fa-phone"></i>
+                  <span>{futsalData.owner.phone}</span>
+                </div>
+                {futsalData.owner.email && (
                   <div className={styles.contactItem} style={{ 
-                    color: '#000', 
+                    color: '#fff', 
                     fontWeight: 600, 
                     display: 'flex', 
                     alignItems: 'center', 
                     gap: 8,
-                    background: '#f8fafc',
-                    padding: '8px 16px',
-                    borderRadius: '8px',
-                    border: '1px solid #e2e8f0'
-                  }}>
-                    <i className="fas fa-phone"></i>
-                    <span>{futsalData.owner.phone}</span>
-                  </div>
-                  {futsalData.owner.email && (
-                    <div className={styles.contactItem} style={{ 
-                      color: '#000', 
-                      fontWeight: 600, 
-                      display: 'flex', 
-                      alignItems: 'center', 
-                      gap: 8,
-                      background: '#f8fafc',
-                      padding: '8px 16px',
-                      borderRadius: '8px',
-                      border: '1px solid #e2e8f0'
-                    }}>
-                      <i className="fas fa-envelope"></i>
-                      <span>{futsalData.owner.email}</span>
-                    </div>
-                  )}
-                </div>
-                {futsalData.owner.additionalInfo && (
-                  <div style={{ 
-                    color: '#e2e8f0', 
-                    fontSize: 15, 
-                    marginBottom: 16,
-                    padding: '12px',
                     background: 'rgba(255,255,255,0.1)',
+                    padding: '8px 16px',
                     borderRadius: '8px',
                     border: '1px solid rgba(255,255,255,0.2)'
                   }}>
-                    {futsalData.owner.additionalInfo}
+                    <i className="fas fa-envelope"></i>
+                    <span>{futsalData.owner.email}</span>
                   </div>
                 )}
-                <div className={styles.ownerActions} style={{ 
-                  display: 'flex', 
-                  gap: 12,
-                  marginTop: '16px'
+              </div>
+              {futsalData.owner.additionalInfo && (
+                <div style={{ 
+                  color: '#e2e8f0', 
+                  fontSize: 15, 
+                  marginBottom: 12,
+                  padding: '10px',
+                  background: 'rgba(255,255,255,0.1)',
+                  borderRadius: '8px',
+                  border: '1px solid rgba(255,255,255,0.2)'
                 }}>
-                  <button className={styles.addFriendBtn} style={{ 
-                    background: '#4FC0D4', 
-                    color: '#fff', 
-                    borderRadius: 8, 
-                    padding: '10px 20px', 
-                    fontWeight: 600, 
-                    border: 'none', 
-                    boxShadow: '0 2px 8px rgba(0,0,0,0.2)',
-                    cursor: 'pointer',
-                    transition: 'all 0.3s ease',
-                    ':hover': {
-                      background: '#3FB1C7',
-                      transform: 'translateY(-2px)',
-                      boxShadow: '0 4px 12px rgba(0,0,0,0.3)'
-                    }
-                  }}>
-                    Add Friend
-                  </button>
-                  <button className={styles.messageBtn} style={{ 
-                    background: '#90EE90', 
-                    color: '#000', 
-                    border: 'none', 
-                    borderRadius: 8, 
-                    padding: '10px 20px', 
-                    fontWeight: 600, 
-                    cursor: 'pointer',
-                    boxShadow: '0 2px 8px rgba(0,0,0,0.2)',
-                    transition: 'all 0.3s ease',
-                    ':hover': {
-                      background: '#7ACD7A',
-                      transform: 'translateY(-2px)',
-                      boxShadow: '0 4px 12px rgba(0,0,0,0.3)'
-                    }
-                  }}>
-                    Message
-                  </button>
+                  {futsalData.owner.additionalInfo}
                 </div>
+              )}
+              <div className={styles.ownerActions} style={{ 
+                display: 'flex', 
+                gap: 10,
+                marginTop: '12px'
+              }}>
+                <button className={styles.addFriendBtn} style={{ 
+                  background: '#e2e8f0', 
+                  color: '#000', 
+                  borderRadius: 8, 
+                  padding: '8px 18px', 
+                  fontWeight: 600, 
+                  border: 'none', 
+                  boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
+                  cursor: 'pointer',
+                  transition: 'all 0.3s ease',
+                  ':hover': {
+                    background: '#cbd5e1',
+                    transform: 'translateY(-2px)',
+                    boxShadow: '0 4px 12px rgba(0,0,0,0.2)'
+                  }
+                }}>
+                  Add Friend
+                </button>
+                <button className={styles.messageBtn} style={{ 
+                  background: '#e2e8f0', 
+                  color: '#000', 
+                  border: 'none', 
+                  borderRadius: 8, 
+                  padding: '8px 18px', 
+                  fontWeight: 600, 
+                  cursor: 'pointer',
+                  boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
+                  transition: 'all 0.3s ease',
+                  ':hover': {
+                    background: '#cbd5e1',
+                    transform: 'translateY(-2px)',
+                    boxShadow: '0 4px 12px rgba(0,0,0,0.2)'
+                  }
+                }}>
+                  Message
+                </button>
               </div>
             </div>
           </div>
