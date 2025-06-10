@@ -1298,3 +1298,9 @@ button {
   box-shadow: 0 8px 24px rgba(65, 105, 225, 0.18), 0 2px 8px rgba(0,0,0,0.08);
   z-index: 2;
 }
+
+.fullWidthSection {
+  width: 100%;
+  padding: 0 24px;
+  box-sizing: border-box;
+}
