@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom'
 import { User, LogOut } from 'lucide-react'
 import { useAuthStore } from '../store/useAuthStore'
 import styles from '../pages/css/AboutUsPage.module.css'
+import '../pages/css/FooterOverride.css'
 import WorkModal from '../components/WorkModal'
 import { FaTwitter, FaLinkedinIn, FaDribbble, FaInstagram, FaFacebookF } from 'react-icons/fa';
 
@@ -280,20 +281,120 @@ useEffect(() => {
             ))}
           </div>
         </div>
+      </section>      <section id="contact" className={styles.contactSection + ' pop-in'}>
+        <div className={styles.container + ' pop-in'}>
+          <h2 className={'pop-in'}>Get In Touch</h2>
+          <div className={styles.contactContent}>
+            <div className={styles.contactInfo}>
+              <div className={styles.contactItem}>
+                <i className="fas fa-map-marker-alt"></i>
+                <div>
+                  <h3>Address</h3>
+                  <p>Kathmandu, Nepal</p>
+                </div>
+              </div>
+              <div className={styles.contactItem}>
+                <i className="fas fa-phone"></i>
+                <div>
+                  <h3>Phone</h3>
+                  <p>123456789</p>
+                </div>
+              </div>
+              <div className={styles.contactItem}>
+                <i className="fas fa-envelope"></i>
+                <div>
+                  <h3>Email</h3>
+                  <p>info@matchpoint.com</p>
+                </div>
+              </div>
+              <div className={styles.contactSocial}>
+                <a href="#"><FaTwitter /></a>
+                <a href="#"><FaFacebookF /></a>
+                <a href="#"><FaInstagram /></a>
+                <a href="#"><FaLinkedinIn /></a>
+              </div>
+            </div>            <div className={styles.contactForm}>
+              <form onSubmit={(e) => {
+                e.preventDefault();
+                alert('Thank you for your message! We will get back to you soon.');
+                e.target.reset();
+              }}>
+                <div className={styles.formGroup}>
+                  <input type="text" placeholder="Your Name" required />
+                </div>
+                <div className={styles.formGroup}>
+                  <input type="email" placeholder="Your Email" required />
+                </div>
+                <div className={styles.formGroup}>
+                  <input type="text" placeholder="Subject" required />
+                </div>
+                <div className={styles.formGroup}>
+                  <textarea placeholder="Your Message" rows="5" required></textarea>
+                </div>
+                <button type="submit" className={styles.submitBtn}>Send Message</button>
+              </form>
+            </div>
+          </div>
+        </div>
       </section>
 
-      <footer className="pop-in">
-        <div className={styles.footerLinks + ' pop-in'}>
-          <Link to="#" className="pop-in">About</Link>
-          <Link to="#" className="pop-in">Contact Us</Link>
-          <Link to="#" className="pop-in">Privacy</Link>
-          <Link to="#" className="pop-in">FAQs</Link>
-          <Link to="#" className="pop-in">Terms</Link>
+      <footer className={styles.footer}>
+        <div className={styles.footerContainer}>
+          {/* Company Info Column */}
+          <div className={styles.footerColumn}>
+            <div className={styles.footerLogo}>
+              <Link to="/"><img src="/firstpage/logo.png" alt="match-logo" /></Link>
+            </div>            
+            <p className={styles.footerAbout}>
+              Match Point is your ultimate platform for finding teammates, joining tournaments, and elevating your gaming experience.
+            </p>            
+            <div className={styles.footerContact}>
+              <p><i className="fas fa-map-marker-alt"></i> Kathmandu, Nepal</p>
+              <p><i className="fas fa-phone"></i> 123456789</p>
+              <p><i className="fas fa-envelope"></i> info@matchpoint.com</p>
+            </div>
+          </div>
+          {/* Quick Links Column */}
+          <div className={styles.footerColumn}>
+            <h3 className={styles.footerHeading}>Quick Links</h3>
+            <ul className={styles.footerLinks}>
+              <li><Link to="/">Home</Link></li>
+              <li><Link to="/about-us">About Us</Link></li>
+              <li><Link to="/how-it-works">How It Works</Link></li>
+              <li><Link to="/futsalhome">Futsal</Link></li>
+              <li><Link to="/tournaments">Tournaments</Link></li>
+            </ul>
+          </div>
+          {/* Support Column */}
+          <div className={styles.footerColumn}>
+            <h3 className={styles.footerHeading}>Support</h3>
+            <ul className={styles.footerLinks}>
+              <li><Link to="/how-it-works">FAQs</Link></li>
+              <li><Link to="/about-us">Contact Us</Link></li>
+            </ul>
+          </div>
+          
+          {/* Legal Column */}
+          <div className={styles.footerColumn}>
+            <h3 className={styles.footerHeading}>Legal</h3>
+            <ul className={styles.footerLinks}>
+              <li><Link to="#">Terms of Service</Link></li>
+              <li><Link to="#">Privacy Policy</Link></li>
+              <li><Link to="#">Cookie Policy</Link></li>
+              <li><Link to="#">Refund Policy</Link></li>
+            </ul>
+          </div>
         </div>
-        <div className={styles.socialLinks + ' pop-in'}>
-          <a href="#"><i className="fab fa-instagram"></i></a>
-          <a href="#"><i className="fab fa-facebook-f"></i></a>
-          <a href="#"><i className="fab fa-twitter"></i></a>
+        
+        <div className={styles.footerBottom}>
+          <div className={styles.copyright}>
+            <p>&copy; {new Date().getFullYear()} Match Point. All rights reserved.</p>
+          </div>
+          <div className={styles.footerBottomLinks}>
+            <Link to="#">Sitemap</Link>
+            <Link to="#">Accessibility</Link>
+            <Link to="#">Cookies</Link>
+          </div>
         </div>
       </footer>
 

@@ -6,6 +6,7 @@ import SignUpPage from "./pages/SignUpPage"
 import LogInPage from "./pages/LogInPage"
 import AboutUsPage from "./pages/AboutUsPage"
 import HowItWorks from "./pages/HowItWorksPage"
+import ScrollToTop from "./components/ScrollToTop"
 
 import PDashboardPage from "./pages/Player-profile/PDashboardPage"
 import PAddFriend from "./pages/Player-profile/PAddFriend"
@@ -56,10 +57,9 @@ const App = () => {
       <Loader className='size-10 animate-spin' />
     </div>)
   
-
   return (
     <div>
-        
+        <ScrollToTop />
       <Routes>
         <Route path = '/'  element={<HomePage />} />
         <Route path = '/about-us'  element={<AboutUsPage />} />

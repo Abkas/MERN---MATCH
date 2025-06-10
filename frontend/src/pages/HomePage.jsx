@@ -1,5 +1,6 @@
 import React from 'react'
 import styles from '../pages/css/HomePage.module.css'
+import '../pages/css/FooterOverride.css'
 import { Link, useNavigate } from 'react-router-dom'
 import { LogOut, User } from 'lucide-react'
 import { useAuthStore } from '../store/useAuthStore'
@@ -255,20 +256,60 @@ const HomePage = () => {
           </div>
         </div>
         <button className={styles.btnMoreTestimonials}>More Happy Customers</button>
-      </section>
-
-      <footer>
-        <div className={styles.footerLinks}>
-          <Link to="#">About</Link>
-          <Link to="#">Contact Us</Link>
-          <Link to="#">Privacy</Link>
-          <Link to="#">FAQs</Link>
-          <Link to="#">Terms</Link>
+      </section>      <footer className={styles.footer}>
+        <div className={styles.footerContainer}>
+          {/* Company Info Column */}
+          <div className={styles.footerColumn}>
+            <div className={styles.footerLogo}>
+              <Link to="/"><img src="/firstpage/logo.png" alt="match-logo" /></Link>
+            </div>            <p className={styles.footerAbout}>
+              Match Point is your ultimate platform for finding teammates, joining tournaments, and elevating your gaming experience.
+            </p>            <div className={styles.footerContact}>
+              <p><i className="fas fa-map-marker-alt"></i> Kathmandu, Nepal</p>
+              <p><i className="fas fa-phone"></i> 123456789</p>
+              <p><i className="fas fa-envelope"></i> info@matchpoint.com</p>
+            </div>
+          </div>
+            {/* Quick Links Column */}          <div className={styles.footerColumn}>
+            <h3 className={styles.footerHeading}>Quick Links</h3>
+            <ul className={styles.footerLinks}>
+              <li><Link to="/">Home</Link></li>
+              <li><Link to="/about-us">About Us</Link></li>
+              <li><Link to="/how-it-works">How It Works</Link></li>
+              <li><Link to="/futsalhome">Futsal</Link></li>
+              <li><Link to="/tournaments">Tournaments</Link></li>
+            </ul>
+          </div>
+            {/* Support Column */}
+          <div className={styles.footerColumn}>
+            <h3 className={styles.footerHeading}>Support</h3>
+            <ul className={styles.footerLinks}>
+              <li><Link to="/how-it-works">FAQs</Link></li>
+              <li><Link to="/about-us">Contact Us</Link></li>
+            </ul>
+          </div>
+          
+          {/* Legal Column */}
+          <div className={styles.footerColumn}>
+            <h3 className={styles.footerHeading}>Legal</h3>
+            <ul className={styles.footerLinks}>
+              <li><Link to="#">Terms of Service</Link></li>
+              <li><Link to="#">Privacy Policy</Link></li>
+              <li><Link to="#">Cookie Policy</Link></li>
+              <li><Link to="#">Refund Policy</Link></li>
+            </ul>
+          </div>
         </div>
-        <div className={styles.socialLinks}>
-          <a href="#"><i className="fab fa-instagram"></i></a>
-          <a href="#"><i className="fab fa-facebook-f"></i></a>
-          <a href="#"><i className="fab fa-twitter"></i></a>
+        
+        <div className={styles.footerBottom}>
+          <div className={styles.copyright}>
+            <p>&copy; {new Date().getFullYear()} Match Point. All rights reserved.</p>
+          </div>
+          <div className={styles.footerBottomLinks}>
+            <Link to="#">Sitemap</Link>
+            <Link to="#">Accessibility</Link>
+            <Link to="#">Cookies</Link>
+          </div>
         </div>
       </footer>
     </div>
