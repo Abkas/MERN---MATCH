@@ -17,7 +17,7 @@ const createFutsal = asyncHandler(async (req, res) => {
 
         const userFields = ['phoneNumber'];
         const organizerFields = ['bio',  'isVerified'];
-        const futsalFields = ['name', 'location', 'description', 'ownerDescription', 'ownerName', 'openingHours','futsalPhoto', 'gamesOrganized', 'plusPoints', 'mapLink', 'latitude', 'longitude', 'placeName', 'placeId'];
+        const futsalFields = ['name', 'location', 'description', 'ownerDescription', 'ownerName', 'openingHours','futsalPhoto', 'gamesOrganized', 'plusPoints', 'mapLink', 'latitude', 'longitude', 'placeName', 'placeId', 'price'];
 
         const userUpdates = {};
         const organizerUpdates = {};

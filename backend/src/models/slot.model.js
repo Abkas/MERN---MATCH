@@ -56,6 +56,12 @@ SlotSchema.statics.generateDefaultSlots = async function(futsalId) {
     const slots = [];
     const today = new Date();
     
+    // Get the futsal to access its price
+    const futsal = await mongoose.model('Futsal').findById(futsalId);
+    if (!futsal) {
+        throw new ApiError(404, 'Futsal not found');
+    }
+    
     // Generate slots for next 7 days
     for (let day = 0; day < 7; day++) {
         const currentDate = new Date(today);
@@ -72,7 +78,7 @@ SlotSchema.statics.generateDefaultSlots = async function(futsalId) {
                 date: dateStr,
                 time: `${startHour}:00-${endHour}:00`,
                 maxPlayers: 10,
-                price: 500,
+                price: futsal.price,
                 status: SLOT_STATUS.AVAILABLE,
                 players: [],
                 paymentStatus: [],

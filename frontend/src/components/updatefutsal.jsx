@@ -17,6 +17,7 @@ import {
   Map,
   Info,
   AlertCircle,
+  DollarSign,
 } from "lucide-react";
 import styles from "../pages/css/UpdateFutsalProfile.module.css";
 import { useAuthStore } from "../store/useAuthStore";
@@ -103,6 +104,7 @@ const UpdateFutsal = () => {
     plusPoints: [],
     mapLink: "",
     futsalPhoto: "",
+    price: 500,
   });
 
   const [isLoading, setIsLoading] = useState(false);
@@ -130,6 +132,7 @@ const UpdateFutsal = () => {
               plusPoints: futsal.plusPoints || [],
               mapLink: futsal.mapLink || "",
               futsalPhoto: futsal.futsalPhoto || "",
+              price: futsal.price || 500,
             });
           }
         } catch (error) {
@@ -309,6 +312,26 @@ const UpdateFutsal = () => {
                     placeholder="Enter your futsal location"
                   />
                 </div>
+              </div>
+              <div className={styles.formGroup}>
+                <label htmlFor="price">Default Price per Person</label>
+                <div className={styles.iconInput}>
+                  <DollarSign size={16} />
+                  <input 
+                    type="number" 
+                    id="price" 
+                    name="price" 
+                    value={formData.price} 
+                    onChange={handleInputChange} 
+                    required 
+                    min="0"
+                    placeholder="Enter default price per person"
+                  />
+                </div>
+                <p className={styles.fieldNote}>
+                  <Info size={14} />
+                  This price will be used as the default for all slots
+                </p>
               </div>
               <div className={styles.formGroup}>
                 <label>Opening Hours</label>
