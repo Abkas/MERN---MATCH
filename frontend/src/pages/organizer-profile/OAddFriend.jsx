@@ -4,7 +4,7 @@ import { Link, useNavigate } from 'react-router-dom'
 import { LogOut, User } from 'lucide-react'
 import { useAuthStore } from '../../store/useAuthStore'
 
-const OHistory = () => {
+const OAddFriend = () => {
   const { logOut } = useAuthStore()
   const navigate = useNavigate()
 
@@ -65,19 +65,21 @@ const OHistory = () => {
         </div>
       </header>
       <div className={styles.container}>
-        <aside className={styles.sidebar}>          <ul className={styles.sidebarMenu}>            <li><Link to="/organizer-dashboard">Dashboard</Link></li>
+        <aside className={styles.sidebar}>
+          <ul className={styles.sidebarMenu}>            <li><Link to="/organizer-dashboard">Dashboard</Link></li>
             <li><Link to="/profile">Profile</Link></li>
-            <li><Link to="/organizer-addfriend" style={{ color: '#9ca3af' }}>Add Friends</Link></li>
-            <li><Link to="/organizer-futsals" >My Futsal</Link></li>
-            <li><Link to="/organizer-history" className={styles.active} style={{ color: '#9ca3af' }}>History</Link></li>
-            <li><Link to="/organizer-slots" >Manage Slots</Link></li>
+            <li><Link to="/organizer-addfriend" className={styles.active} style={{ color: '#9ca3af' }}>Add Friends</Link></li>
+            <li><Link to="/organizer-futsals">My Futsal</Link></li>
+            <li><Link to="/organizer-history" style={{ color: '#9ca3af' }}>History</Link></li>
+            <li><Link to="/organizer-slots">Manage Slots</Link></li>
             <li>
               <button className={styles.logoutBtn} onClick={handleLogout}>
                 Logout
               </button>
             </li>
           </ul>
-        </aside>        <main>
+        </aside>
+        <main className={styles.mainContent}>
           <div style={{
             display: 'flex',
             flexDirection: 'column',
@@ -101,7 +103,7 @@ const OHistory = () => {
               color: '#6b7280',
               marginBottom: '2rem'
             }}>
-              You will be able to view futsal history soon.
+              You will be able to add friends soon.
             </p>
           </div>
         </main>
@@ -110,4 +112,4 @@ const OHistory = () => {
   )
 }
 
-export default OHistory
+export default OAddFriend

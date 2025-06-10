@@ -73,12 +73,11 @@ const OrganizerProfile = () => {
         </nav>
       </header>
       <div className={styles.container} style={{ display: 'flex', flexDirection: 'row', justifyContent: 'center', alignItems: 'flex-start', minHeight: '70vh' }}>
-        <aside className={styles.sidebar}>
-          <ul className={styles.sidebarMenu}>
-            <li><Link to="/organizer-dashboard">Dashboard</Link></li>
+        <aside className={styles.sidebar}>          <ul className={styles.sidebarMenu}>            <li><Link to="/organizer-dashboard">Dashboard</Link></li>
             <li><Link to="/profile" className={styles.active}>Profile</Link></li>
+            <li><Link to="/organizer-addfriend" style={{ color: '#9ca3af' }}>Add Friends</Link></li>
             <li><Link to="/organizer-futsals">My Futsal</Link></li>
-            <li><Link to="/organizer-history">History</Link></li>
+            <li><Link to="/organizer-history" style={{ color: '#9ca3af' }}>History</Link></li>
             <li><Link to="/organizer-slots">Manage Slots</Link></li>
             <li>
               <button className={styles.logoutBtn} onClick={handleLogout}>

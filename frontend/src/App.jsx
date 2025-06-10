@@ -23,6 +23,7 @@ import FutsalDetails from './pages/FutsalDetails'
 import PlayerUpdateProfile from "./pages/Player-profile/PlayerUpdateProfile"
 
 import ODashboard from "./pages/organizer-profile/ODashbaord"
+import OAddFriend from "./pages/organizer-profile/OAddFriend"
 import OHistory from "./pages/organizer-profile/OHistory"
 import OMyFutsal from "./pages/organizer-profile/OMyFutsal"
 import OSlotsPage from "./pages/organizer-profile/OSlotsPage"
@@ -79,9 +80,8 @@ const App = () => {
 
         <Route path="/futsal/:id" element={authUser?<FutsalDetails />:<Navigate to = '/login'/>} />
       
-        <Route path = '/update-profile' element= {authUser?<PlayerUpdateProfile />: <Navigate to='/login'/>} />
-
-        <Route path = '/organizer-dashboard' element= {authUser?<ODashboard />: <Navigate to='/login'/>} />
+        <Route path = '/update-profile' element= {authUser?<PlayerUpdateProfile />: <Navigate to='/login'/>} />        <Route path = '/organizer-dashboard' element= {authUser?<ODashboard />: <Navigate to='/login'/>} />
+        <Route path = '/organizer-addfriend' element= {authUser?<OAddFriend />: <Navigate to='/login'/>} />
         <Route path = '/organizer-history' element= {authUser?<OHistory />: <Navigate to='/login'/>} />
         <Route path = '/organizer-futsals' element= {authUser?<OMyFutsal />: <Navigate to='/login'/>} />
         <Route path = '/organizer-slots' element= {authUser?<OSlotsPage />: <Navigate to='/login'/>} />
