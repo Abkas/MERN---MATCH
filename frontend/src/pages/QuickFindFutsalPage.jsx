@@ -353,10 +353,18 @@ const QuickFindFutsalPage = () => {
           </ul>
           <div className={styles.navIcons}>
             <div className={styles.notification}>
-              <img src="/FUTSALHOME/notification-icon.png" alt="Notifications" />
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
+                <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
+              </svg>
             </div>
             <div className={styles.profile}>
-              <Link to="/profile"><img src="/FUTSALHOME/profile-icon.png" alt="Profile" /></Link>
+              <Link to="/profile">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                  <circle cx="12" cy="7" r="4"></circle>
+                </svg>
+              </Link>
             </div>
           </div>
         </nav>
@@ -569,16 +577,28 @@ const QuickFindFutsalPage = () => {
           <h2>Available Futsal</h2>
           <div className={styles.filterOptions} style={{ marginBottom: '16px' }}>
             <div className={styles.filterDropdown}>
-              <button className={styles.dropdownBtn}>Date & Time</button>
+              <button 
+                className={`${styles.dropdownBtn} ${priceActive ? styles.active : ''}`}
+                onClick={() => setPriceActive(prev => !prev)}
+              >
+                Entry Fee
+              </button>
             </div>
             <div className={styles.filterDropdown}>
-              <button className={styles.dropdownBtn}>Entry Fee</button>
+              <button 
+                className={`${styles.dropdownBtn} ${seatsActive ? styles.active : ''}`}
+                onClick={() => setSeatsActive(prev => !prev)}
+              >
+                Players Needed
+              </button>
             </div>
             <div className={styles.filterDropdown}>
-              <button className={styles.dropdownBtn}>Location</button>
-            </div>
-            <div className={styles.filterDropdown}>
-              <button className={styles.dropdownBtn}>Players Needed</button>
+              <button 
+                className={`${styles.dropdownBtn} ${distanceFilterActive ? styles.active : ''}`}
+                onClick={() => setDistanceFilterActive(prev => !prev)}
+              >
+                Location
+              </button>
             </div>
           </div>
           {/* Render the QuickJoinSection for each futsal, just like BookFutsal */}
@@ -623,94 +643,67 @@ const QuickFindFutsalPage = () => {
           </div>
         </section>
 
-        <section className={styles.registerMatch + ' ' + styles.disabledSection}>
-          <h2 style={{ color: '#aaa' }}>Register for a Match <span className={styles.comingSoonBadge}>Coming Soon</span></h2>
-          <div className={styles.registerForm} style={{ opacity: 0.5, pointerEvents: 'none' }}>
-            <div className={styles.formGroup}>
-              <label>Suitable Futsal's:</label>
-              <div className={styles.selectedVenues}>
-                <div className={styles.venueChip}>
-                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                    <polygon points="5 3 19 12 5 21 5 3"></polygon>
-                  </svg>
-                  Golden Futsal, Lalitpur
+        <section className={styles.registerMatch}>
+          <div className={styles.lightBoxContent}>
+            <h2 style={{ color: '#666', marginBottom: '20px' }}>Register for a Match</h2>
+            <div className={styles.registerForm}>
+              <div className={styles.formGroup}>
+                <label style={{ color: '#666' }}>Suitable Futsal's:</label>
+                <div className={styles.selectedVenues}>
+                  <div className={styles.venueChip}>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <polygon points="5 3 19 12 5 21 5 3"></polygon>
+                    </svg>
+                    Golden Futsal, Lalitpur
+                  </div>
+                  <div className={styles.venueChip}>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <polygon points="5 3 19 12 5 21 5 3"></polygon>
+                    </svg>
+                    Golden Futsal, Lalitpur
+                  </div>
+                  <div className={styles.venueChip}>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <polygon points="5 3 19 12 5 21 5 3"></polygon>
+                    </svg>
+                    Golden Futsal, Lalitpur
+                  </div>
+                  <button className={styles.addVenueBtn}>Add Futsal's</button>
+                  <button className={styles.editBtn}>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"></path>
+                    </svg>
+                  </button>
                 </div>
-                <div className={styles.venueChip}>
-                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                    <polygon points="5 3 19 12 5 21 5 3"></polygon>
-                  </svg>
-                  Golden Futsal, Lalitpur
-                </div>
-                <div className={styles.venueChip}>
-                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                    <polygon points="5 3 19 12 5 21 5 3"></polygon>
-                  </svg>
-                  Golden Futsal, Lalitpur
-                </div>
-                <button className={styles.addVenueBtn}>Add Futsal's</button>
-                <button className={styles.editBtn}>
-                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                    <path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"></path>
-                  </svg>
-                </button>
               </div>
-            </div>
-            <div className={styles.formGroup}>
-              <label>Available Date:</label>
-              <div className={styles.selectedDates}>
-                <div className={styles.dateChip}>
-                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                    <polygon points="5 3 19 12 5 21 5 3"></polygon>
-                  </svg>
-                  25th April, 12:00 - 13:00
+              <div className={styles.formGroup}>
+                <label style={{ color: '#666' }}>Available Date:</label>
+                <div className={styles.selectedDates}>
+                  <div className={styles.dateChip}>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <polygon points="5 3 19 12 5 21 5 3"></polygon>
+                    </svg>
+                    25th April, 12:00 - 13:00
+                  </div>
+                  <div className={styles.dateChip}>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <polygon points="5 3 19 12 5 21 5 3"></polygon>
+                    </svg>
+                    25th April, 14:00 - 15:00
+                  </div>
+                  <button className={styles.addDateBtn}>Add Available Time:</button>
+                  <button className={styles.editBtn}>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"></path>
+                    </svg>
+                  </button>
                 </div>
-                <div className={styles.dateChip}>
-                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                    <polygon points="5 3 19 12 5 21 5 3"></polygon>
-                  </svg>
-                  25th April, 14:00 - 15:00
-                </div>
-                <button className={styles.addDateBtn}>Add Available Time:</button>
-                <button className={styles.editBtn}>
-                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                    <path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"></path>
-                  </svg>
-                </button>
               </div>
+              <button className={styles.registerBtn}>Register</button>
             </div>
-            <button className={styles.registerBtn}>Register</button>
           </div>
         </section>
       </main>
-
-      <footer className={styles.footer}>
-        <div className={styles.footerLinks}>
-          <Link to="#">About</Link>
-          <Link to="#">Contact Us</Link>
-          <Link to="#">Pricing</Link>
-          <Link to="#">FAQs</Link>
-          <Link to="#">Team</Link>
-        </div>
-        <div className={styles.footerSocial}>
-          <Link to="#">
-            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect>
-              <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path>
-              <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line>
-            </svg>
-          </Link>
-          <Link to="#">
-            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path>
-            </svg>
-          </Link>
-          <Link to="#">
-            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M23 3a10.9 10.9 0 0 1-3.14 1.53 4.48 4.48 0 0 0-7.86 3v1A10.66 10.66 0 0 1 3 4s-4 9 5 13a11.64 11.64 0 0 1-7 2c9 5 20 0 20-11.5a4.5 4.5 0 0 0-.08-.83A7.72 7.72 0 0 0 23 3z"></path>
-            </svg>
-          </Link>
-        </div>
-      </footer>
     </div>
   )
 }

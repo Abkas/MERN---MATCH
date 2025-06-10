@@ -78,10 +78,12 @@
     cursor: pointer;
 }
 
-.notification img, .profile img {
+.notification svg, .profile svg {
     width: 20px;
     height: 20px;
+    color: #fff;
 }
+
 /* Main Content */
 main {
     max-width: 1200px;
@@ -257,9 +259,14 @@ main {
     padding: 8px 15px;
     font-size: 14px;
     cursor: pointer;
+    transition: all 0.2s ease;
 }
 
-.filterDropdown.active .dropdownBtn {
+.dropdownBtn:hover {
+    background-color: #e0e0e0;
+}
+
+.dropdownBtn.active {
     background-color: #4169e1;
     color: #fff;
 }
@@ -444,93 +451,147 @@ td {
 
 /* Register Match */
 .registerMatch {
-    background-color: #fff;
-    border-radius: 10px;
-    padding: 20px;
-    margin-bottom: 30px;
+    background-color: #f5f5f5;
+    border-radius: 16px;
+    padding: 30px;
+    margin: 40px auto;
+    max-width: 800px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+    position: relative;
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+.registerMatch:hover {
+    background-color: #e8e8e8;
+}
+
+.registerMatch:hover::after {
+    content: 'Upcoming';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: rgba(0, 0, 0, 0.8);
+    color: white;
+    padding: 12px 24px;
+    border-radius: 8px;
+    font-weight: 500;
+    font-size: 18px;
+    z-index: 2;
+}
+
+.registerMatch:hover .lightBoxContent {
+    opacity: 0.3;
+    pointer-events: none;
+}
+
+.lightBoxContent {
+    padding: 30px;
+    transition: opacity 0.3s ease;
 }
 
 .registerMatch h2 {
-    font-size: 20px;
+    font-size: 24px;
     margin-bottom: 20px;
     font-weight: 600;
+    color: #333;
+    display: flex;
+    align-items: center;
+    gap: 12px;
 }
 
 .formGroup {
-    margin-bottom: 20px;
+    margin-bottom: 24px;
 }
 
 .formGroup label {
     display: block;
-    margin-bottom: 10px;
+    margin-bottom: 12px;
     font-weight: 500;
+    color: #333;
 }
 
 .selectedVenues, .selectedDates {
     display: flex;
     flex-wrap: wrap;
-    gap: 10px;
-    align-items: center;
+    gap: 12px;
+    margin-bottom: 16px;
 }
 
 .venueChip, .dateChip {
     display: flex;
     align-items: center;
-    gap: 5px;
-    background-color: #f0f0f0;
+    gap: 8px;
+    padding: 8px 16px;
+    background: #f5f7fa;
     border-radius: 20px;
-    padding: 8px 15px;
     font-size: 14px;
+    color: #333;
 }
 
 .addVenueBtn, .addDateBtn {
-    background-color: #f0f0f0;
+    padding: 8px 16px;
+    background: #e8f0fe;
+    color: #1a73e8;
     border: none;
     border-radius: 20px;
-    padding: 8px 15px;
-    font-size: 14px;
     cursor: pointer;
+    font-weight: 500;
+    transition: background 0.2s;
+}
+
+.addVenueBtn:hover, .addDateBtn:hover {
+    background: #d2e3fc;
 }
 
 .editBtn {
-    background: none;
+    padding: 8px;
+    background: #f5f7fa;
     border: none;
+    border-radius: 50%;
     cursor: pointer;
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 30px;
-    height: 30px;
+    transition: background 0.2s;
+}
+
+.editBtn:hover {
+    background: #e8eaed;
 }
 
 .registerBtn {
-    background-color: #4169e1;
-    color: #fff;
+    width: 100%;
+    padding: 12px;
+    background: #1a73e8;
+    color: white;
     border: none;
-    border-radius: 5px;
-    padding: 12px 30px;
-    font-size: 16px;
+    border-radius: 8px;
     font-weight: 500;
     cursor: pointer;
+    transition: background 0.2s;
+    margin-top: 20px;
 }
 
-/* Coming Soon Badge */
+.registerBtn:hover {
+    background: #1557b0;
+}
+
 .comingSoonBadge {
-    display: inline-block;
-    background: #bbb;
-    color: #fff;
-    font-size: 0.85em;
-    font-weight: 700;
-    border-radius: 8px;
-    padding: 2px 12px;
-    margin-left: 12px;
-    letter-spacing: 1px;
-    animation: pulseBadge 1.2s infinite alternate;
+    background: #fef3c7;
+    color: #92400e;
+    padding: 4px 12px;
+    border-radius: 12px;
+    font-size: 14px;
+    font-weight: 500;
+    animation: pulseBadge 2s infinite;
 }
 
 @keyframes pulseBadge {
-    0% { background: #bbb; }
-    100% { background: #888; }
+    0% { opacity: 1; }
+    50% { opacity: 0.7; }
+    100% { opacity: 1; }
 }
 
 /* Disabled Section */

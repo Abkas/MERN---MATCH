@@ -20,10 +20,18 @@ const TournamentPage = () => {
                 </ul>
                 <div className={styles.navIcons}>
                   <div className={styles.notification}>
-                    <img src="/FUTSALHOME/notification-icon.png" alt="Notifications" />
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
+                      <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
+                    </svg>
                   </div>
                   <div className={styles.profile}>
-                    <Link to="/profile"><img src="/FUTSALHOME/profile-icon.png" alt="Profile" /></Link>
+                    <Link to="/profile">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                        <circle cx="12" cy="7" r="4"></circle>
+                      </svg>
+                    </Link>
                   </div>
                 </div>
               </nav>
@@ -49,6 +57,116 @@ const TournamentPage = () => {
 
       <section className={styles.tournamentsSection} style={{ opacity: 0.6, filter: 'grayscale(0.7)', pointerEvents: 'none', background: '#f3f4f8' }}>
         <h2 style={{ color: '#888', textAlign: 'center', fontWeight: 700 }}>#Near You (Coming Soon)</h2>
+        <div className={styles.tournamentCards}>
+          {/* Card 1 */}
+          <div className={styles.tournamentCard}>
+            <div className={styles.cardImage}>
+              <img src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/Screenshot%202025-05-15%20at%2012.17.04-UC2PIHU5LT2PSN7W3ma5eDX6UkS9Ql.png" alt="Football Tournament" />
+              <div className={styles.location}>New Kathmandu Cup</div>
+            </div>
+            <div className={styles.cardDetails}>
+              <div className={styles.dateTime}>30 Jan – 2 Feb</div>
+              <div className={styles.organizer}>Official Ktmz</div>
+              <div className={styles.participants}>
+                <div className={styles.avatars}>
+                  <span className={styles.avatar} style={{backgroundColor: '#ff5733'}}></span>
+                  <span className={styles.avatar} style={{backgroundColor: '#33ff57'}}></span>
+                  <span className={styles.avatar} style={{backgroundColor: '#3357ff'}}></span>
+                </div>
+                <span className={styles.joined}>45+ Joined</span>
+              </div>
+              <div className={styles.price}>$3,500 USD</div>
+            </div>
+          </div>
+          {/* Card 2 */}
+          <div className={styles.tournamentCard}>
+            <div className={styles.cardImage}>
+              <img src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/Screenshot%202025-05-15%20at%2012.17.04-UC2PIHU5LT2PSN7W3ma5eDX6UkS9Ql.png" alt="College Intra-Cup" />
+              <div className={styles.location}>College Intra-Cup</div>
+            </div>
+            <div className={styles.cardDetails}>
+              <div className={styles.dateTime}>30 Jan – 3 April</div>
+              <div className={styles.organizer}>Official Ktmz</div>
+              <div className={styles.participants}>
+                <div className={styles.avatars}>
+                  <span className={styles.avatar} style={{backgroundColor: '#ff5733'}}></span>
+                  <span className={styles.avatar} style={{backgroundColor: '#33ff57'}}></span>
+                  <span className={styles.avatar} style={{backgroundColor: '#3357ff'}}></span>
+                </div>
+                <span className={styles.joined}>45+ Joined</span>
+              </div>
+              <div className={styles.price}>$1,500 USD</div>
+            </div>
+          </div>
+          {/* Card 3 */}
+          <div className={styles.tournamentCard}>
+            <div className={styles.cardImage}>
+              <img src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/Screenshot%202025-05-15%20at%2012.17.04-UC2PIHU5LT2PSN7W3ma5eDX6UkS9Ql.png" alt="Butwal-Div C" />
+              <div className={styles.location}>Butwal-Div C</div>
+            </div>
+            <div className={styles.cardDetails}>
+              <div className={styles.dateTime}>30 Jan – 3 Feb</div>
+              <div className={styles.organizer}>Official Ktmz</div>
+              <div className={styles.participants}>
+                <div className={styles.avatars}>
+                  <span className={styles.avatar} style={{backgroundColor: '#ff5733'}}></span>
+                  <span className={styles.avatar} style={{backgroundColor: '#33ff57'}}></span>
+                  <span className={styles.avatar} style={{backgroundColor: '#3357ff'}}></span>
+                  <span className={styles.avatar} style={{backgroundColor: '#ff33a8'}}></span>
+                </div>
+                <span className={styles.joined}>35+ Joined</span>
+              </div>
+              <div className={styles.price}>$4,500 USD</div>
+            </div>
+          </div>
+          {/* Card 4 */}
+          <div className={styles.tournamentCard}>
+            <div className={styles.cardImage}>
+              <img src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/Screenshot%202025-05-15%20at%2012.17.04-UC2PIHU5LT2PSN7W3ma5eDX6UkS9Ql.png" alt="Under 16-Open" />
+              <div className={styles.location}>Under 16-Open</div>
+            </div>
+            <div className={styles.cardDetails}>
+              <div className={styles.dateTime}>30 Jan – 3 Feb</div>
+              <div className={styles.organizer}>Official Ktmz</div>
+              <div className={styles.participants}>
+                <div className={styles.avatars}>
+                  <span className={styles.avatar} style={{backgroundColor: '#ff5733'}}></span>
+                  <span className={styles.avatar} style={{backgroundColor: '#33ff57'}}></span>
+                  <span className={styles.avatar} style={{backgroundColor: '#3357ff'}}></span>
+                </div>
+                <span className={styles.joined}>58+ Joined</span>
+              </div>
+              <div className={styles.price}>$1,500 USD</div>
+            </div>
+          </div>
+        </div>
+        <div className={styles.seeMoreContainer}>
+          <button className={styles.seeMoreBtn} style={{ background: '#ccc', color: '#888', cursor: 'not-allowed' }}>See More</button>
+        </div>
+      </section>
+
+      {/* Stats Section */}
+      <section className={styles.statsSection} style={{ opacity: 0.6, filter: 'grayscale(0.7)', pointerEvents: 'none', background: '#f3f4f8' }}>
+        <h2 style={{ color: '#888', textAlign: 'center', fontWeight: 700 }}>Loved by the world's best teams (Coming Soon)</h2>
+        <div className={styles.statsContainer}>
+          <div className={styles.statItem}>
+            <h3>300+</h3>
+            <p>Teams</p>
+          </div>
+          <div className={styles.statItem}>
+            <h3>20+</h3>
+            <p>Organizations</p>
+          </div>
+          <div className={styles.statItem}>
+            <h3>5000+</h3>
+            <p>Users</p>
+          </div>
+        </div>
+      </section>
+
+      {/* Popular Section */}
+      <section className={`${styles.tournamentsSection} ${styles.popularSection}`} style={{ opacity: 0.6, filter: 'grayscale(0.7)', pointerEvents: 'none', background: '#f3f4f8' }}>
+        <h2 style={{ color: '#888', textAlign: 'center', fontWeight: 700 }}>#Popular (Coming Soon)</h2>
         <div className={styles.tournamentCards}>
           {/* Card 1 */}
           <div className={styles.tournamentCard}>

@@ -84,9 +84,14 @@ nav {
     cursor: pointer;
 }
 
-.notification img, .profile img {
+.notification svg, .profile svg {
     width: 20px;
     height: 20px;
+    color: #ffffff;
+}
+
+.notification:hover svg, .profile:hover svg {
+    color: #4169e1;
 }
 
 /* Social Media Sidebar */
