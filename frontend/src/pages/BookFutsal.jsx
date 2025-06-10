@@ -273,124 +273,14 @@ const BookFutsal = () => {
         <section className={styles.offers}>
           <div className={styles.fullWidthSection}>
             <h2 className={styles.sectionTitle}># Offers Going On</h2>
-            
-            <div className={styles.futsalCards}>
-              <div className={styles.futsalCard}>
-                <div className={styles.cardImage}>
-                  <img src="4th.png" alt="Dhankag Futsal"/>
-                  <div className={styles.offerBadge}>
-                    <i className="fas fa-percentage"></i> 20% off
-                  </div>
-                </div>
-                <div className={styles.cardContent}>
-                  <div className={styles.cardHeader}>
-                    <h3>Dhankag Futsal</h3>
-                    <div className={styles.rating}>
-                      <i className="fas fa-star"></i>
-                      <span>4.5/5</span>
-                    </div>
-                  </div>
-                  <div className={styles.tags}>
-                    <span className={styles.tag}>7v7</span>
-                    <span className={styles.tag}>700+ Matches</span>
-                    <span className={styles.tag}>Verified</span>
-                  </div>
-                  <div className={styles.location}>
-                    <i className="fas fa-map-marker-alt"></i>
-                    <span>Kathmandu, Naxal</span>
-                  </div>
-                  <div className={styles.time}>
-                    <i className="far fa-clock"></i>
-                    <span>6:00 to 10:00 (Mon-Fri)</span>
-                  </div>
-                  <div className={styles.price}>
-                    <i className="fas fa-users"></i>
-                    <span>NPR 2000 (Per court)</span>
-                  </div>
-                  <div className={styles.cardActions}>
-                    <button className={styles.btnBook}>Book Now (4 slots available)</button>
-                    <button className={styles.btnQuickJoin}>Quick Join</button>
-                  </div>
-                </div>
+            <div className={styles.noOffersBox}>
+              <span className={styles.sadEmoji} role="img" aria-label="Sad">😔</span>
+              <div className={styles.noOffersTitle}>
+                No offers available right now
               </div>
-              
-              <div className={styles.futsalCard}>
-                <div className={styles.cardImage}>
-                  <img src="5th.png" alt="XYZ Futsal"/>
-                  <div className={styles.bonusBadge}>Bonus Season</div>
-                </div>
-                <div className={styles.cardContent}>
-                  <div className={styles.cardHeader}>
-                    <h3>XYZ Futsal</h3>
-                    <div className={styles.rating}>
-                      <i className="fas fa-star"></i>
-                      <span>4.5/5</span>
-                    </div>
-                  </div>
-                  <div className={styles.tags}>
-                    <span className={styles.tag}>7v7</span>
-                    <span className={styles.tag}>Free First Game</span>
-                    <span className={styles.tag}>Verified</span>
-                  </div>
-                  <div className={styles.location}>
-                    <i className="fas fa-map-marker-alt"></i>
-                    <span>Kathmandu, New Baneshwor</span>
-                  </div>
-                  <div className={styles.time}>
-                    <i className="far fa-clock"></i>
-                    <span>6:00 to 10:00 (Mon-Fri)</span>
-                  </div>
-                  <div className={styles.price}>
-                    <i className="fas fa-users"></i>
-                    <span>NPR 2000 (Per person)</span>
-                  </div>
-                  <div className={styles.cardActions}>
-                    <button className={styles.btnBook}>Book Now (10 slots available)</button>
-                    <button className={styles.btnQuickJoin}>Quick Join</button>
-                  </div>
-                </div>
+              <div className={styles.noOffersSubtext}>
+                Please check back later for exciting deals!
               </div>
-              
-              <div className={styles.futsalCard}>
-                <div className={styles.cardImage}>
-                  <img src="6th.png" alt="First Koteswar"/>
-                  <div className={styles.offerBadge}>2 on one Free</div>
-                </div>
-                <div className={styles.cardContent}>
-                  <div className={styles.cardHeader}>
-                    <h3>First Koteswar</h3>
-                    <div className={styles.rating}>
-                      <i className="fas fa-star"></i>
-                      <span>4.5/5</span>
-                    </div>
-                  </div>
-                  <div className={styles.tags}>
-                    <span className={styles.tag}>7v7</span>
-                    <span className={styles.tag}>700+ Matches</span>
-                    <span className={styles.tag}>Verified</span>
-                  </div>
-                  <div className={styles.location}>
-                    <i className="fas fa-map-marker-alt"></i>
-                    <span>Kathmandu, Koteswar</span>
-                  </div>
-                  <div className={styles.time}>
-                    <i className="far fa-clock"></i>
-                    <span>6:00 to 10:00 (Mon-Fri)</span>
-                  </div>
-                  <div className={styles.price}>
-                    <i className="fas fa-users"></i>
-                    <span>NPR 3000 (Per court)</span>
-                  </div>
-                  <div className={styles.cardActions}>
-                    <button className={styles.btnBook}>Book Now (2 slots available)</button>
-                    <button className={styles.btnQuickJoin}>Quick Join</button>
-                  </div>
-                </div>
-              </div>
-            </div>
-            
-            <div className={styles.seeMore}>
-              <button className={styles.btnSeeMore}>See More</button>
             </div>
           </div>
         </section>

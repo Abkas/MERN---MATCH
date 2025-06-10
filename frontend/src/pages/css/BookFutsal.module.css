@@ -903,6 +903,841 @@ button {
   color: #fff;
 }
 
+/* Section Titles */
+.sectionTitle {
+  font-size: 20px;
+  font-weight: 700;
+  margin-bottom: 30px;
+  color: #333;
+}
+
+.hashTag {
+  color: #4169e1;
+  font-weight: 700;
+}
+
+.sectionTitleCentered {
+  font-size: 24px;
+  font-weight: 700;
+  margin-bottom: 40px;
+  color: #333;
+  text-align: center;
+}
+
+/* Futsal Near You Section */
+.futsalNearYou {
+  padding: 60px 0;
+  background-color: #f8f9fa;
+}
+
+.futsalNearYou .container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+.futsalGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 2rem;
+  margin: 2rem auto;
+  max-width: 1200px;
+  padding: 0 20px;
+}
+
+.futsalCard {
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 2px 12px rgba(30, 41, 59, 0.07);
+  border: 1px solid #e5e7eb;
+  display: flex;
+  flex-direction: column;
+  transition: box-shadow 0.18s cubic-bezier(0.4,0,0.2,1), border-color 0.18s cubic-bezier(0.4,0,0.2,1), transform 0.18s cubic-bezier(0.4,0,0.2,1);
+  min-height: 340px;
+  padding: 0;
+}
+
+.futsalCard:hover {
+  box-shadow: 0 8px 32px rgba(30, 41, 59, 0.16);
+  border-color: #bfc9d8;
+  transform: translateY(-4px) scale(1.015);
+  /* Card is not clickable, just visual feedback */
+}
+
+.cardImage {
+  width: 100%;
+  height: 160px;
+  border-top-left-radius: 12px;
+  border-top-right-radius: 12px;
+  overflow: hidden;
+  background: #f3f4f6;
+}
+
+.cardImage img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.cardContent {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  padding: 20px 20px 16px 20px;
+  gap: 10px;
+}
+
+.cardHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 8px;
+}
+
+.cardHeader h3 {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #232946;
+  margin: 0;
+}
+
+.rating {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 0.95rem;
+  color: #f59e42;
+  font-weight: 500;
+}
+
+.tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 0;
+}
+
+.tag {
+  background: #f3f4f6;
+  color: #64748b;
+  font-size: 12px;
+  border-radius: 4px;
+  padding: 2px 8px;
+  font-weight: 500;
+}
+
+.location, .time, .price {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.97rem;
+  color: #475569;
+  margin-bottom: 0;
+}
+
+.location i, .time i, .price i {
+  color: #bfc9d8;
+  margin-right: 4px;
+}
+
+.cardActions {
+  display: flex;
+  gap: 10px;
+  margin-top: 18px;
+}
+
+.btnBook, .btnQuickJoin {
+  flex: 1;
+  border: none;
+  border-radius: 6px;
+  font-size: 0.98rem;
+  font-weight: 600;
+  padding: 10px 0;
+  background: #f3f4f6;
+  color: #232946;
+  transition: background 0.18s, color 0.18s, box-shadow 0.18s;
+  box-shadow: none;
+  cursor: pointer;
+}
+
+.btnBook:hover {
+  background: #232946;
+  color: #fff;
+}
+
+.btnQuickJoin:hover {
+  background: #2563eb;
+  color: #fff;
+}
+
+/* Section Titles */
+.sectionTitle {
+  font-size: 20px;
+  font-weight: 700;
+  margin-bottom: 30px;
+  color: #333;
+}
+
+.hashTag {
+  color: #4169e1;
+  font-weight: 700;
+}
+
+.sectionTitleCentered {
+  font-size: 24px;
+  font-weight: 700;
+  margin-bottom: 40px;
+  color: #333;
+  text-align: center;
+}
+
+/* Futsal Near You Section */
+.futsalNearYou {
+  padding: 60px 0;
+  background-color: #f8f9fa;
+}
+
+.futsalNearYou .container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+.futsalGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 2rem;
+  margin: 2rem auto;
+  max-width: 1200px;
+  padding: 0 20px;
+}
+
+.futsalCard {
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 2px 12px rgba(30, 41, 59, 0.07);
+  border: 1px solid #e5e7eb;
+  display: flex;
+  flex-direction: column;
+  transition: box-shadow 0.18s cubic-bezier(0.4,0,0.2,1), border-color 0.18s cubic-bezier(0.4,0,0.2,1), transform 0.18s cubic-bezier(0.4,0,0.2,1);
+  min-height: 340px;
+  padding: 0;
+}
+
+.futsalCard:hover {
+  box-shadow: 0 8px 32px rgba(30, 41, 59, 0.16);
+  border-color: #bfc9d8;
+  transform: translateY(-4px) scale(1.015);
+  /* Card is not clickable, just visual feedback */
+}
+
+.cardImage {
+  width: 100%;
+  height: 160px;
+  border-top-left-radius: 12px;
+  border-top-right-radius: 12px;
+  overflow: hidden;
+  background: #f3f4f6;
+}
+
+.cardImage img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.cardContent {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  padding: 20px 20px 16px 20px;
+  gap: 10px;
+}
+
+.cardHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 8px;
+}
+
+.cardHeader h3 {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #232946;
+  margin: 0;
+}
+
+.rating {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 0.95rem;
+  color: #f59e42;
+  font-weight: 500;
+}
+
+.tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 0;
+}
+
+.tag {
+  background: #f3f4f6;
+  color: #64748b;
+  font-size: 12px;
+  border-radius: 4px;
+  padding: 2px 8px;
+  font-weight: 500;
+}
+
+.location, .time, .price {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.97rem;
+  color: #475569;
+  margin-bottom: 0;
+}
+
+.location i, .time i, .price i {
+  color: #bfc9d8;
+  margin-right: 4px;
+}
+
+.cardActions {
+  display: flex;
+  gap: 10px;
+  margin-top: 18px;
+}
+
+.btnBook, .btnQuickJoin {
+  flex: 1;
+  border: none;
+  border-radius: 6px;
+  font-size: 0.98rem;
+  font-weight: 600;
+  padding: 10px 0;
+  background: #f3f4f6;
+  color: #232946;
+  transition: background 0.18s, color 0.18s, box-shadow 0.18s;
+  box-shadow: none;
+  cursor: pointer;
+}
+
+.btnBook:hover {
+  background: #232946;
+  color: #fff;
+}
+
+.btnQuickJoin:hover {
+  background: #2563eb;
+  color: #fff;
+}
+
+/* Section Titles */
+.sectionTitle {
+  font-size: 20px;
+  font-weight: 700;
+  margin-bottom: 30px;
+  color: #333;
+}
+
+.hashTag {
+  color: #4169e1;
+  font-weight: 700;
+}
+
+.sectionTitleCentered {
+  font-size: 24px;
+  font-weight: 700;
+  margin-bottom: 40px;
+  color: #333;
+  text-align: center;
+}
+
+/* Futsal Near You Section */
+.futsalNearYou {
+  padding: 60px 0;
+  background-color: #f8f9fa;
+}
+
+.futsalNearYou .container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+.futsalGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 2rem;
+  margin: 2rem auto;
+  max-width: 1200px;
+  padding: 0 20px;
+}
+
+.futsalCard {
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 2px 12px rgba(30, 41, 59, 0.07);
+  border: 1px solid #e5e7eb;
+  display: flex;
+  flex-direction: column;
+  transition: box-shadow 0.18s cubic-bezier(0.4,0,0.2,1), border-color 0.18s cubic-bezier(0.4,0,0.2,1), transform 0.18s cubic-bezier(0.4,0,0.2,1);
+  min-height: 340px;
+  padding: 0;
+}
+
+.futsalCard:hover {
+  box-shadow: 0 8px 32px rgba(30, 41, 59, 0.16);
+  border-color: #bfc9d8;
+  transform: translateY(-4px) scale(1.015);
+  /* Card is not clickable, just visual feedback */
+}
+
+.cardImage {
+  width: 100%;
+  height: 160px;
+  border-top-left-radius: 12px;
+  border-top-right-radius: 12px;
+  overflow: hidden;
+  background: #f3f4f6;
+}
+
+.cardImage img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.cardContent {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  padding: 20px 20px 16px 20px;
+  gap: 10px;
+}
+
+.cardHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 8px;
+}
+
+.cardHeader h3 {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #232946;
+  margin: 0;
+}
+
+.rating {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 0.95rem;
+  color: #f59e42;
+  font-weight: 500;
+}
+
+.tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 0;
+}
+
+.tag {
+  background: #f3f4f6;
+  color: #64748b;
+  font-size: 12px;
+  border-radius: 4px;
+  padding: 2px 8px;
+  font-weight: 500;
+}
+
+.location, .time, .price {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.97rem;
+  color: #475569;
+  margin-bottom: 0;
+}
+
+.location i, .time i, .price i {
+  color: #bfc9d8;
+  margin-right: 4px;
+}
+
+.cardActions {
+  display: flex;
+  gap: 10px;
+  margin-top: 18px;
+}
+
+.btnBook, .btnQuickJoin {
+  flex: 1;
+  border: none;
+  border-radius: 6px;
+  font-size: 0.98rem;
+  font-weight: 600;
+  padding: 10px 0;
+  background: #f3f4f6;
+  color: #232946;
+  transition: background 0.18s, color 0.18s, box-shadow 0.18s;
+  box-shadow: none;
+  cursor: pointer;
+}
+
+.btnBook:hover {
+  background: #232946;
+  color: #fff;
+}
+
+.btnQuickJoin:hover {
+  background: #2563eb;
+  color: #fff;
+}
+
+/* Section Titles */
+.sectionTitle {
+  font-size: 20px;
+  font-weight: 700;
+  margin-bottom: 30px;
+  color: #333;
+}
+
+.hashTag {
+  color: #4169e1;
+  font-weight: 700;
+}
+
+.sectionTitleCentered {
+  font-size: 24px;
+  font-weight: 700;
+  margin-bottom: 40px;
+  color: #333;
+  text-align: center;
+}
+
+/* Futsal Near You Section */
+.futsalNearYou {
+  padding: 60px 0;
+  background-color: #f8f9fa;
+}
+
+.futsalNearYou .container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+.futsalGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 2rem;
+  margin: 2rem auto;
+  max-width: 1200px;
+  padding: 0 20px;
+}
+
+.futsalCard {
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 2px 12px rgba(30, 41, 59, 0.07);
+  border: 1px solid #e5e7eb;
+  display: flex;
+  flex-direction: column;
+  transition: box-shadow 0.18s cubic-bezier(0.4,0,0.2,1), border-color 0.18s cubic-bezier(0.4,0,0.2,1), transform 0.18s cubic-bezier(0.4,0,0.2,1);
+  min-height: 340px;
+  padding: 0;
+}
+
+.futsalCard:hover {
+  box-shadow: 0 8px 32px rgba(30, 41, 59, 0.16);
+  border-color: #bfc9d8;
+  transform: translateY(-4px) scale(1.015);
+  /* Card is not clickable, just visual feedback */
+}
+
+.cardImage {
+  width: 100%;
+  height: 160px;
+  border-top-left-radius: 12px;
+  border-top-right-radius: 12px;
+  overflow: hidden;
+  background: #f3f4f6;
+}
+
+.cardImage img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.cardContent {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  padding: 20px 20px 16px 20px;
+  gap: 10px;
+}
+
+.cardHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 8px;
+}
+
+.cardHeader h3 {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #232946;
+  margin: 0;
+}
+
+.rating {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 0.95rem;
+  color: #f59e42;
+  font-weight: 500;
+}
+
+.tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 0;
+}
+
+.tag {
+  background: #f3f4f6;
+  color: #64748b;
+  font-size: 12px;
+  border-radius: 4px;
+  padding: 2px 8px;
+  font-weight: 500;
+}
+
+.location, .time, .price {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.97rem;
+  color: #475569;
+  margin-bottom: 0;
+}
+
+.location i, .time i, .price i {
+  color: #bfc9d8;
+  margin-right: 4px;
+}
+
+.cardActions {
+  display: flex;
+  gap: 10px;
+  margin-top: 18px;
+}
+
+.btnBook, .btnQuickJoin {
+  flex: 1;
+  border: none;
+  border-radius: 6px;
+  font-size: 0.98rem;
+  font-weight: 600;
+  padding: 10px 0;
+  background: #f3f4f6;
+  color: #232946;
+  transition: background 0.18s, color 0.18s, box-shadow 0.18s;
+  box-shadow: none;
+  cursor: pointer;
+}
+
+.btnBook:hover {
+  background: #232946;
+  color: #fff;
+}
+
+.btnQuickJoin:hover {
+  background: #2563eb;
+  color: #fff;
+}
+
+/* Section Titles */
+.sectionTitle {
+  font-size: 20px;
+  font-weight: 700;
+  margin-bottom: 30px;
+  color: #333;
+}
+
+.hashTag {
+  color: #4169e1;
+  font-weight: 700;
+}
+
+.sectionTitleCentered {
+  font-size: 24px;
+  font-weight: 700;
+  margin-bottom: 40px;
+  color: #333;
+  text-align: center;
+}
+
+/* Futsal Near You Section */
+.futsalNearYou {
+  padding: 60px 0;
+  background-color: #f8f9fa;
+}
+
+.futsalNearYou .container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+.futsalGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 2rem;
+  margin: 2rem auto;
+  max-width: 1200px;
+  padding: 0 20px;
+}
+
+.futsalCard {
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 2px 12px rgba(30, 41, 59, 0.07);
+  border: 1px solid #e5e7eb;
+  display: flex;
+  flex-direction: column;
+  transition: box-shadow 0.18s cubic-bezier(0.4,0,0.2,1), border-color 0.18s cubic-bezier(0.4,0,0.2,1), transform 0.18s cubic-bezier(0.4,0,0.2,1);
+  min-height: 340px;
+  padding: 0;
+}
+
+.futsalCard:hover {
+  box-shadow: 0 8px 32px rgba(30, 41, 59, 0.16);
+  border-color: #bfc9d8;
+  transform: translateY(-4px) scale(1.015);
+  /* Card is not clickable, just visual feedback */
+}
+
+.cardImage {
+  width: 100%;
+  height: 160px;
+  border-top-left-radius: 12px;
+  border-top-right-radius: 12px;
+  overflow: hidden;
+  background: #f3f4f6;
+}
+
+.cardImage img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.cardContent {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  padding: 20px 20px 16px 20px;
+  gap: 10px;
+}
+
+.cardHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 8px;
+}
+
+.cardHeader h3 {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #232946;
+  margin: 0;
+}
+
+.rating {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 0.95rem;
+  color: #f59e42;
+  font-weight: 500;
+}
+
+.tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 0;
+}
+
+.tag {
+  background: #f3f4f6;
+  color: #64748b;
+  font-size: 12px;
+  border-radius: 4px;
+  padding: 2px 8px;
+  font-weight: 500;
+}
+
+.location, .time, .price {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.97rem;
+  color: #475569;
+  margin-bottom: 0;
+}
+
+.location i, .time i, .price i {
+  color: #bfc9d8;
+  margin-right: 4px;
+}
+
+.cardActions {
+  display: flex;
+  gap: 10px;
+  margin-top: 18px;
+}
+
+.btnBook, .btnQuickJoin {
+  flex: 1;
+  border: none;
+  border-radius: 6px;
+  font-size: 0.98rem;
+  font-weight: 600;
+  padding: 10px 0;
+  background: #f3f4f6;
+  color: #232946;
+  transition: background 0.18s, color 0.18s, box-shadow 0.18s;
+  box-shadow: none;
+  cursor: pointer;
+}
+
+.btnBook:hover {
+  background: #232946;
+  color: #fff;
+}
+
+.btnQuickJoin:hover {
+  background: #2563eb;
+  color: #fff;
+}
+
 /* Quick Join Section */
 .quickJoin {
   padding: 60px 0;
@@ -1096,6 +1931,51 @@ button {
   padding: 20px;
   color: #666;
   font-size: 16px;
+}
+
+/* No Offers Styles */
+.noOffersBox {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 2px 12px rgba(30, 41, 59, 0.07);
+  padding: 32px 0;
+  margin: 0 auto 32px auto;
+  max-width: 350px;
+  min-width: 260px;
+  min-height: 340px;
+  border: 1px solid #e5e7eb;
+  transition: box-shadow 0.2s;
+}
+
+.sadEmoji {
+  font-size: 54px;
+  margin-bottom: 12px;
+  animation: shake 1.2s infinite alternate;
+}
+
+@keyframes shake {
+  0% { transform: translateX(0); }
+  20% { transform: translateX(-4px); }
+  40% { transform: translateX(4px); }
+  60% { transform: translateX(-2px); }
+  80% { transform: translateX(2px); }
+  100% { transform: translateX(0); }
+}
+
+.noOffersTitle {
+  font-size: 20px;
+  font-weight: 600;
+  color: #232946;
+  margin-bottom: 6px;
+}
+
+.noOffersSubtext {
+  color: #64748b;
+  font-size: 15px;
 }
 
 /* Responsive Design */
@@ -1986,7 +2866,7 @@ button {
   padding: 4px 8px;
   border-radius: 4px;
   font-size: 0.9em;
-  font-weight: 500;
+   font-weight: 500;
   text-transform: capitalize;
 }
 
@@ -2065,6 +2945,51 @@ button {
   padding: 20px;
   color: #666;
   font-size: 16px;
+}
+
+/* No Offers Styles */
+.noOffersBox {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 2px 12px rgba(30, 41, 59, 0.07);
+  padding: 32px 0;
+  margin: 0 auto 32px auto;
+  max-width: 350px;
+  min-width: 260px;
+  min-height: 340px;
+  border: 1px solid #e5e7eb;
+  transition: box-shadow 0.2s;
+}
+
+.sadEmoji {
+  font-size: 54px;
+  margin-bottom: 12px;
+  animation: shake 1.2s infinite alternate;
+}
+
+@keyframes shake {
+  0% { transform: translateX(0); }
+  20% { transform: translateX(-4px); }
+  40% { transform: translateX(4px); }
+  60% { transform: translateX(-2px); }
+  80% { transform: translateX(2px); }
+  100% { transform: translateX(0); }
+}
+
+.noOffersTitle {
+  font-size: 20px;
+  font-weight: 600;
+  color: #232946;
+  margin-bottom: 6px;
+}
+
+.noOffersSubtext {
+  color: #64748b;
+  font-size: 15px;
 }
 
 /* Responsive Design */
