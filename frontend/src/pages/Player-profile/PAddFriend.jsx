@@ -76,13 +76,14 @@ const PAddFriend = () => {
             <li>
               <Link to="/player-upcomingmatches">Upcoming Matches</Link>
             </li>
-            <li>
-                          <button className={styles.logoutBtn} onClick={handleLogout}>
-                            Logout
-                          </button>
-            </li>
+                         <li>
+                             <button className={styles.logoutBtn} onClick={handleLogout}>
+                                 Logout
+                             </button>
+                         </li>
           </ul>
-        </aside>        <main className={styles.mainContent}>
+        </aside>        
+        <main className={styles.mainContent}>
           <div style={{
             display: 'flex',
             flexDirection: 'column',
