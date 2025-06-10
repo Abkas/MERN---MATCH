@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from 'react'
-import { Link, useParams } from 'react-router-dom'
+import { Link, useParams, useNavigate } from 'react-router-dom'
 import toast from 'react-hot-toast'
 import styles from './css/FutsalDetails.module.css'
+import bookFutsalStyles from './css/BookFutsal.module.css'
+import homeStyles from './css/HomePage.module.css'
 import { axiosInstance } from '../lib/axios'
 import { Calendar, ChevronDown, ChevronUp, Clock, Users, DollarSign } from 'lucide-react'
 import SeatSelectionModal from '../components/SeatSelectionModal'
@@ -231,95 +233,112 @@ const FutsalDetails = () => {
   console.log('Rendering futsal data:', futsalData);
 
   return (
-    <div className={styles.futsalDetailsPage} style={{ background: '#f7fafd', minHeight: '100vh' }}>
-      <nav className={styles.nav} style={{ background: '#fff', boxShadow: '0 2px 12px #2563eb11', borderBottom: '1.5px solid #e3e8f0' }}>
-        <div className={styles.logo}>
+    <div className={bookFutsalStyles.body}>
+      {/* Navbar (same as BookFutsal) */}
+      <nav className={bookFutsalStyles.nav}>
+        <div className={bookFutsalStyles.logo}>
           <Link to="/">
-            <img src="/firstpage/logo.png" alt="match-logo" style={{ height: 48 }} />
+            <img src="/firstpage/logo.png" alt="match-logo" />
           </Link>
         </div>
-        <ul className={styles.navLinks}>
+        <ul className={bookFutsalStyles.navLinks}>
           <li><Link to="/futsalhome">Home</Link></li>
-          <li><Link to="/bookfutsal" className={styles.active}>Book Futsal</Link></li>
+          <li><Link to="/bookfutsal" className={bookFutsalStyles.active}>Book Futsal</Link></li>
           <li><Link to="/tournaments">Tournaments</Link></li>
           <li><Link to="/quickmatch">Quick Match</Link></li>
         </ul>
-        <div className={styles.navIcons}>
-          <div className={styles.notification}>
-            <img src="/FUTSALHOME/notification-icon.png" alt="Notifications" style={{ height: 32 }} />
+        <div className={bookFutsalStyles.navIcons}>
+          <div className={bookFutsalStyles.notification}>
+            <img src="/FUTSALHOME/notification-icon.png" alt="Notifications" />
           </div>
-          <div className={styles.profile}>
-            <Link to="/profile"><img src="/FUTSALHOME/profile-icon.png" alt="Profile" style={{ height: 32, borderRadius: '50%' }} /></Link>
+          <div className={bookFutsalStyles.profile}>
+            <Link to="/profile"><img src="/FUTSALHOME/profile-icon.png" alt="Profile" /></Link>
           </div>
         </div>
       </nav>
 
-      <main>
+      {/* Main Content - full width */}
+      <main style={{ width: '100%' }}>
         {/* HERO SECTION */}
         <section className={styles.venueHero} style={{
           position: 'relative',
-          minHeight: 320,
-          borderRadius: '0 0 2.5rem 2.5rem',
-          boxShadow: '0 8px 32px #2563eb22',
+          minHeight: 500,
+          borderRadius: 0,
+          boxShadow: 'none',
           marginBottom: 32,
           overflow: 'hidden',
+          width: '100vw',
+          marginLeft: 'calc(-50vw + 50%)',
+          marginRight: 'calc(-50vw + 50%)',
           display: 'flex',
-          alignItems: 'flex-end',
-          justifyContent: 'flex-start',
-          background: '#e3e8f0',
-          marginLeft: 0, // Ensure no left margin
-          width: '100%' // Ensure full width
+          justifyContent: 'center',
+          alignItems: 'center'
         }}>
-          <img
-            src={futsalData.image}
-            alt={futsalData.name}
-            style={{
-              width: '100%',
-              height: 320,
-              objectFit: 'cover',
-              objectPosition: 'center',
-              display: 'block',
-              position: 'absolute',
-              top: 0,
-              left: 0,
-              zIndex: 1
-            }}
-            onError={e => { e.target.onerror = null; e.target.src = '/default-futsal.jpg'; }}
-          />
           <div style={{
-            position: 'absolute',
-            top: 0,
-            left: 0,
             width: '100%',
-            height: '100%',
-            background: 'linear-gradient(120deg, #2563ebcc 0%, #43a047cc 100%)',
-            zIndex: 2
-          }} />
-          <div style={{
             position: 'relative',
-            zIndex: 3,
-            padding: '2.5rem 3rem',
-            width: '100%',
-            color: '#fff',
-            borderRadius: '0 0 2.5rem 2.5rem',
-            background: 'none'
+            height: '100%'
           }}>
-            <h1 style={{ fontSize: 36, fontWeight: 800, marginBottom: 8, letterSpacing: 1 }}>
-              {futsalData.name}
-              {futsalData.verified && <i className="fas fa-check-circle verified" style={{ color: '#fbc02d', marginLeft: 10, fontSize: 28 }}></i>}
-            </h1>
-            <div style={{ display: 'flex', gap: 32, alignItems: 'center', marginBottom: 10 }}>
-              <span style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 18 }}>
-                <i className="fas fa-map-marker-alt" style={{ color: '#fff' }}></i> {futsalData.location}
-              </span>
-              <span style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 18 }}>
-                <i className="far fa-clock" style={{ color: '#fff' }}></i> {futsalData.openingHours}
-              </span>
-            </div>
-            <div style={{ display: 'flex', gap: 24, marginTop: 10 }}>
-              <span style={{ fontWeight: 700, fontSize: 18, color: '#fff' }}>{futsalData.totalMatches}+ Matches</span>
-              <span style={{ fontWeight: 700, fontSize: 18, color: '#fff' }}>{futsalData.totalTournaments}+ Tournaments</span>
-              <span style={{ fontWeight: 700, fontSize: 18, color: '#fff' }}>Rating: {futsalData.rating}/5</span>
+            <img
+              src={futsalData.image}
+              alt={futsalData.name}
+              style={{
+                width: '100%',
+                height: '100%',
+                position: 'absolute',
+                top: 0,
+                left: 0,
+                zIndex: 1
+              }}
+              onError={e => { e.target.onerror = null; e.target.src = '/default-futsal.jpg'; }}
+            />
+            <div style={{
+              position: 'absolute',
+              zIndex: 3,
+              bottom: 0,
+              left: 0,
+              width: '100%',
+              padding: '2.5rem 3rem 2.5rem 3rem',
+              background: 'linear-gradient(0deg, rgba(30,41,59,0.85) 0%, rgba(30,41,59,0.0) 100%)',
+              color: '#fff',
+              borderRadius: 0,
+              boxSizing: 'border-box',
+              display: 'flex',
+              flexDirection: 'column',
+              gap: 10,
+              alignItems: 'center',
+              textAlign: 'center'
+            }}>
+              <h1 style={{ 
+                fontSize: 42, 
+                fontWeight: 900, 
+                marginBottom: 10, 
+                letterSpacing: 1, 
+                textShadow: '0 2px 12px #1118',
+                transition: 'all 0.3s ease',
+                cursor: 'default',
+                padding: '10px 20px',
+                borderRadius: '8px',
+                background: 'rgba(255, 255, 255, 0.1)',
+                backdropFilter: 'blur(5px)',
+                transform: 'translateY(0)',
+                color: '#ffffff'
+              }} className={styles.futsalName}>
+                {futsalData.name}
+              </h1>
+              <div style={{ display: 'flex', flexWrap: 'wrap', gap: 32, alignItems: 'center', marginBottom: 10, justifyContent: 'center' }}>
+                <span style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: 20, textShadow: '0 2px 8px #1118' }}>
+                  <i className="fas fa-map-marker-alt" style={{ color: '#fff' }}></i> {futsalData.location}
+                </span>
+                <span style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: 20, textShadow: '0 2px 8px #1118' }}>
+                  <i className="far fa-clock" style={{ color: '#fff' }}></i> {futsalData.openingHours}
+                </span>
+              </div>
+              <div style={{ display: 'flex', flexWrap: 'wrap', gap: 24, marginTop: 10 }}>
+                <span style={{ fontWeight: 700, fontSize: 18, color: '#fff', textShadow: '0 2px 8px #1118' }}>{futsalData.totalMatches}+ Matches</span>
+                <span style={{ fontWeight: 700, fontSize: 18, color: '#fff', textShadow: '0 2px 8px #1118' }}>{futsalData.totalTournaments}+ Tournaments</span>
+                <span style={{ fontWeight: 700, fontSize: 18, color: '#fff', textShadow: '0 2px 8px #1118' }}>Rating: {futsalData.rating}/5</span>
+              </div>
             </div>
           </div>
         </section>
@@ -599,19 +618,61 @@ const FutsalDetails = () => {
         </section>
       </main>
 
-      <footer className={styles.footer} style={{ background: '#fff', borderTop: '1.5px solid #e3e8f0', marginTop: 48 }}>
-        <div className={styles.container} style={{ maxWidth: 900, margin: '0 auto', display: 'flex', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', padding: '2rem 0' }}>
-          <div className={styles.footerLinks} style={{ display: 'flex', gap: 24 }}>
-            <a href="#">About</a>
-            <a href="#">Contact Us</a>
-            <a href="#">Pricing</a>
-            <a href="#">FAQs</a>
-            <a href="#">Team</a>
+      {/* Footer (same as BookFutsal/HomePage) */}
+      <footer className={homeStyles.footer}>
+        <div className={homeStyles.footerContainer}>
+          {/* Company Info Column */}
+          <div className={homeStyles.footerColumn}>
+            <div className={homeStyles.footerLogo}>
+              <Link to="/"><img src="/firstpage/logo.png" alt="match-logo" /></Link>
+            </div>
+            <p className={homeStyles.footerAbout}>
+              Match Point is your ultimate platform for finding teammates, joining tournaments, and elevating your gaming experience.
+            </p>
+            <div className={homeStyles.footerContact}>
+              <p><i className="fas fa-map-marker-alt"></i> Kathmandu, Nepal</p>
+              <p><i className="fas fa-phone"></i> 123456789</p>
+              <p><i className="fas fa-envelope"></i> info@matchpoint.com</p>
+            </div>
           </div>
-          <div className={styles.footerSocial} style={{ display: 'flex', gap: 18 }}>
-            <a href="#"><i className="fab fa-instagram"></i></a>
-            <a href="#"><i className="fab fa-facebook-f"></i></a>
-            <a href="#"><i className="fab fa-twitter"></i></a>
+          {/* Quick Links Column */}
+          <div className={homeStyles.footerColumn}>
+            <h3 className={homeStyles.footerHeading}>Quick Links</h3>
+            <ul className={homeStyles.footerLinks}>
+              <li><Link to="/">Home</Link></li>
+              <li><Link to="/about-us">About Us</Link></li>
+              <li><Link to="/how-it-works">How It Works</Link></li>
+              <li><Link to="/futsalhome">Futsal</Link></li>
+              <li><Link to="/tournaments">Tournaments</Link></li>
+            </ul>
+          </div>
+          {/* Support Column */}
+          <div className={homeStyles.footerColumn}>
+            <h3 className={homeStyles.footerHeading}>Support</h3>
+            <ul className={homeStyles.footerLinks}>
+              <li><Link to="/how-it-works">FAQs</Link></li>
+              <li><Link to="/about-us">Contact Us</Link></li>
+            </ul>
+          </div>
+          {/* Legal Column */}
+          <div className={homeStyles.footerColumn}>
+            <h3 className={homeStyles.footerHeading}>Legal</h3>
+            <ul className={homeStyles.footerLinks}>
+              <li><Link to="#">Terms of Service</Link></li>
+              <li><Link to="#">Privacy Policy</Link></li>
+              <li><Link to="#">Cookie Policy</Link></li>
+              <li><Link to="#">Refund Policy</Link></li>
+            </ul>
+          </div>
+        </div>
+        <div className={homeStyles.footerBottom}>
+          <div className={homeStyles.copyright}>
+            <p>&copy; {new Date().getFullYear()} Match Point. All rights reserved.</p>
+          </div>
+          <div className={homeStyles.footerBottomLinks}>
+            <Link to="#">Sitemap</Link>
+            <Link to="#">Accessibility</Link>
+            <Link to="#">Cookies</Link>
           </div>
         </div>
       </footer>

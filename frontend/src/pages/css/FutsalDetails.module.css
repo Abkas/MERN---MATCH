@@ -874,3 +874,68 @@ button {
     min-width: 600px;
   }
 }
+
+.futsalName {
+  transition: all 0.3s ease !important;
+  display: inline-block;
+  transform-origin: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.futsalName::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: linear-gradient(
+    45deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.1) 30%,
+    rgba(255, 255, 255, 0.3) 50%,
+    rgba(255, 255, 255, 0.1) 70%,
+    transparent 100%
+  );
+  transform: rotate(45deg);
+  transition: all 0.5s ease;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.futsalName:hover {
+  transform: scale(1.05) !important;
+  text-shadow: 0 4px 20px #1118 !important;
+  background: rgba(255, 255, 255, 0.15) !important;
+  cursor: pointer !important;
+  z-index: 10;
+}
+
+.futsalName:hover::before {
+  opacity: 1;
+  animation: lightRays 1.5s ease-in-out infinite;
+}
+
+@keyframes lightRays {
+  0% {
+    transform: rotate(45deg) translateX(-100%);
+  }
+  100% {
+    transform: rotate(45deg) translateX(100%);
+  }
+}
+
+/* Add these styles at the top of the file, after the base styles */
+.venueHeader h1.futsalName {
+  font-size: 42px;
+  font-weight: 900;
+  margin-bottom: 10px;
+  letter-spacing: 1px;
+  text-shadow: 0 2px 12px #1118;
+  padding: 10px 20px;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(5px);
+  color: #ffffff;
+}
