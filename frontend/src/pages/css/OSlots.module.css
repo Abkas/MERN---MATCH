@@ -318,6 +318,10 @@
   justify-content: space-between;
   align-items: center;
   margin-bottom: 2rem;
+  padding: 1rem;
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
 }
 
 .slotsHeader h1 {
@@ -328,11 +332,7 @@
 .dateSelector {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
-  background: #f8f9fa;
-  padding: 0.5rem 1rem;
-  border-radius: 0.5rem;
-  border: 1px solid #e9ecef;
+  gap: 1rem;
 }
 
 .dateInput {
@@ -362,53 +362,55 @@
 }
 
 .slotsTable {
-  background: white;
-  border-radius: 0.5rem;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
   overflow: hidden;
 }
 
 .slotsTable table {
   width: 100%;
-  border-collapse: collapse;
+  border-collapse: separate;
+  border-spacing: 0 8px;
 }
 
 .slotsTable th {
-  background: #f8f9fa;
-  padding: 1rem;
+  padding: 16px;
+  font-weight: 700;
+  font-size: 16px;
+  color: #000;
+  background: #f8fafc;
   text-align: left;
-  font-weight: 600;
-  color: #495057;
-  border-bottom: 2px solid #e9ecef;
-  white-space: nowrap;
-  display: table-cell;
-  vertical-align: middle;
-}
-
-.slotsTable th svg {
-  display: inline-block;
-  vertical-align: middle;
-  margin-right: 0.5rem;
+  border-bottom: 2px solid #000;
 }
 
 .slotsTable td {
-  padding: 1rem;
-  border-bottom: 1px solid #e9ecef;
-  color: #495057;
-  white-space: nowrap;
-  vertical-align: middle;
+  padding: 16px;
+  font-weight: 600;
+  color: #000;
+  border-bottom: 1px solid #e2e8f0;
 }
 
-.slotsTable tr:last-child td {
-  border-bottom: none;
+.slotsTable tr {
+  background: #fff;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+  border-radius: 8px;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.slotsTable tr:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
 }
 
 .status {
+  display: inline-block;
   padding: 4px 8px;
   border-radius: 4px;
-  font-size: 0.9em;
+  font-size: 14px;
   font-weight: 500;
-  text-transform: capitalize;
+  background: #f8fafc;
+  color: #000;
 }
 
 .statusReserved {
@@ -431,20 +433,20 @@
   color: #f57c00;
 }
 
-.editInput {
-  width: 80px;
-  padding: 4px 8px;
-  border: 1px solid #ddd;
+.editInput, .editSelect {
+  width: 100%;
+  padding: 8px;
+  border: 1px solid #000;
   border-radius: 4px;
-  font-size: 0.9em;
+  font-size: 14px;
+  color: #000;
+  background: #fff;
 }
 
-.editSelect {
-  padding: 4px 8px;
-  border: 1px solid #ddd;
-  border-radius: 4px;
-  font-size: 0.9em;
-  background-color: white;
+.editInput:focus, .editSelect:focus {
+  outline: none;
+  border-color: #000;
+  box-shadow: 0 0 0 2px rgba(0,0,0,0.1);
 }
 
 .editActions {
@@ -559,26 +561,27 @@
 
 .loading {
   text-align: center;
-  padding: 1rem;
-  color: #4b5563;
-  font-size: 0.875rem;
+  padding: 2rem;
+  color: #000;
+  font-size: 14px;
 }
 
 .error {
-  background: #fee2e2;
-  color: #dc2626;
+  background: #f8fafc;
+  color: #000;
   padding: 1rem;
-  border-radius: 0.5rem;
+  border-radius: 8px;
   margin-bottom: 1rem;
-  font-size: 0.875rem;
+  font-size: 14px;
+  border: 1px solid #000;
 }
 
 .addSlotForm {
-  background: white;
-  border-radius: 12px;
+  background: #fff;
+  border-radius: 8px;
   padding: 24px;
   margin: 20px 0;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   gap: 20px;
@@ -594,38 +597,23 @@
 
 .formGroup label {
   font-weight: 500;
-  color: #333;
-  font-size: 0.9rem;
+  color: #000;
+  font-size: 14px;
 }
 
-.timeInput {
-  padding: 10px 12px;
-  border: 1px solid #ddd;
-  border-radius: 6px;
-  font-size: 1rem;
+.timeInput, .numberInput {
+  padding: 8px;
+  border: 1px solid #000;
+  border-radius: 4px;
+  font-size: 14px;
   width: 100%;
   transition: border-color 0.2s;
 }
 
-.timeInput:focus {
-  border-color: #4a90e2;
+.timeInput:focus, .numberInput:focus {
   outline: none;
-  box-shadow: 0 0 0 2px rgba(74, 144, 226, 0.2);
-}
-
-.numberInput {
-  padding: 10px 12px;
-  border: 1px solid #ddd;
-  border-radius: 6px;
-  font-size: 1rem;
-  width: 100%;
-  transition: border-color 0.2s;
-}
-
-.numberInput:focus {
-  border-color: #4a90e2;
-  outline: none;
-  box-shadow: 0 0 0 2px rgba(74, 144, 226, 0.2);
+  border-color: #000;
+  box-shadow: 0 0 0 2px rgba(0,0,0,0.1);
 }
 
 .selectInput {
@@ -648,39 +636,39 @@
 .formActions {
   grid-column: 1 / -1;
   display: flex;
-  gap: 12px;
   justify-content: flex-end;
-  margin-top: 12px;
+  gap: 12px;
+  margin-top: 20px;
 }
 
 .saveButton {
-  background-color: #4a90e2;
-  color: white;
+  padding: 8px 16px;
   border: none;
-  padding: 12px 24px;
-  border-radius: 6px;
+  border-radius: 4px;
+  background: #000;
+  color: #fff;
   font-weight: 500;
   cursor: pointer;
-  transition: background-color 0.2s;
+  transition: all 0.2s;
 }
 
 .saveButton:hover {
-  background-color: #357abd;
+  opacity: 0.9;
 }
 
 .cancelButton {
-  background-color: #f5f5f5;
-  color: #333;
-  border: 1px solid #ddd;
-  padding: 12px 24px;
-  border-radius: 6px;
+  padding: 8px 16px;
+  border: 1px solid #000;
+  border-radius: 4px;
+  background: #fff;
+  color: #000;
   font-weight: 500;
   cursor: pointer;
-  transition: background-color 0.2s;
+  transition: all 0.2s;
 }
 
 .cancelButton:hover {
-  background-color: #e5e5e5;
+  background: #f8fafc;
 }
 
 /* Add a title to the form */
@@ -755,8 +743,8 @@
 
 .dateNavigation {
   display: flex;
+  gap: 1rem;
   align-items: center;
-  gap: 12px;
 }
 
 .futsalSliderBox {

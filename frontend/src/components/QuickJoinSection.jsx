@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useMemo } from 'react';
-import { ChevronDown, ChevronUp, Clock, Users, DollarSign } from 'lucide-react';
+import { ChevronDown, ChevronUp, Clock, Users, DollarSign, Activity } from 'lucide-react';
 import styles from '../pages/css/BookFutsal.module.css';
 import { axiosInstance } from '../lib/axios';
 import toast from 'react-hot-toast';
@@ -140,14 +140,19 @@ const QuickJoinSection = ({ futsal, maxPrice, onHasSlots, requiredSeats }) => {
             <div className={styles.noSlots}>No slots available for this date</div>
           ) : (
             <div className={styles.timeSlots}>
-              <table>
+              <table style={{ 
+                width: '100%', 
+                borderCollapse: 'separate',
+                borderSpacing: '0 8px',
+                background: 'transparent'
+              }}>
                 <thead>
                   <tr>
-                    <th><Clock size={16} /> Time</th>
-                    <th><Users size={16} /> Players</th>
-                    <th><DollarSign size={16} /> Price</th>
-                    <th>Status</th>
-                    <th>Action</th>
+                    <th style={{ padding: '16px', fontWeight: 700, fontSize: 16, color: '#000', background: '#f8fafc', borderRadius: '8px 0 0 8px', textAlign: 'left', borderBottom: '2px solid #000' }}><Clock size={18} style={{ marginRight: 8 }} /> Time</th>
+                    <th style={{ padding: '16px', fontWeight: 700, fontSize: 16, color: '#000', background: '#f8fafc', textAlign: 'left', borderBottom: '2px solid #000' }}><Users size={18} style={{ marginRight: 8 }} /> Players</th>
+                    <th style={{ padding: '16px', fontWeight: 700, fontSize: 16, color: '#000', background: '#f8fafc', textAlign: 'left', borderBottom: '2px solid #000' }}>₹ Price</th>
+                    <th style={{ padding: '16px', fontWeight: 700, fontSize: 16, color: '#000', background: '#f8fafc', textAlign: 'left', borderBottom: '2px solid #000' }}><Activity size={18} style={{ marginRight: 8 }} /> Status</th>
+                    <th style={{ padding: '16px', fontWeight: 700, fontSize: 16, color: '#000', background: '#f8fafc', textAlign: 'left', borderBottom: '2px solid #000' }}>Action</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -170,18 +175,60 @@ const QuickJoinSection = ({ futsal, maxPrice, onHasSlots, requiredSeats }) => {
                     }
                     const canJoin = timeStatus === 'upcoming' && slot.status === 'available';
                     return (
-                      <tr key={slot._id}>
-                        <td>{slot.time}</td>
-                        <td>{slot.currentPlayers || 0}/{slot.maxPlayers}</td>
-                        <td>₹{slot.price}</td>
-                        <td>
-                          <span className={`${styles.status} ${statusClass}`}>{statusLabel}</span>
+                      <tr key={slot._id} style={{ 
+                        background: '#fff', 
+                        boxShadow: '0 2px 8px rgba(0,0,0,0.05)',
+                        borderRadius: 8,
+                        transition: 'transform 0.2s ease, box-shadow 0.2s ease'
+                      }}>
+                        <td style={{ 
+                          padding: '16px', 
+                          fontWeight: 600, 
+                          color: '#000',
+                          borderRadius: '8px 0 0 8px',
+                          borderBottom: '1px solid #e2e8f0'
+                        }}>{slot.time}</td>
+                        <td style={{ 
+                          padding: '16px', 
+                          fontWeight: 600, 
+                          color: '#000',
+                          borderBottom: '1px solid #e2e8f0'
+                        }}>{slot.currentPlayers || 0}/{slot.maxPlayers}</td>
+                        <td style={{ 
+                          padding: '16px', 
+                          fontWeight: 600, 
+                          color: '#000',
+                          borderBottom: '1px solid #e2e8f0'
+                        }}>₹{slot.price}</td>
+                        <td style={{ 
+                          padding: '16px',
+                          borderBottom: '1px solid #e2e8f0'
+                        }}>
+                          <span className={`${styles.status} ${statusClass}`} style={{ 
+                            background: '#f8fafc', 
+                            color: '#000', 
+                            padding: '4px 8px', 
+                            borderRadius: '4px', 
+                            fontSize: '14px' 
+                          }}>{statusLabel}</span>
                         </td>
-                        <td>
+                        <td style={{ 
+                          padding: '16px',
+                          borderBottom: '1px solid #e2e8f0'
+                        }}>
                           <button
                             className={`${styles.btnJoinNow} ${!canJoin ? styles.btnJoinNowDisabled : ''}`}
                             onClick={() => canJoin && handleJoinNow(slot)}
                             disabled={!canJoin}
+                            style={{
+                              background: canJoin ? '#000' : '#f8fafc',
+                              color: canJoin ? '#fff' : '#000',
+                              border: 'none',
+                              padding: '8px 16px',
+                              borderRadius: '4px',
+                              cursor: canJoin ? 'pointer' : 'not-allowed',
+                              opacity: canJoin ? 1 : 0.5
+                            }}
                           >
                             Join Now
                           </button>

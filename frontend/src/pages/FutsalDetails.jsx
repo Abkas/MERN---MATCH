@@ -491,7 +491,7 @@ const FutsalDetails = () => {
                             background: '#f8fafc',
                             textAlign: 'left',
                             borderBottom: '2px solid #000'
-                          }}><DollarSign size={18} style={{ marginRight: 8 }} /> Price</th>
+                          }}>₹ Price</th>
                           <th style={{ 
                             padding: '16px', 
                             fontWeight: 700, 
@@ -561,7 +561,7 @@ const FutsalDetails = () => {
                                 fontWeight: 600, 
                                 color: '#000',
                                 borderBottom: '1px solid #e2e8f0'
-                              }}>NPR {slot.price}</td>
+                              }}>₹{slot.price}</td>
                               <td style={{ 
                                 padding: '16px',
                                 borderBottom: '1px solid #e2e8f0'

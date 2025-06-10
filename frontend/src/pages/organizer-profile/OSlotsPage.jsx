@@ -313,25 +313,94 @@ const OSlotsPage = () => {
           ) : (
             <>
               {/* Futsal name slider in a modern, visible box */}
-              <div className={styles.futsalSliderBox}>
+              <div className={styles.futsalSliderBox} style={{
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                background: '#fff',
+                borderRadius: '1.5rem',
+                boxShadow: '0 4px 24px rgba(0,0,0,0.1)',
+                padding: '2rem 2.5rem',
+                marginBottom: '2.5rem',
+                maxWidth: 600,
+                marginLeft: 'auto',
+                marginRight: 'auto',
+                border: '1.5px solid #000',
+                gap: '2.5rem',
+                minHeight: 120
+              }}>
                 {futsals.length > 1 && (
-                  <button className={styles.arrowBtn} onClick={handlePrevFutsal} title="Previous Futsal">
+                  <button className={styles.arrowBtn} onClick={handlePrevFutsal} title="Previous Futsal" style={{
+                    background: '#000',
+                    color: '#fff',
+                    fontSize: '28px',
+                    border: 'none',
+                    borderRadius: '50%',
+                    width: '44px',
+                    height: '44px',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    boxShadow: '0 2px 8px rgba(0,0,0,0.15)',
+                    transition: 'all 0.2s',
+                    cursor: 'pointer'
+                  }}>
                     <ChevronLeft size={28} />
                   </button>
                 )}
-                <div className={styles.futsalInfoBox}>
+                <div className={styles.futsalInfoBox} style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '1.5rem'
+                }}>
                   <img
                     src={futsal?.futsalPhoto || '/default-futsal.jpg'}
                     alt={futsal?.name || 'Futsal'}
                     className={styles.futsalPhoto}
+                    style={{
+                      width: '64px',
+                      height: '64px',
+                      borderRadius: '1rem',
+                      objectFit: 'cover',
+                      boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
+                      border: '2px solid #000',
+                      background: '#f8fafc'
+                    }}
                   />
-                  <div className={styles.futsalTextInfo}>
-                    <span className={styles.futsalName}>{futsal?.name || 'Futsal Name'}</span>
-                    <span className={styles.futsalLocation}>{futsal?.location || ''}</span>
+                  <div className={styles.futsalTextInfo} style={{
+                    display: 'flex',
+                    flexDirection: 'column',
+                    gap: '0.2rem'
+                  }}>
+                    <span className={styles.futsalName} style={{
+                      fontWeight: 800,
+                      fontSize: '1.5rem',
+                      color: '#000',
+                      letterSpacing: '0.5px'
+                    }}>{futsal?.name || 'Futsal Name'}</span>
+                    <span className={styles.futsalLocation} style={{
+                      color: '#666',
+                      fontSize: '1rem',
+                      fontWeight: 500
+                    }}>{futsal?.location || ''}</span>
                   </div>
                 </div>
                 {futsals.length > 1 && (
-                  <button className={styles.arrowBtn} onClick={handleNextFutsal} title="Next Futsal">
+                  <button className={styles.arrowBtn} onClick={handleNextFutsal} title="Next Futsal" style={{
+                    background: '#000',
+                    color: '#fff',
+                    fontSize: '28px',
+                    border: 'none',
+                    borderRadius: '50%',
+                    width: '44px',
+                    height: '44px',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    boxShadow: '0 2px 8px rgba(0,0,0,0.15)',
+                    transition: 'all 0.2s',
+                    cursor: 'pointer'
+                  }}>
                     <ChevronRight size={28} />
                   </button>
                 )}
@@ -349,9 +418,9 @@ const OSlotsPage = () => {
                 marginBottom: '2.5rem'
               }}>
                 <div className={styles.slotsHeader}>
-                  <h1 style={{fontSize: '1.6rem', fontWeight: 700, marginBottom: 0}}>Manage Slots</h1>
+                  <h1 style={{fontSize: '1.6rem', fontWeight: 700, marginBottom: 0, color: '#000'}}>Manage Slots</h1>
                   <div className={styles.dateSelector}>
-                    <Calendar size={20} />
+                    <Calendar size={20} color="#000" />
                     <div className={styles.dateNavigation}>
                       <input
                         type="date"
@@ -359,34 +428,57 @@ const OSlotsPage = () => {
                         onChange={handleDateChange}
                         min={today}
                         max={maxDateStr}
+                        style={{ border: '1px solid #000', borderRadius: '4px', padding: '8px' }}
                       />
-                      <button className={styles.resetButton} onClick={handleResetSlots} disabled={loading}>Reset Slots</button>
+                      <button className={styles.resetButton} onClick={handleResetSlots} disabled={loading} style={{ 
+                        background: '#000', 
+                        color: '#fff',
+                        border: 'none',
+                        padding: '8px 16px',
+                        borderRadius: '4px',
+                        cursor: 'pointer'
+                      }}>Reset Slots</button>
                     </div>
                   </div>
-                  <button className={styles.addSlotBtn} onClick={() => setIsAddingSlot(true)}>
+                  <button className={styles.addSlotBtn} onClick={() => setIsAddingSlot(true)} style={{
+                    background: '#000',
+                    color: '#fff',
+                    border: 'none',
+                    padding: '8px 16px',
+                    borderRadius: '4px',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '8px',
+                    cursor: 'pointer'
+                  }}>
                     <Plus size={20} /> Add New Slot
                   </button>
                 </div>
                 {error && <div className={styles.error}>{error}</div>}
                 {loading && <div className={styles.loading}>Loading slots...</div>}
                 <div className={styles.slotsTable}>
-                  <table>
+                  <table style={{ width: '100%', borderCollapse: 'separate', borderSpacing: '0 8px' }}>
                     <thead>
                       <tr>
-                        <th><Clock size={18} /> Time</th>
-                        <th><Users size={18} /> Max Players</th>
-                        <th><DollarSign size={18} /> Price</th>
-                        <th><Activity size={18} /> Status</th>
-                        <th><Settings size={18} /> Actions</th>
+                        <th style={{ padding: '16px', fontWeight: 700, fontSize: 16, color: '#000', background: '#f8fafc', borderRadius: '8px 0 0 8px', textAlign: 'left', borderBottom: '2px solid #000' }}><Clock size={18} style={{ marginRight: 8 }} /> Time</th>
+                        <th style={{ padding: '16px', fontWeight: 700, fontSize: 16, color: '#000', background: '#f8fafc', textAlign: 'left', borderBottom: '2px solid #000' }}><Users size={18} style={{ marginRight: 8 }} /> Max Players</th>
+                        <th style={{ padding: '16px', fontWeight: 700, fontSize: 16, color: '#000', background: '#f8fafc', textAlign: 'left', borderBottom: '2px solid #000' }}>₹ Price</th>
+                        <th style={{ padding: '16px', fontWeight: 700, fontSize: 16, color: '#000', background: '#f8fafc', textAlign: 'left', borderBottom: '2px solid #000' }}><Activity size={18} style={{ marginRight: 8 }} /> Status</th>
+                        <th style={{ padding: '16px', fontWeight: 700, fontSize: 16, color: '#000', background: '#f8fafc', textAlign: 'left', borderBottom: '2px solid #000' }}><Settings size={18} style={{ marginRight: 8 }} /> Actions</th>
                       </tr>
                     </thead>
                     <tbody>
                       {slots.map((slot, index) => {
                         const timeStatus = getSlotTimeStatus(slot);
                         return (
-                          <tr key={slot._id || `${selectedDate}-${slot.time}-${index}`}>
-                            <td>{slot.time}</td>
-                            <td>
+                          <tr key={slot._id || `${selectedDate}-${slot.time}-${index}`} style={{ 
+                            background: '#fff', 
+                            boxShadow: '0 2px 8px rgba(0,0,0,0.05)',
+                            borderRadius: 8,
+                            transition: 'transform 0.2s ease, box-shadow 0.2s ease'
+                          }}>
+                            <td style={{ padding: '16px', fontWeight: 600, color: '#000', borderRadius: '8px 0 0 8px', borderBottom: '1px solid #e2e8f0' }}>{slot.time}</td>
+                            <td style={{ padding: '16px', fontWeight: 600, color: '#000', borderBottom: '1px solid #e2e8f0' }}>
                               {editingSlot?._id === slot._id ? (
                                 <input
                                   type="number"
@@ -395,12 +487,13 @@ const OSlotsPage = () => {
                                   value={editingSlot.maxPlayers}
                                   onChange={(e) => handleEditChange('maxPlayers', parseInt(e.target.value))}
                                   className={styles.editInput}
+                                  style={{ border: '1px solid #000', borderRadius: '4px', padding: '8px' }}
                                 />
                               ) : (
                                 slot.maxPlayers
                               )}
                             </td>
-                            <td>
+                            <td style={{ padding: '16px', fontWeight: 600, color: '#000', borderBottom: '1px solid #e2e8f0' }}>
                               {editingSlot?._id === slot._id ? (
                                 <input
                                   type="number"
@@ -408,21 +501,21 @@ const OSlotsPage = () => {
                                   value={editingSlot.price}
                                   onChange={(e) => handleEditChange('price', parseInt(e.target.value))}
                                   className={styles.editInput}
+                                  style={{ border: '1px solid #000', borderRadius: '4px', padding: '8px' }}
                                 />
                               ) : (
                                 `₹${slot.price}`
                               )}
                             </td>
-                            <td>
-                              {/* Show time-based status tag */}
+                            <td style={{ padding: '16px', borderBottom: '1px solid #e2e8f0' }}>
                               {timeStatus === 'ended' && (
-                                <span className={`${styles.status} ${styles.statusEnded}`}>Ended</span>
+                                <span className={`${styles.status} ${styles.statusEnded}`} style={{ background: '#f8fafc', color: '#000', padding: '4px 8px', borderRadius: '4px', fontSize: '14px' }}>Ended</span>
                               )}
                               {timeStatus === 'playing' && (
-                                <span className={`${styles.status} ${styles.statusPlaying}`}>Playing</span>
+                                <span className={`${styles.status} ${styles.statusPlaying}`} style={{ background: '#f8fafc', color: '#000', padding: '4px 8px', borderRadius: '4px', fontSize: '14px' }}>Playing</span>
                               )}
                               {timeStatus === 'soon' && (
-                                <span className={`${styles.status} ${styles.statusSoon}`}>Starting Soon</span>
+                                <span className={`${styles.status} ${styles.statusSoon}`} style={{ background: '#f8fafc', color: '#000', padding: '4px 8px', borderRadius: '4px', fontSize: '14px' }}>Starting Soon</span>
                               )}
                               {timeStatus === 'upcoming' && (
                                 editingSlot?._id === slot._id ? (
@@ -430,6 +523,7 @@ const OSlotsPage = () => {
                                     value={editingSlot.status}
                                     onChange={(e) => handleEditChange('status', e.target.value)}
                                     className={styles.editSelect}
+                                    style={{ border: '1px solid #000', borderRadius: '4px', padding: '8px' }}
                                   >
                                     <option value="available">Available</option>
                                     <option value="booked">Booked</option>
@@ -439,27 +533,18 @@ const OSlotsPage = () => {
                                     <option value="nofull">No Full</option>
                                   </select>
                                 ) : (
-                                  <span className={`${styles.status} ${styles[`status${slot.status.charAt(0).toUpperCase() + slot.status.slice(1)}`]}`}>{slot.status}</span>
+                                  <span className={`${styles.status} ${styles[`status${slot.status.charAt(0).toUpperCase() + slot.status.slice(1)}`]}`} style={{ background: '#f8fafc', color: '#000', padding: '4px 8px', borderRadius: '4px', fontSize: '14px' }}>{slot.status}</span>
                                 )
                               )}
                             </td>
-                            <td>
+                            <td style={{ padding: '16px', borderBottom: '1px solid #e2e8f0' }}>
                               {editingSlot?._id === slot._id ? (
-                                <div className={styles.editActions}>
-                                  <button className={styles.saveBtn} onClick={handleEditSave}>Save</button>
-                                  <button className={styles.cancelBtn} onClick={handleEditCancel}>Cancel</button>
+                                <div style={{ display: 'flex', gap: '8px' }}>
+                                  <button onClick={handleEditSave} style={{ background: '#000', color: '#fff', border: 'none', padding: '8px 16px', borderRadius: '4px', cursor: 'pointer' }}>Save</button>
+                                  <button onClick={handleEditCancel} style={{ background: '#f8fafc', color: '#000', border: '1px solid #000', padding: '8px 16px', borderRadius: '4px', cursor: 'pointer' }}>Cancel</button>
                                 </div>
                               ) : (
-                                <div className={styles.actions}>
-                                  <button
-                                    className={styles.editBtn}
-                                    onClick={() => handleEditStart(slot)}
-                                  >Edit</button>
-                                  <button
-                                    className={styles.deleteBtn}
-                                    onClick={() => handleDeleteSlot(slot._id)}
-                                  >Delete</button>
-                                </div>
+                                <button onClick={() => handleEditStart(slot)} style={{ background: '#000', color: '#fff', border: 'none', padding: '8px 16px', borderRadius: '4px', cursor: 'pointer' }}>Edit</button>
                               )}
                             </td>
                           </tr>
