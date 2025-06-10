@@ -119,6 +119,245 @@ const OMyFutsal = () => {
     </div>
   )
 
+  // Render all futsals in grid
+  const renderFutsalGrid = () => (
+    <div style={{ 
+      display: 'grid',
+      gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))',
+      gap: '24px',
+      width: '100%'
+    }}>
+      {futsals.map(futsal => (
+        <div key={futsal._id} style={{
+          background: 'white',
+          borderRadius: '8px',
+          overflow: 'hidden',
+          boxShadow: '0 2px 4px rgba(0, 0, 0, 0.08)',
+          border: '1px solid #e5e7eb',
+          transition: 'transform 0.2s, box-shadow 0.2s',
+          height: '100%',
+          display: 'flex',
+          flexDirection: 'column'
+        }}
+        onMouseOver={(e) => {
+          e.currentTarget.style.transform = 'translateY(-4px)';
+          e.currentTarget.style.boxShadow = '0 8px 16px rgba(0, 0, 0, 0.1)';
+        }}
+        onMouseOut={(e) => {
+          e.currentTarget.style.transform = 'translateY(0)';
+          e.currentTarget.style.boxShadow = '0 2px 4px rgba(0, 0, 0, 0.08)';
+        }}
+        >
+          {/* Futsal Image */}
+          <div style={{ 
+            height: '160px',
+            overflow: 'hidden',
+            position: 'relative'
+          }}>
+            <img
+              src={futsal.futsalPhoto || '/default-futsal.jpg'}
+              alt={futsal.name}
+              style={{
+                width: '100%',
+                height: '100%',
+                objectFit: 'cover'
+              }}
+            />
+            {futsal.isAwarded && (
+              <div style={{
+                position: 'absolute',
+                top: '10px',
+                right: '10px',
+                background: 'rgba(0,0,0,0.7)',
+                color: 'white',
+                padding: '4px 8px',
+                borderRadius: '4px',
+                fontSize: '12px',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '4px'
+              }}>
+                <CheckCircle size={14} />
+                <span>Verified</span>
+              </div>
+            )}
+          </div>
+
+          {/* Content */}
+          <div style={{ 
+            padding: '16px',
+            display: 'flex',
+            flexDirection: 'column',
+            gap: '12px',
+            flex: '1'
+          }}>
+            {/* Header */}
+            <div style={{
+              display: 'flex',
+              justifyContent: 'space-between',
+              alignItems: 'flex-start'
+            }}>
+              <h3 style={{
+                margin: 0,
+                fontSize: '18px',
+                fontWeight: '600',
+                color: '#111827'
+              }}>{futsal.name}</h3>
+
+              <div style={{
+                display: 'flex',
+                gap: '8px'
+              }}>
+                <button style={{
+                  background: 'transparent',
+                  border: 'none',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  cursor: 'pointer',
+                  color: '#374151',
+                  padding: '4px',
+                  borderRadius: '4px',
+                  transition: 'background 0.2s'
+                }}
+                onMouseOver={(e) => {
+                  e.currentTarget.style.background = '#f3f4f6';
+                }}
+                onMouseOut={(e) => {
+                  e.currentTarget.style.background = 'transparent';
+                }}
+                onClick={() => handleUpdateFutsal(futsal._id)}
+                title="Edit Futsal"
+                >
+                  <Edit size={16} />
+                </button>
+              </div>
+            </div>
+
+            {/* Details */}
+            <div style={{
+              display: 'flex',
+              flexDirection: 'column',
+              gap: '8px',
+              fontSize: '14px',
+              color: '#4b5563'
+            }}>
+              <div style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '6px'
+              }}>
+                <MapPin size={14} />
+                <span style={{
+                  whiteSpace: 'nowrap',
+                  overflow: 'hidden',
+                  textOverflow: 'ellipsis'
+                }}>{futsal.location || 'Location not specified'}</span>
+              </div>
+              
+              <div style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '6px'
+              }}>
+                <Clock size={14} />
+                <span>{futsal.openingHours || 'Hours not specified'}</span>
+              </div>
+            </div>
+
+            {/* Description */}
+            <div style={{
+              fontSize: '14px',
+              color: '#6b7280',
+              display: '-webkit-box',
+              WebkitLineClamp: '2',
+              WebkitBoxOrient: 'vertical',
+              overflow: 'hidden',
+              textOverflow: 'ellipsis',
+              flex: '1'
+            }}>
+              {futsal.description || 'No description provided.'}
+            </div>
+
+            {/* Stats */}
+            <div style={{
+              display: 'flex',
+              justifyContent: 'space-between',
+              borderTop: '1px solid #e5e7eb',
+              paddingTop: '12px',
+              fontSize: '12px',
+              color: '#6b7280'
+            }}>
+              <div style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '4px'
+              }}>
+                <Users size={14} />
+                <span>{futsal.followers?.length || 0}</span>
+              </div>
+              <div style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '4px'
+              }}>
+                <Star size={14} />
+                <span>{futsal.rating?.toFixed(1) || 'New'}</span>
+              </div>
+              <div style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '4px'
+              }}>
+                <Calendar size={14} />
+                <span>{futsal.gamesOrganized || 0}</span>
+              </div>
+            </div>
+
+            {/* Actions */}
+            <div style={{
+              display: 'flex',
+              gap: '8px'
+            }}>
+              <button style={{
+                flex: '1',
+                padding: '8px 12px',
+                background: '#111827',
+                color: 'white',
+                border: 'none',
+                borderRadius: '4px',
+                fontSize: '14px',
+                fontWeight: '500',
+                cursor: 'pointer',
+                transition: 'background 0.2s'
+              }}
+              onClick={() => handleUpdateFutsal(futsal._id)}
+              >
+                Manage
+              </button>
+              <button style={{
+                flex: '1',
+                padding: '8px 12px',
+                background: 'white',
+                color: '#111827',
+                border: '1px solid #d1d5db',
+                borderRadius: '4px',
+                fontSize: '14px',
+                fontWeight: '500',
+                cursor: 'pointer',
+                transition: 'background 0.2s, border-color 0.2s'
+              }}
+              onClick={() => handleDeleteFutsal(futsal._id)}
+              >
+                Delete
+              </button>
+            </div>
+          </div>
+        </div>
+      ))}
+    </div>
+  )
+
   return (
     <div className={styles.body}>
       <header className={styles.header}>
@@ -158,8 +397,7 @@ const OMyFutsal = () => {
             </button>
           </div>
           {loading ? (
-            <div className={styles.loading}>Loading futsal data...</div>
-          ) : error ? (
+            <div className={styles.loading}>Loading futsal data...</div>          ) : error ? (
             <div className={styles.error}>{error}</div>
           ) : futsals.length === 0 ? (
             <div className={styles.empty}>
@@ -169,20 +407,8 @@ const OMyFutsal = () => {
               </div>
               {renderFutsalCard({})}
             </div>
-          ) : (
-            <div className={styles.futsalSliderWrapper}>
-              {futsals.length > 1 && (
-                <button className={styles.arrowBtn} onClick={handlePrevFutsal} title="Previous Futsal">&#8592;</button>
-              )}
-              {renderFutsalCard(futsals[currentFutsalIdx])}
-              {futsals.length > 1 && (
-                <button className={styles.arrowBtn} onClick={handleNextFutsal} title="Next Futsal">&#8594;</button>
-              )}
-              <div className={styles.futsalSliderIndicator}>
-                {futsals.map((_, idx) => (
-                  <span key={idx} className={idx === currentFutsalIdx ? styles.activeDot : styles.dot}></span>
-                ))}
-              </div>
+          ) : (            <div style={{ width: '100%', padding: '16px 0' }}>
+              {renderFutsalGrid()}
             </div>
           )}
         </main>
