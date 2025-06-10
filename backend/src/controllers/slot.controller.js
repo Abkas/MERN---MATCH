@@ -282,7 +282,10 @@ const getPlayerJoinedSlots = asyncHandler(async (req, res) => {
     try {
         // Find all slots where the player is in the players array
         const slots = await Slot.find({ players: playerId })
-            .populate('futsal', 'name location')
+            .populate({
+                path: 'futsal',
+                select: 'name location futsalPhoto'
+            })
             .sort({ date: 1, time: 1 });
 
         if (!slots || slots.length === 0) {
@@ -324,14 +327,26 @@ const cancelSlotBooking = asyncHandler(async (req, res) => {
             slot.status = SLOT_STATUS.AVAILABLE;
         }
 
+        // Remove payment status for this player
+        slot.paymentStatus = slot.paymentStatus.filter(
+            status => status.playerId.toString() !== playerId.toString()
+        );
+
         await slot.save();
+
+        // Update associated game if it exists
+        const game = await Game.findOne({ slot: slotId });
+        if (game) {
+            game.players = game.players.filter(id => id.toString() !== playerId.toString());
+            await game.save();
+        }
 
         return res.status(200).json(
             new ApiResponse(200, slot, 'Booking cancelled successfully')
         );
     } catch (error) {
         console.error('Error cancelling booking:', error);
-        throw new ApiError(500, 'Error cancelling booking');
+        throw new ApiError(error.statusCode || 500, error.message || 'Error cancelling booking');
     }
 });
 

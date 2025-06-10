@@ -19,37 +19,19 @@ const router = Router();
 // Protected routes - require authentication
 router.use(verifyJWT);
 
-// Create a new slot
-router.post('/:futsalId/slots', createSlot);
-
-// Update a slot
-router.patch('/:futsalId/slots/:slotId', updateSlot);
-
-// Get slots by futsal
-router.get('/:futsalId/slots', getSlotsByFutsal);
-
-// Join a slot
-router.post('/:futsalId/slots/:slotId/join', joinSlot);
-
-// Delete a slot
-router.delete('/:futsalId/slots/:slotId', deleteSlot);
-
-// Get slots by date
-router.get('/:futsalId/slots/date', getSlotsByDate);
-
-// Add a new slot
-router.post('/:futsalId/slots/add', addSlot);
-
-// Reset slots
-router.post('/:futsalId/slots/reset', resetSlots);
-
-// Get player's joined slots
+// Player-specific routes (put these first to avoid conflicts with parameterized routes)
 router.get('/player/slots', getPlayerJoinedSlots);
+router.delete('/:slotId/cancel', cancelSlotBooking);
 
-// Cancel slot booking
-router.delete('/slots/:slotId/cancel', cancelSlotBooking);
-
-// Update price for all slots on a date
+// Futsal-specific routes
+router.post('/:futsalId/slots', createSlot);
+router.patch('/:futsalId/slots/:slotId', updateSlot);
+router.get('/:futsalId/slots', getSlotsByFutsal);
+router.post('/:futsalId/slots/:slotId/join', joinSlot);
+router.delete('/:futsalId/slots/:slotId', deleteSlot);
+router.get('/:futsalId/slots/date', getSlotsByDate);
+router.post('/:futsalId/slots/add', addSlot);
+router.post('/:futsalId/slots/reset', resetSlots);
 router.patch('/:futsalId/update-slots-price', updateSlotsPrice);
 
 export default router; 

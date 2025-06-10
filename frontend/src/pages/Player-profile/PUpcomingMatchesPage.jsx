@@ -22,58 +22,20 @@ const PUpcomingMatchesPage = () => {
         try {
             setLoading(true)
             console.log('Fetching joined slots...');
-            const response = await axiosInstance.get('/slots/player/joined')
+            // This endpoint returns only slots where the current player is in the players array
+            const response = await axiosInstance.get('/slots/player/slots')
             if (response.data.success) {
                 const slots = response.data.message;
-                console.log('All slots:', slots);
+                console.log('Joined slots:', slots);
                 
-                // Filter out ended matches and move them to history
-                const endedSlots = slots.filter(slot => {
-                    const timeStatus = getSlotTimeStatus(slot, slot.date);
-                    console.log('Slot status:', slot._id, timeStatus);
-                    return timeStatus === 'ended';
-                });
-                
-                console.log('Ended slots to move:', endedSlots);
-                
-                // Move ended slots to history
-                if (endedSlots.length > 0) {
-                    try {
-                        // Use the same axiosInstance with the current proxy setup
-                        const moveResponse = await axiosInstance.post('/users/move-to-history', {
-                            slotIds: endedSlots.map(slot => slot._id)
-                        }, {
-                            headers: {
-                                'Content-Type': 'application/json'
-                            }
-                        });
-                        
-                        console.log('Move to history response:', moveResponse.data);
-                        if (moveResponse.data.success) {
-                            toast.success(`Moved ${endedSlots.length} ended match(es) to history`);
-                        }
-                    } catch (err) {
-                        console.error('Error moving matches to history:', err);
-                        // Log more details about the error
-                        console.error('Error details:', {
-                            message: err.message,
-                            response: err.response?.data,
-                            status: err.response?.status,
-                            url: err.config?.url,
-                            headers: err.config?.headers
-                        });
-                        toast.error('Failed to move ended matches to history');
-                    }
-                }
-
-                // Only show non-ended matches
-                const activeSlots = slots.filter(slot => {
+                // Filter out ended matches to show only active joined slots
+                const activeJoinedSlots = slots.filter(slot => {
                     const timeStatus = getSlotTimeStatus(slot, slot.date);
                     return timeStatus !== 'ended';
                 });
                 
-                console.log('Active slots to display:', activeSlots);
-                setJoinedSlots(activeSlots);
+                console.log('Active joined slots to display:', activeJoinedSlots);
+                setJoinedSlots(activeJoinedSlots);
             } else {
                 toast.error('Failed to fetch joined slots')
             }
@@ -91,17 +53,30 @@ const PUpcomingMatchesPage = () => {
 
     const handleCancelBooking = async (slotId) => {
         try {
-            const response = await axiosInstance.delete(`/slots/${slotId}/cancel`)
+            // Show confirmation dialog
+            const confirmed = window.confirm('Are you sure you want to cancel this booking?');
+            if (!confirmed) return;
+
+            const response = await axiosInstance.delete(`/slots/${slotId}/cancel`);
             if (response.data.success) {
-                toast.success('Booking cancelled successfully')
-                fetchJoinedSlots() // Refresh the list
+                toast.success('Booking cancelled successfully');
+                fetchJoinedSlots(); // Refresh the list
             } else {
-                toast.error('Failed to cancel booking')
+                toast.error(response.data.message || 'Failed to cancel booking');
             }
         } catch (err) {
-            console.error('Error cancelling booking:', err)
-            toast.error('Failed to cancel booking')
+            console.error('Error cancelling booking:', err);
+            // Show more specific error message from the backend
+            toast.error(err.response?.data?.message || 'Failed to cancel booking');
         }
+    }
+
+    const handleViewFutsal = (futsalId) => {
+        if (!futsalId) {
+            toast.error('Futsal details not available');
+            return;
+        }
+        navigate(`/futsal/${futsalId}`);
     }
 
     return (
@@ -174,6 +149,7 @@ const PUpcomingMatchesPage = () => {
                                 const timeStatus = getSlotTimeStatus(slot, slot.date);
                                 let statusLabel = '';
                                 let statusClass = '';
+                                
                                 if (timeStatus === 'ended') {
                                     statusLabel = 'Ended';
                                     statusClass = styles.statusEnded;
@@ -184,48 +160,74 @@ const PUpcomingMatchesPage = () => {
                                     statusLabel = 'Starting Soon';
                                     statusClass = styles.statusSoon;
                                 } else {
-                                    statusLabel = slot.status;
-                                    statusClass = styles[`status${slot.status.charAt(0).toUpperCase() + slot.status.slice(1)}`] || '';
+                                    statusLabel = slot.status || 'Upcoming';
+                                    statusClass = styles[`status${(slot.status || 'Upcoming').charAt(0).toUpperCase() + (slot.status || 'Upcoming').slice(1)}`] || '';
                                 }
+
                                 return (
                                     <div key={slot._id} className={styles.matchCard} style={{ background: '#fff', borderRadius: 22, boxShadow: '0 8px 32px #2563eb13', padding: 32, display: 'flex', flexDirection: 'column', justifyContent: 'space-between', border: '1.5px solid #e3e8f0', transition: 'box-shadow 0.2s', position: 'relative', minHeight: 260 }}>
                                         <div className={styles.matchHeader} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 16 }}>
                                             <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
-                                                <img src="/FUTSALHOME/logo.png" alt="futsal-logo" style={{ width: 48, height: 48, borderRadius: 10, objectFit: 'cover', background: '#f3f6fa', border: '1px solid #e3e8f0' }} />
-                                                <h3 style={{ fontSize: 22, fontWeight: 700, color: '#222', margin: 0 }}>{slot.futsal.name}</h3>
+                                                <img src={slot.futsal?.futsalPhoto || "/FUTSALHOME/logo.png"} alt="futsal-logo" style={{ width: 48, height: 48, borderRadius: 10, objectFit: 'cover', background: '#f3f6fa', border: '1px solid #e3e8f0' }} />
+                                                <h3 style={{ fontSize: 22, fontWeight: 700, color: '#222', margin: 0 }}>{slot.futsal?.name || 'Unknown Futsal'}</h3>
                                             </div>
                                             <span className={`${styles.status} ${statusClass}`} style={{ fontWeight: 700, fontSize: 15, padding: '6px 16px', borderRadius: 8, letterSpacing: 0.5 }}>{statusLabel}</span>
                                         </div>
                                         <div className={styles.matchDetails} style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 14, marginBottom: 22 }}>
                                             <div className={styles.detailItem} style={{ display: 'flex', alignItems: 'center', gap: 8, color: '#2563eb', fontWeight: 600, fontSize: 16 }}>
                                                 <Clock size={18} />
-                                                <span>{slot.time}</span>
+                                                <span>{slot.time || 'Time not set'}</span>
                                             </div>
                                             <div className={styles.detailItem} style={{ display: 'flex', alignItems: 'center', gap: 8, color: '#43a047', fontWeight: 600, fontSize: 16 }}>
                                                 <Users size={18} />
-                                                <span>{slot.currentPlayers}/{slot.maxPlayers} Players</span>
+                                                <span>{slot.currentPlayers || 0}/{slot.maxPlayers || 10} Players</span>
                                             </div>
                                             <div className={styles.detailItem} style={{ display: 'flex', alignItems: 'center', gap: 8, color: '#fbc02d', fontWeight: 600, fontSize: 16 }}>
                                                 <DollarSign size={18} />
-                                                <span>₹{slot.price} per player</span>
+                                                <span>₹{slot.price || 0} per player</span>
                                             </div>
                                             <div className={styles.detailItem} style={{ display: 'flex', alignItems: 'center', gap: 8, color: '#d32f2f', fontWeight: 600, fontSize: 16 }}>
                                                 <MapPin size={18} />
-                                                <span>{slot.futsal.location}</span>
+                                                <span>{slot.futsal?.location || 'Location not set'}</span>
                                             </div>
                                         </div>
                                         <div className={styles.matchActions} style={{ display: 'flex', gap: 18, marginTop: 'auto' }}>
                                             <button
                                                 className={styles.viewDetailsBtn}
-                                                style={{ background: '#2563eb', color: '#fff', borderRadius: 10, padding: '10px 24px', fontWeight: 700, border: 'none', boxShadow: '0 2px 8px #2563eb22', cursor: 'pointer', fontSize: 16, transition: 'background 0.2s' }}
-                                                onClick={() => navigate(`/futsal/${slot.futsal._id}`)}
+                                                style={{ 
+                                                    background: '#2563eb', 
+                                                    color: '#fff', 
+                                                    borderRadius: 10, 
+                                                    padding: '10px 24px', 
+                                                    fontWeight: 700, 
+                                                    border: 'none', 
+                                                    boxShadow: '0 2px 8px #2563eb22', 
+                                                    cursor: 'pointer', 
+                                                    fontSize: 16, 
+                                                    transition: 'all 0.2s',
+                                                    opacity: slot.futsal?._id ? 1 : 0.7
+                                                }}
+                                                onClick={() => handleViewFutsal(slot.futsal?._id)}
+                                                disabled={!slot.futsal?._id}
                                             >
                                                 View Details
                                             </button>
                                             <button
                                                 className={styles.cancelBtn}
-                                                style={{ background: '#fff', color: '#d32f2f', border: '2px solid #d32f2f', borderRadius: 10, padding: '10px 24px', fontWeight: 700, cursor: 'pointer', fontSize: 16, transition: 'background 0.2s' }}
+                                                style={{ 
+                                                    background: '#fff', 
+                                                    color: '#d32f2f', 
+                                                    border: '2px solid #d32f2f', 
+                                                    borderRadius: 10, 
+                                                    padding: '10px 24px', 
+                                                    fontWeight: 700, 
+                                                    cursor: 'pointer', 
+                                                    fontSize: 16, 
+                                                    transition: 'all 0.2s',
+                                                    opacity: timeStatus === 'playing' || timeStatus === 'ended' ? 0.5 : 1
+                                                }}
                                                 onClick={() => handleCancelBooking(slot._id)}
+                                                disabled={timeStatus === 'playing' || timeStatus === 'ended'}
                                             >
                                                 Cancel Booking
                                             </button>
