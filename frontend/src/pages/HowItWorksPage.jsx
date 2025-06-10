@@ -290,7 +290,7 @@ const HowItWorksPage = () => {  const { logOut, authUser } = useAuthStore()
             </button>
           </div>
         </section>        {/* FAQ Section */}
-        <section id="faqs" className={styles.faqSection}>
+        <section id="faq" className={styles.faqSection}>
           <h2>Frequently Asked Questions</h2>
           <div className={styles.faqContainer}>
             {faqs.map((faq, index) => (
@@ -345,8 +345,8 @@ const HowItWorksPage = () => {  const { logOut, authUser } = useAuthStore()
           <div className={styles.footerColumn}>
             <h3 className={styles.footerHeading}>Support</h3>
             <ul className={styles.footerLinks}>
-              <li><Link to="/how-it-works">FAQs</Link></li>
-              <li><Link to="/about-us">Contact Us</Link></li>
+              <li><Link to="/how-it-works#faq">FAQs</Link></li>
+              <li><Link to="/about-us#contact">Contact Us</Link></li>
             </ul>
           </div>
           

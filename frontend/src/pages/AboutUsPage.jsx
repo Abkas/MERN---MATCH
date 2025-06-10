@@ -369,8 +369,8 @@ useEffect(() => {
           <div className={styles.footerColumn}>
             <h3 className={styles.footerHeading}>Support</h3>
             <ul className={styles.footerLinks}>
-              <li><Link to="/how-it-works">FAQs</Link></li>
-              <li><Link to="/about-us">Contact Us</Link></li>
+              <li><Link to="/how-it-works#faq">FAQs</Link></li>
+              <li><Link to="/about-us#contact">Contact Us</Link></li>
             </ul>
           </div>
           
