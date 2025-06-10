@@ -112,17 +112,13 @@ const QuickJoinSection = ({ futsal, maxPrice, onHasSlots, requiredSeats }) => {
           {futsal.name}
         </button>
         <div className={styles.venueInfo}>
+          {/* Only show location and price, remove slot count and distance */}
           <span className={styles.infoTag}>
-            {filteredSlots.length} Slots Available
+            {futsal.location}
           </span>
           <span className={styles.infoTag}>
             ₹{futsal.price || '2000'} per court
           </span>
-          {futsal.distance && (
-            <span className={styles.infoTag}>
-              {futsal.distance} away
-            </span>
-          )}
         </div>
       </div>
 
