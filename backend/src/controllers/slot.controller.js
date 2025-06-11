@@ -70,7 +70,6 @@ const getSlotsByFutsal = asyncHandler(async (req, res) => {
     try {
         let query = { futsal: futsalId };
         
-        // If date is provided, filter by date
         if (date) {
             query.date = date;
         }
@@ -78,12 +77,6 @@ const getSlotsByFutsal = asyncHandler(async (req, res) => {
         const slots = await Slot.find(query)
             .sort({ date: 1, time: 1 })
             .populate('players', 'username fullName avatar');
-
-        if (!slots || slots.length === 0) {
-            return res.status(200).json(
-                new ApiResponse(200, [], 'No slots found for this futsal')
-            );
-        }
 
         return res.status(200).json(
             new ApiResponse(200, slots, 'Slots fetched successfully')
@@ -400,6 +393,80 @@ const updateSlotsPrice = asyncHandler(async (req, res) => {
     } catch (error) {
         console.error('Error updating slots price:', error);
         throw new ApiError(500, error.message || "Error updating slots price");
+    }
+});
+
+// Function to generate slots for a specific date
+const generateSlotsForDate = async (futsalId, date) => {
+    const futsal = await Futsal.findById(futsalId);
+    if (!futsal) {
+        throw new ApiError(404, "Futsal not found");
+    }
+
+    // Check if date is valid
+    const slotDate = new Date(date);
+    if (isNaN(slotDate.getTime())) {
+        throw new ApiError(400, "Invalid date format");
+    }
+
+    // Check if date is in the past
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    if (slotDate < today) {
+        throw new ApiError(400, "Cannot create slots for past dates");
+    }
+
+    const slots = [];
+    const defaultPrice = futsal.price || 2000;
+    const defaultMaxPlayers = 10;
+
+    // Generate slots from 5 AM to 11 PM
+    for (let hour = 5; hour < 23; hour++) {
+        const startTime = `${hour.toString().padStart(2, '0')}:00`;
+        const endTime = `${(hour + 1).toString().padStart(2, '0')}:00`;
+        
+        slots.push({
+            futsal: futsalId,
+            date,
+            time: `${startTime}-${endTime}`,
+            maxPlayers: defaultMaxPlayers,
+            price: defaultPrice,
+            status: SLOT_STATUS.AVAILABLE,
+            players: [],
+            paymentStatus: []
+        });
+    }
+
+    // Create all slots in bulk
+    const createdSlots = await Slot.insertMany(slots);
+    return createdSlots;
+};
+
+// Middleware to check and generate slots for next day
+const checkAndGenerateNextDaySlots = asyncHandler(async (req, res, next) => {
+    const { futsalId } = req.params;
+    const { date } = req.query;
+
+    if (!date) {
+        return next();
+    }
+
+    try {
+        // Check if slots exist for the requested date
+        const existingSlots = await Slot.find({
+            futsal: futsalId,
+            date: date
+        });
+
+        // If no slots exist for this date, generate them
+        if (existingSlots.length === 0) {
+            await generateSlotsForDate(futsalId, date);
+        }
+
+        next();
+    } catch (error) {
+        console.error('Error in checkAndGenerateNextDaySlots:', error);
+        next(error);
     }
 });
 

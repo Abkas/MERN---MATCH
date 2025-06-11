@@ -11,7 +11,8 @@ import {
     resetSlots,
     getPlayerJoinedSlots,
     cancelSlotBooking,
-    updateSlotsPrice
+    updateSlotsPrice,
+    checkAndGenerateNextDaySlots
 } from '../controllers/slot.controller.js';
 
 const router = Router();
@@ -26,10 +27,10 @@ router.delete('/:slotId/cancel', cancelSlotBooking);
 // Futsal-specific routes
 router.post('/:futsalId/slots', createSlot);
 router.patch('/:futsalId/slots/:slotId', updateSlot);
-router.get('/:futsalId/slots', getSlotsByFutsal);
+router.get('/:futsalId/slots', checkAndGenerateNextDaySlots, getSlotsByFutsal);
 router.post('/:futsalId/slots/:slotId/join', joinSlot);
 router.delete('/:futsalId/slots/:slotId', deleteSlot);
-router.get('/:futsalId/slots/date', getSlotsByDate);
+router.get('/:futsalId/slots/date', checkAndGenerateNextDaySlots, getSlotsByDate);
 router.post('/:futsalId/slots/add', addSlot);
 router.post('/:futsalId/slots/reset', resetSlots);
 router.patch('/:futsalId/update-slots-price', updateSlotsPrice);
