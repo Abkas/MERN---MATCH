@@ -81,13 +81,13 @@ const PUpcomingMatchesPage = () => {
 
     return (
         <div className={styles.body}>
-            <header>
+            <header className={styles.header}>
                 <div className={styles.logo}>
                     <Link to="/">
                         <img src="/firstpage/logo.png" alt="match-logo" />
                     </Link>
                 </div>
-                <nav>
+                <nav className={styles.nav}>
                     <ul>
                         <li><Link to="/futsalhome">Home</Link></li>
                         <li><Link to="/bookfutsal">Book Futsal</Link></li>
@@ -115,7 +115,7 @@ const PUpcomingMatchesPage = () => {
                     <ul className={styles.sidebarMenu}>
                         <li><Link to="/player-dashboard">Dashboard</Link></li>
                         <li><Link to="/player-profile">Profile</Link></li>
-                        <li><Link to="/player-addfriend" style={{ color: '#9ca3af' }}>Add Friends</Link></li>
+                        <li><Link to="/player-addfriend">Add Friends</Link></li>
                         <li><Link to="/player-history">History</Link></li>
                         <li><Link to="/player-upcomingmatches" className={styles.active}>Upcoming Matches</Link></li>
                         <li>
@@ -125,26 +125,26 @@ const PUpcomingMatchesPage = () => {
                         </li>
                     </ul>
                 </aside>
-                <main className={styles.mainContent} style={{ maxWidth: 1100, margin: '0 auto', padding: '3rem 0', marginLeft: '250px', width: 'calc(100% - 250px)' }}>
-                    <h1 className={styles.pageTitle} style={{ fontSize: '2.2rem', fontWeight: 800, color: '#232946', letterSpacing: 1, marginBottom: 36, display: 'flex', alignItems: 'center', gap: 18 }}>
-                        <span style={{ color: '#2563eb' }}>Upcoming Matches</span>
-                        <span style={{ fontSize: 18, color: '#888', fontWeight: 500, marginLeft: 12, display: 'flex', alignItems: 'center' }}>
-                            <Clock size={22} style={{ verticalAlign: 'middle', marginRight: 4 }} />
+                <main className={styles.mainContent}>
+                    <h1 className={styles.pageTitle}>
+                        <span>Upcoming Matches</span>
+                        <span className={styles.matchCount}>
+                            <Clock size={22} />
                             {joinedSlots.length > 0 ? `${joinedSlots.length} match${joinedSlots.length > 1 ? 'es' : ''}` : ''}
                         </span>
                     </h1>
                     {loading ? (
                         <div className={styles.loading}>Loading your matches...</div>
                     ) : joinedSlots.length === 0 ? (
-                        <div className={styles.noMatches} style={{ background: '#fff', borderRadius: 18, boxShadow: '0 4px 24px #2563eb11', padding: '3rem 2rem', maxWidth: 480, margin: '0 auto', marginTop: 40 }}>
-                            <img src="/firstpage/logo.png" alt="No matches" style={{ width: 80, marginBottom: 16, opacity: 0.7 }} />
-                            <p style={{ fontSize: 20, color: '#888', marginBottom: 8, fontWeight: 500 }}>You haven't joined any matches yet.</p>
-                            <Link to="/bookfutsal" className={styles.findMatchesBtn} style={{ background: '#2563eb', color: '#fff', borderRadius: 8, padding: '12px 32px', fontWeight: 700, textDecoration: 'none', boxShadow: '0 2px 8px #2563eb22', fontSize: 17 }}>
+                        <div className={styles.noMatches}>
+                            <img src="/firstpage/logo.png" alt="No matches" />
+                            <p>You haven't joined any matches yet.</p>
+                            <Link to="/bookfutsal" className={styles.findMatchesBtn}>
                                 Find Matches
                             </Link>
                         </div>
                     ) : (
-                        <div className={styles.matchesGrid} style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(370px, 1fr))', gap: 36, marginTop: 24 }}>
+                        <div className={styles.matchesGrid}>
                             {joinedSlots.map((slot) => {
                                 const timeStatus = getSlotTimeStatus(slot, slot.date);
                                 let statusLabel = '';
@@ -165,48 +165,35 @@ const PUpcomingMatchesPage = () => {
                                 }
 
                                 return (
-                                    <div key={slot._id} className={styles.matchCard} style={{ background: '#fff', borderRadius: 22, boxShadow: '0 8px 32px #2563eb13', padding: 32, display: 'flex', flexDirection: 'column', justifyContent: 'space-between', border: '1.5px solid #e3e8f0', transition: 'box-shadow 0.2s', position: 'relative', minHeight: 260 }}>
-                                        <div className={styles.matchHeader} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 16 }}>
-                                            <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
-                                                <img src={slot.futsal?.futsalPhoto || "/FUTSALHOME/logo.png"} alt="futsal-logo" style={{ width: 48, height: 48, borderRadius: 10, objectFit: 'cover', background: '#f3f6fa', border: '1px solid #e3e8f0' }} />
-                                                <h3 style={{ fontSize: 22, fontWeight: 700, color: '#222', margin: 0 }}>{slot.futsal?.name || 'Unknown Futsal'}</h3>
+                                    <div key={slot._id} className={styles.matchCard}>
+                                        <div className={styles.matchHeader}>
+                                            <div className={styles.venueInfo}>
+                                                <img src={slot.futsal?.futsalPhoto || "/FUTSALHOME/logo.png"} alt="futsal-logo" />
+                                                <h3>{slot.futsal?.name || 'Unknown Futsal'}</h3>
                                             </div>
-                                            <span className={`${styles.status} ${statusClass}`} style={{ fontWeight: 700, fontSize: 15, padding: '6px 16px', borderRadius: 8, letterSpacing: 0.5 }}>{statusLabel}</span>
+                                            <span className={`${styles.status} ${statusClass}`}>{statusLabel}</span>
                                         </div>
-                                        <div className={styles.matchDetails} style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 14, marginBottom: 22 }}>
-                                            <div className={styles.detailItem} style={{ display: 'flex', alignItems: 'center', gap: 8, color: '#2563eb', fontWeight: 600, fontSize: 16 }}>
+                                        <div className={styles.matchDetails}>
+                                            <div className={styles.detailItem}>
                                                 <Clock size={18} />
                                                 <span>{slot.time || 'Time not set'}</span>
                                             </div>
-                                            <div className={styles.detailItem} style={{ display: 'flex', alignItems: 'center', gap: 8, color: '#43a047', fontWeight: 600, fontSize: 16 }}>
+                                            <div className={styles.detailItem}>
                                                 <Users size={18} />
                                                 <span>{slot.currentPlayers || 0}/{slot.maxPlayers || 10} Players</span>
                                             </div>
-                                            <div className={styles.detailItem} style={{ display: 'flex', alignItems: 'center', gap: 8, color: '#fbc02d', fontWeight: 600, fontSize: 16 }}>
+                                            <div className={styles.detailItem}>
                                                 <DollarSign size={18} />
                                                 <span>₹{slot.price || 0} per player</span>
                                             </div>
-                                            <div className={styles.detailItem} style={{ display: 'flex', alignItems: 'center', gap: 8, color: '#d32f2f', fontWeight: 600, fontSize: 16 }}>
+                                            <div className={styles.detailItem}>
                                                 <MapPin size={18} />
                                                 <span>{slot.futsal?.location || 'Location not set'}</span>
                                             </div>
                                         </div>
-                                        <div className={styles.matchActions} style={{ display: 'flex', gap: 18, marginTop: 'auto' }}>
+                                        <div className={styles.matchActions}>
                                             <button
                                                 className={styles.viewDetailsBtn}
-                                                style={{ 
-                                                    background: '#2563eb', 
-                                                    color: '#fff', 
-                                                    borderRadius: 10, 
-                                                    padding: '10px 24px', 
-                                                    fontWeight: 700, 
-                                                    border: 'none', 
-                                                    boxShadow: '0 2px 8px #2563eb22', 
-                                                    cursor: 'pointer', 
-                                                    fontSize: 16, 
-                                                    transition: 'all 0.2s',
-                                                    opacity: slot.futsal?._id ? 1 : 0.7
-                                                }}
                                                 onClick={() => handleViewFutsal(slot.futsal?._id)}
                                                 disabled={!slot.futsal?._id}
                                             >
@@ -214,18 +201,6 @@ const PUpcomingMatchesPage = () => {
                                             </button>
                                             <button
                                                 className={styles.cancelBtn}
-                                                style={{ 
-                                                    background: '#fff', 
-                                                    color: '#d32f2f', 
-                                                    border: '2px solid #d32f2f', 
-                                                    borderRadius: 10, 
-                                                    padding: '10px 24px', 
-                                                    fontWeight: 700, 
-                                                    cursor: 'pointer', 
-                                                    fontSize: 16, 
-                                                    transition: 'all 0.2s',
-                                                    opacity: timeStatus === 'playing' || timeStatus === 'ended' ? 0.5 : 1
-                                                }}
                                                 onClick={() => handleCancelBooking(slot._id)}
                                                 disabled={timeStatus === 'playing' || timeStatus === 'ended'}
                                             >

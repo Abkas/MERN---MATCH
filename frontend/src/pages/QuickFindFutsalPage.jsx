@@ -778,68 +778,69 @@ const QuickFindFutsalPage = () => {
         <section className={styles.registerMatch}>
           <div className={styles.lightBoxContent}>
             <div className={styles.registerHeader}>
-              <h2>Upcoming Matches</h2>
-              <p className={styles.subtitle}>Register and join matches in your preferred venues</p>
+              <h2>Register Match</h2>
             </div>
-            <div className={styles.registerForm}>
-              <div className={styles.formGroup}>
-                <label>Selected Venues</label>
-                <div className={styles.selectedVenues}>
-                  <div className={styles.venueChip}>
-                    <span className={styles.venueName}>Golden Futsal, Lalitpur</span>
-                    <span className={styles.venueDistance}>2.5km away</span>
+            <div className={`${styles.registerForm} ${styles.disabledSection}`}>
+              <div className={styles.contentToBlur}>
+                <div className={styles.formGroup}>
+                  <label>Selected Venues</label>
+                  <div className={styles.selectedVenues}>
+                    <div className={styles.venueChip}>
+                      <span className={styles.venueName}>Golden Futsal, Lalitpur</span>
+                      <span className={styles.venueDistance}>2.5km away</span>
+                    </div>
+                    <div className={styles.venueChip}>
+                      <span className={styles.venueName}>Elite Futsal, Kathmandu</span>
+                      <span className={styles.venueDistance}>3.8km away</span>
+                    </div>
+                    <div className={styles.venueChip}>
+                      <span className={styles.venueName}>Pro Futsal, Bhaktapur</span>
+                      <span className={styles.venueDistance}>4.2km away</span>
+                    </div>
+                    <button className={styles.addVenueBtn}>
+                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                        <line x1="12" y1="5" x2="12" y2="19"></line>
+                        <line x1="5" y1="12" x2="19" y2="12"></line>
+                      </svg>
+                      Add Venue
+                    </button>
                   </div>
-                  <div className={styles.venueChip}>
-                    <span className={styles.venueName}>Elite Futsal, Kathmandu</span>
-                    <span className={styles.venueDistance}>3.8km away</span>
+                </div>
+                <div className={styles.formGroup}>
+                  <label>Available Time Slots</label>
+                  <div className={styles.selectedDates}>
+                    <div className={styles.dateChip}>
+                      <div className={styles.dateInfo}>
+                        <span className={styles.date}>25th April</span>
+                        <span className={styles.time}>12:00 - 13:00</span>
+                      </div>
+                      <span className={styles.slots}>4 slots left</span>
+                    </div>
+                    <div className={styles.dateChip}>
+                      <div className={styles.dateInfo}>
+                        <span className={styles.date}>25th April</span>
+                        <span className={styles.time}>14:00 - 15:00</span>
+                      </div>
+                      <span className={styles.slots}>6 slots left</span>
+                    </div>
+                    <button className={styles.addDateBtn}>
+                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                        <line x1="12" y1="5" x2="12" y2="19"></line>
+                        <line x1="5" y1="12" x2="19" y2="12"></line>
+                      </svg>
+                      Add Time Slot
+                    </button>
                   </div>
-                  <div className={styles.venueChip}>
-                    <span className={styles.venueName}>Pro Futsal, Bhaktapur</span>
-                    <span className={styles.venueDistance}>4.2km away</span>
-                  </div>
-                  <button className={styles.addVenueBtn}>
+                </div>
+                <div className={styles.formActions}>
+                  <button className={styles.registerBtn}>
+                    Register for Match
                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                      <line x1="12" y1="5" x2="12" y2="19"></line>
                       <line x1="5" y1="12" x2="19" y2="12"></line>
+                      <polyline points="12 5 19 12 12 19"></polyline>
                     </svg>
-                    Add Venue
                   </button>
                 </div>
-              </div>
-              <div className={styles.formGroup}>
-                <label>Available Time Slots</label>
-                <div className={styles.selectedDates}>
-                  <div className={styles.dateChip}>
-                    <div className={styles.dateInfo}>
-                      <span className={styles.date}>25th April</span>
-                      <span className={styles.time}>12:00 - 13:00</span>
-                    </div>
-                    <span className={styles.slots}>4 slots left</span>
-                  </div>
-                  <div className={styles.dateChip}>
-                    <div className={styles.dateInfo}>
-                      <span className={styles.date}>25th April</span>
-                      <span className={styles.time}>14:00 - 15:00</span>
-                    </div>
-                    <span className={styles.slots}>6 slots left</span>
-                  </div>
-                  <button className={styles.addDateBtn}>
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                      <line x1="12" y1="5" x2="12" y2="19"></line>
-                      <line x1="5" y1="12" x2="19" y2="12"></line>
-                    </svg>
-                    Add Time Slot
-                  </button>
-                </div>
-              </div>
-              <div className={styles.formActions}>
-                <button className={styles.registerBtn}>
-                  Register for Match
-                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                    <line x1="5" y1="12" x2="19" y2="12"></line>
-                    <polyline points="12 5 19 12 12 19"></polyline>
-                  </svg>
-                </button>
               </div>
             </div>
           </div>

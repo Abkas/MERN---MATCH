@@ -23,10 +23,10 @@
 
 /* Body */
 .body {
+  background-color: #f8f9fa;
   min-height: 100vh;
+  color: #1a1a1a;
   width: 100vw;
-  background-color: var(--bg-light);
-  color: var(--text-primary);
   line-height: 1.5;
   font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Open Sans",
     "Helvetica Neue", sans-serif;
@@ -35,13 +35,13 @@
 }
 
 /* Header */
-.body header {
-  background-color: var(--bg-white);
-  box-shadow: var(--shadow-sm);
+.header {
+  background: #fff;
   padding: 1rem 2rem;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
   display: flex;
-  align-items: center;
   justify-content: space-between;
+  align-items: center;
   position: sticky;
   top: 0;
   z-index: 100;
@@ -49,10 +49,9 @@
 
 .logo img {
   height: 40px;
-  width: auto;
 }
 
-.body header nav ul {
+.nav ul {
   display: flex;
   gap: 2rem;
   list-style: none;
@@ -60,225 +59,213 @@
   padding: 0;
 }
 
-.body header nav ul li a {
-  font-weight: 500;
-  color: var(--text-primary);
-  position: relative;
+.nav a {
+  color: #1a1a1a;
   text-decoration: none;
-  transition: color 0.2s ease;
+  font-weight: 500;
+  font-size: 1rem;
+  transition: color 0.2s;
 }
 
-.body header nav ul li a:hover {
-  color: var(--primary);
-}
-
-.body header nav ul li a::after {
-  content: "";
-  position: absolute;
-  bottom: -5px;
-  left: 0;
-  width: 0;
-  height: 2px;
-  background-color: var(--primary);
-  transition: width 0.3s ease;
-}
-
-.body header nav ul li a:hover::after {
-  width: 100%;
+.nav a:hover {
+  color: #666;
 }
 
 /* User Actions */
 .userActions {
   display: flex;
+  gap: 1rem;
   align-items: center;
-  gap: 1.5rem;
-}
-
-.userActions a {
-  color: var(--text-secondary);
-  position: relative;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  text-decoration: none;
-  transition: color 0.2s ease;
-}
-
-.userActions a:hover {
-  color: var(--primary);
 }
 
 .notification, .profileIcon {
   width: 40px;
   height: 40px;
   border-radius: 50%;
-  background-color: #0d0d0d;
+  background: #1a1a1a;
   display: flex;
-  justify-content: center;
   align-items: center;
+  justify-content: center;
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: background-color 0.2s;
 }
 
 .notification:hover, .profileIcon:hover {
-  background-color: #333;
+  background: #333;
 }
 
 .notification svg, .profileIcon svg {
+  color: #fff;
   width: 20px;
   height: 20px;
-  color: #fff;
-  stroke-width: 2;
 }
 
 /* Container */
 .container {
   display: flex;
-  flex: 1;
-  position: relative;
+  min-height: calc(100vh - 72px);
 }
 
 /* Sidebar - Fixed on the left */
 .sidebar {
-  width: var(--sidebar-width);
-  background-color: var(--bg-white);
-  box-shadow: var(--shadow);
-  padding: 1.5rem 0;
-  height: calc(100vh - 73px); /* Adjust based on your header height */
-  position: fixed;
-  top: 73px; /* Adjust based on your header height */
-  left: 0;
-  overflow-y: auto;
-  z-index: 90;
+  width: 250px;
+  background: #fff;
+  padding: 2rem 0;
+  border-right: 1px solid #eee;
 }
 
 .sidebarMenu {
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
   list-style: none;
-  margin: 0;
   padding: 0;
+  margin: 0;
 }
 
-.sidebarMenu li a {
+.sidebarMenu li {
+  margin-bottom: 0.5rem;
+}
+
+.sidebarMenu a {
   display: block;
-  padding: 0.75rem 1.5rem;
-  color: var(--text-secondary);
-  font-weight: 500;
-  border-left: 4px solid transparent;
-  transition: all 0.2s ease;
+  padding: 0.75rem 2rem;
+  color: #666;
   text-decoration: none;
+  font-weight: 500;
+  transition: all 0.2s;
 }
 
-.sidebarMenu li a:hover {
-  background-color: rgba(16, 185, 129, 0.1);
-  color: var(--primary);
-  border-left-color: var(--primary);
+.sidebarMenu a:hover {
+  background: #f8f9fa;
+  color: #1a1a1a;
 }
 
-.sidebarMenu li a.active {
-  background-color: rgba(16, 185, 129, 0.15);
-  color: var(--primary);
-  border-left-color: var(--primary);
-  font-weight: 600;
-  position: relative;
+.sidebarMenu a.active {
+  background: #1a1a1a;
+  color: #fff;
 }
 
 .logoutBtn {
-  margin-top: 2rem;
-  color: #ef4444 !important;
-  display: block;
-  padding: 0.75rem 1.5rem;
-  color: var(--text-secondary);
-  font-weight: 500;
-  border-left: 4px solid transparent;
-  transition: all 0.2s ease;
-  text-decoration: none;
   width: 100%;
+  padding: 0.75rem 2rem;
   background: none;
   border: none;
-  text-align: left;
+  color: #dc3545;
+  font-weight: 500;
   cursor: pointer;
+  text-align: left;
+  transition: color 0.2s;
 }
 
 .logoutBtn:hover {
-  background-color: rgba(239, 68, 68, 0.1) !important;
-  border-left-color: #ef4444 !important;
+  color: #c82333;
 }
 
 /* Main Content - Always on the right of sidebar */
 .mainContent {
   flex: 1;
-  padding: 2rem;
-  margin-left: var(--sidebar-width);
-  width: calc(100% - var(--sidebar-width));
+  padding: 3rem;
+  max-width: 1200px;
+  margin: 0 auto;
 }
 
-.mainContent h1 {
-  margin: 0 0 2rem;
-  color: #1f2937;
-  font-size: 1.5rem;
+.pageTitle {
+  font-size: 2rem;
+  font-weight: 700;
+  color: #1a1a1a;
+  margin-bottom: 2rem;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.matchCount {
+  font-size: 1rem;
+  color: #666;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
 }
 
 /* Match Cards */
 .matchesGrid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-  gap: 1.5rem;
+  grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+  gap: 2rem;
 }
 
 .matchCard {
-  background: white;
-  border: 1px solid #e5e7eb;
-  border-radius: 10px;
+  background: #fff;
+  border-radius: 12px;
   padding: 1.5rem;
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  border: 1px solid #eee;
+  transition: transform 0.2s, box-shadow 0.2s;
 }
 
 .matchCard:hover {
   transform: translateY(-2px);
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
 
 .matchHeader {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 1rem;
+  margin-bottom: 1.5rem;
 }
 
-.matchHeader h3 {
+.venueInfo {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.venueInfo img {
+  width: 48px;
+  height: 48px;
+  border-radius: 8px;
+  object-fit: cover;
+  border: 1px solid #eee;
+}
+
+.venueInfo h3 {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #1a1a1a;
   margin: 0;
-  color: #1f2937;
-  font-size: 1.1rem;
 }
 
 .status {
-  padding: 0.25rem 0.75rem;
-  border-radius: 9999px;
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  font-weight: 600;
   font-size: 0.875rem;
-  font-weight: 500;
 }
 
-.statusAvailable {
-  background-color: #dcfce7;
-  color: #166534;
+.statusUpcoming {
+  background: #f8f9fa;
+  color: #1a1a1a;
 }
 
-.statusBooked {
-  background-color: #dbeafe;
-  color: #1e40af;
+.statusPlaying {
+  background: #1a1a1a;
+  color: #fff;
 }
 
-.statusFull {
-  background-color: #fee2e2;
-  color: #991b1b;
+.statusEnded {
+  background: #eee;
+  color: #666;
+}
+
+.statusSoon {
+  background: #1a1a1a;
+  color: #fff;
 }
 
 .matchDetails {
   display: grid;
-  gap: 0.75rem;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
   margin-bottom: 1.5rem;
 }
 
@@ -286,88 +273,118 @@
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  color: #4b5563;
+  color: #666;
+  font-weight: 500;
 }
 
 .detailItem svg {
-  color: #6b7280;
+  color: #1a1a1a;
 }
 
 .matchActions {
   display: flex;
-  gap: 0.75rem;
+  gap: 1rem;
+  margin-top: auto;
 }
 
-.viewDetailsBtn,
-.cancelBtn {
+.viewDetailsBtn, .cancelBtn {
   flex: 1;
-  padding: 0.5rem;
-  border: none;
-  border-radius: 5px;
-  font-weight: 500;
+  padding: 0.75rem;
+  border-radius: 6px;
+  font-weight: 600;
+  font-size: 0.875rem;
   cursor: pointer;
-  transition: all 0.3s ease;
+  transition: all 0.2s;
 }
 
 .viewDetailsBtn {
-  background-color: #2563eb;
-  color: white;
+  background: #1a1a1a;
+  color: #fff;
+  border: none;
 }
 
 .viewDetailsBtn:hover {
-  background-color: #1d4ed8;
+  background: #333;
+}
+
+.viewDetailsBtn:disabled {
+  background: #ccc;
+  cursor: not-allowed;
 }
 
 .cancelBtn {
-  background-color: #fee2e2;
-  color: #dc2626;
+  background: #fff;
+  color: #dc3545;
+  border: 1px solid #dc3545;
 }
 
 .cancelBtn:hover {
-  background-color: #fecaca;
+  background: #dc3545;
+  color: #fff;
+}
+
+.cancelBtn:disabled {
+  border-color: #ccc;
+  color: #ccc;
+  cursor: not-allowed;
+}
+
+.noMatches {
+  background: #fff;
+  border-radius: 12px;
+  padding: 3rem 2rem;
+  text-align: center;
+  max-width: 480px;
+  margin: 2rem auto;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.noMatches img {
+  width: 80px;
+  margin-bottom: 1rem;
+  opacity: 0.7;
+}
+
+.noMatches p {
+  font-size: 1.25rem;
+  color: #666;
+  margin-bottom: 1.5rem;
+}
+
+.findMatchesBtn {
+  display: inline-block;
+  background: #1a1a1a;
+  color: #fff;
+  padding: 0.75rem 2rem;
+  border-radius: 6px;
+  text-decoration: none;
+  font-weight: 600;
+  transition: background-color 0.2s;
+}
+
+.findMatchesBtn:hover {
+  background: #333;
 }
 
 .loading {
   text-align: center;
   padding: 2rem;
-  color: #6b7280;
-}
-
-.noMatches {
-  text-align: center;
-  padding: 3rem;
-  color: #6b7280;
-}
-
-.findMatchesBtn {
-  display: inline-block;
-  margin-top: 1rem;
-  padding: 0.75rem 1.5rem;
-  background-color: #2563eb;
-  color: white;
-  text-decoration: none;
-  border-radius: 5px;
-  transition: background-color 0.3s ease;
-}
-
-.findMatchesBtn:hover {
-  background-color: #1d4ed8;
+  color: #666;
+  font-size: 1.125rem;
 }
 
 /* Responsive Design */
-@media (max-width: 1024px) {
-  .mainContent {
-    padding: 1.5rem;
-  }
-}
-
 @media (max-width: 768px) {
-  .body header {
+  .header {
     padding: 1rem;
   }
 
-  .body header nav ul {
+  .nav ul {
     gap: 1rem;
+  }
+
+  .nav a {
+    font-size: 0.875rem;
   }
 
   .container {
@@ -376,29 +393,16 @@
 
   .sidebar {
     width: 100%;
-    height: auto;
-    position: relative;
-    top: 0;
+    padding: 1rem 0;
+    border-right: none;
+    border-bottom: 1px solid #eee;
   }
 
   .mainContent {
-    margin-left: 0;
-    width: 100%;
+    padding: 1.5rem;
   }
 
   .matchesGrid {
     grid-template-columns: 1fr;
-  }
-}
-
-@media (max-width: 640px) {
-  .body header {
-    flex-direction: column;
-    gap: 1rem;
-  }
-
-  .body header nav ul {
-    flex-wrap: wrap;
-    justify-content: center;
   }
 }

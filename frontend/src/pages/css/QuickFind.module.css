@@ -459,6 +459,7 @@ td {
 .registerMatch {
     padding: 2rem;
     background: #f8f9fa;
+    position: relative;
 }
 
 .lightBoxContent {
@@ -466,11 +467,15 @@ td {
     border-radius: 12px;
     padding: 2rem;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    position: relative;
+    overflow: hidden;
 }
 
 .registerHeader {
     margin-bottom: 2rem;
     text-align: center;
+    position: relative;
+    z-index: 2;
 }
 
 .registerHeader h2 {
@@ -485,8 +490,66 @@ td {
     font-size: 0.95rem;
 }
 
+.disabledSection {
+    position: relative;
+    opacity: 1;
+    filter: grayscale(0.7);
+    pointer-events: none;
+    transition: filter 0.3s ease, opacity 0.3s ease;
+}
+
+.disabledSection::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.05);
+    z-index: 1;
+    transition: background 0.3s ease;
+}
+
+.disabledSection::after {
+    content: 'Coming Soon';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: rgba(0, 0, 0, 0.8);
+    color: white;
+    padding: 1rem 2rem;
+    border-radius: 8px;
+    font-weight: 500;
+    font-size: 1.2rem;
+    opacity: 0;
+    transition: opacity 0.3s ease, transform 0.3s ease;
+    z-index: 3;
+    filter: none;
+}
+
+.contentToBlur {
+    transition: all 0.3s ease;
+}
+
+.registerMatch:hover .contentToBlur {
+    filter: blur(4px);
+    opacity: 0.5;
+}
+
+.registerMatch:hover .disabledSection::before {
+    background: rgba(0, 0, 0, 0.1);
+}
+
+.registerMatch:hover .disabledSection::after {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1.05);
+}
+
 .formGroup {
     margin-bottom: 1.5rem;
+    position: relative;
+    z-index: 1;
 }
 
 .formGroup label {
@@ -621,16 +684,6 @@ td {
     0% { opacity: 1; }
     50% { opacity: 0.7; }
     100% { opacity: 1; }
-}
-
-/* Disabled Section */
-.disabledSection {
-  background: #f3f3f3 !important;
-  opacity: 0.7;
-  filter: grayscale(0.7);
-  pointer-events: none;
-  border-radius: 12px;
-  position: relative;
 }
 
 /* Footer */
