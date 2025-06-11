@@ -1,5 +1,6 @@
 import React from 'react';
 import styles from '../pages/css/AboutUsPage.module.css';
+import { X } from 'lucide-react';
 
 const WorkModal = ({ isOpen, onClose, work }) => {
   if (!isOpen || !work) return null;
@@ -7,7 +8,9 @@ const WorkModal = ({ isOpen, onClose, work }) => {
   return (
     <div className={styles.modalOverlay} onClick={onClose}>
       <div className={styles.modalContent} onClick={e => e.stopPropagation()}>
-        <button className={styles.modalClose} onClick={onClose}>×</button>
+        <button className={styles.modalClose} onClick={onClose}>
+          <X size={24} />
+        </button>
         
         <div className={styles.modalHeader}>
           <h2>{work.title}</h2>

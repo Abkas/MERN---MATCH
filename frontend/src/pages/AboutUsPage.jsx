@@ -195,7 +195,7 @@ useEffect(() => {
                 <img src="/aboutus/sc.jpeg" alt="Team member"/>
               </div>
               <h3>Samir Chand</h3>
-              <p>Researcher</p>
+              <p>Backend Developer & Researcher</p>
               <div className={styles.socialLinks}>
                 <a href="https://www.linkedin.com/in/samirchand/"><FaLinkedinIn /></a>
                 <a href="https://www.linkedin.com/in/samirchand/"><FaInstagram /></a>
@@ -243,7 +243,7 @@ useEffect(() => {
 
       <section className={styles.works + ' pop-in'}>
         <div className={styles.container + ' pop-in'}>
-          <h2 className={'pop-in'}>Other works</h2>
+          <h2 className={'pop-in'}>Other Works</h2>
           <div className={styles.worksGrid + ' pop-in'}>
             {works.map((work, index) => (
               <div 
@@ -277,7 +277,9 @@ useEffect(() => {
             ))}
           </div>
         </div>
-      </section>      <section id="contact" className={styles.contactSection + ' pop-in'}>
+      </section>
+
+      <section id="contact" className={styles.contactSection + ' pop-in'}>
         <div className={styles.container + ' pop-in'}>
           <h2 className={'pop-in'}>Get In Touch</h2>
           <div className={styles.contactContent}>
