@@ -217,7 +217,7 @@ useEffect(() => {
                 <img src="/aboutus/am.jpeg" alt="Team member"/>
               </div>
               <h3>Abhishek Magar</h3>
-              <p>Backend Developer</p>
+              <p>Backend Developer & UI Designer</p>
               <div className={styles.socialLinks}>
                 <a href="https://www.linkedin.com/in/abhishekmagar-np/"><FaLinkedinIn /></a>
                 <a href="https://www.linkedin.com/in/abhishekmagar-np/"><FaInstagram /></a>

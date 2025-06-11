@@ -302,15 +302,37 @@ h2 {
 
 /* Trusted By Section */
 .trustedBy {
-    padding: 40px 50px;
     text-align: center;
-    background-color: #f9f9f9;
+    padding: 2rem 0;
+    background: #f8f9fa;
 }
 
 .trustedBy p {
-    color: #888;
-    margin-bottom: 30px;
-    font-size: 14px;
+    color: #666;
+    font-size: 1.1rem;
+    margin-bottom: 1.5rem;
+}
+
+.trustedIcons {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 2rem;
+    flex-wrap: wrap;
+}
+
+.ballIcon {
+    width: 40px;
+    height: 40px;
+    color: #666;
+    transition: all 0.3s ease;
+    opacity: 0.7;
+}
+
+.ballIcon:hover {
+    transform: translateY(-5px) rotate(15deg);
+    color: #4CAF50;
+    opacity: 1;
 }
 
 .partnerLogos {
@@ -459,24 +481,53 @@ h2 {
 .social {
     padding: 60px 50px;
     text-align: center;
+    background-color: #f8f9fa;
 }
 
 .socialIcons {
     display: flex;
     justify-content: center;
-    gap: 40px;
+    gap: 30px;
     margin-top: 30px;
 }
 
-.fab{
-    width: 24px;
-    height: 24px;
-    color: black;
+.socialIcon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background-color: #fff;
+    color: #333;
     font-size: 24px;
-    transition: color 0.3s ease;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
-.socialIcons a:hover {
-    color: #4CAF50;
+
+.socialIcon:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
+}
+
+.socialIcon:nth-child(1):hover {
+    background-color: #1877f2;
+    color: #fff;
+}
+
+.socialIcon:nth-child(2):hover {
+    background: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%);
+    color: #fff;
+}
+
+.socialIcon:nth-child(3):hover {
+    background-color: #0077b5;
+    color: #fff;
+}
+
+.socialIcon:nth-child(4):hover {
+    background-color: #1da1f2;
+    color: #fff;
 }
 
 /* Testimonials Section */
@@ -488,10 +539,10 @@ h2 {
 
 .testimonialCards {
     display: flex;
-    flex-wrap: wrap;
     justify-content: center;
     gap: 30px;
     margin: 40px 0;
+    flex-wrap: wrap;
 }
 
 .testimonialCard {
@@ -535,6 +586,79 @@ h2 {
 .testimonialTitle {
     color: #888;
     font-size: 12px;
+}
+
+.btnMoreTestimonials {
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    padding: 12px 30px;
+    border-radius: 25px;
+    font-weight: 500;
+    font-size: 15px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin-top: 20px;
+    box-shadow: 0 4px 15px rgba(76, 175, 80, 0.2);
+}
+
+.btnMoreTestimonials:hover {
+    background-color: #45a049;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(76, 175, 80, 0.3);
+}
+
+@media (max-width: 768px) {
+    .testimonials {
+        padding: 60px 20px;
+    }
+
+    .testimonialCards {
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 20px;
+        padding: 0 10px;
+    }
+
+    .testimonialCard {
+        padding: 25px;
+    }
+
+    .testimonialProfile {
+        width: 50px;
+        height: 50px;
+    }
+
+    .testimonialText {
+        font-size: 14px;
+    }
+
+    .testimonialName {
+        font-size: 15px;
+    }
+
+    .testimonialTitle {
+        font-size: 12px;
+    }
+}
+
+@media (max-width: 480px) {
+    .testimonials {
+        padding: 40px 15px;
+    }
+
+    .testimonialCards {
+        grid-template-columns: 1fr;
+        gap: 15px;
+    }
+
+    .testimonialCard {
+        padding: 20px;
+    }
+
+    .btnMoreTestimonials {
+        padding: 10px 25px;
+        font-size: 14px;
+    }
 }
 
 /* Footer */

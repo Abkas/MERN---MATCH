@@ -4,6 +4,8 @@ import '../pages/css/FooterOverride.css'
 import { Link, useNavigate } from 'react-router-dom'
 import { LogOut, User } from 'lucide-react'
 import { useAuthStore } from '../store/useAuthStore'
+import { FaFutbol } from 'react-icons/fa'
+import { FaFacebookF, FaInstagram, FaLinkedinIn, FaTwitter } from 'react-icons/fa'
 
 
 const HomePage = () => {
@@ -146,12 +148,12 @@ const HomePage = () => {
 
       <section className={styles.trustedBy}>
         <p>Trusted by 2000+ users</p>
-        <div className={styles.partnerLogos}>
-          <img src="/firstpage/walmart-index-only-svg1.svg" alt="Walmart" />
-          <img src="/firstpage/cisco-svg1.svg" alt="Cisco" />
-          <img src="/firstpage/volvo-logo.svg" alt="Volvo" />
-          <img src="/firstpage/deloitte-svg1.svg" alt="Deloitte" />
-          <img src="/firstpage/okta-svg1.svg" alt="Okta" />
+        <div className={styles.trustedIcons}>
+          <FaFutbol className={styles.ballIcon} />
+          <FaFutbol className={styles.ballIcon} />
+          <FaFutbol className={styles.ballIcon} />
+          <FaFutbol className={styles.ballIcon} />
+          <FaFutbol className={styles.ballIcon} />
         </div>
       </section>
 
@@ -210,12 +212,10 @@ const HomePage = () => {
       <section className={styles.social}>
         <h2>Follow Us</h2>
         <div className={styles.socialIcons}>
-          <a href="#"><img className="fab fa-twitter" src='/signup/twitter-icon.png'/></a>
-          <a href="#"><img className="fab fa-facebook-f" src='/signup/facebook-icon.png'/></a>
-          <a href="#"><img className="fab fa-pinterest-p"  src='/signup/pinterest-icon.png'/></a>
-          <a href="#"><img className="fab fa-instagram" src='/signup/instagram-icon.png'/></a>
-          <a href="#"><img className="fab fa-behance" src='/signup/behance-icon.png'/></a>
-          <a href="#"><img className="fab fa-dribbble" src='/signup/dribbble-icon.png'/></a>
+          <a href="#" className={styles.socialIcon}><FaFacebookF /></a>
+          <a href="#" className={styles.socialIcon}><FaInstagram /></a>
+          <a href="#" className={styles.socialIcon}><FaLinkedinIn /></a>
+          <a href="#" className={styles.socialIcon}><FaTwitter /></a>
         </div>
       </section>
 
