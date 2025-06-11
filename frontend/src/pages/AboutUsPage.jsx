@@ -19,41 +19,41 @@ const AboutUsPage = () => {
 
   const works = [
     {
-      title: 'Startup Framework',
-      description: 'A comprehensive framework designed specifically for startups, offering a suite of tools and components to create professional websites quickly and efficiently. Our framework includes responsive layouts, modern UI components, and optimized performance features.',
-      image: '/works/startup.jpg',
+      title: 'Project Alpha',
+      description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.',
+      image: 'https://images.unsplash.com/photo-1517694712202-14dd9538aa97?w=800&auto=format&fit=crop&q=60',
       features: [
-        'Responsive design system',
-        'Pre-built UI components',
-        'Performance optimization',
-        'SEO-friendly structure',
-        'Easy customization options'
+        'Lorem ipsum dolor sit amet',
+        'Consectetur adipiscing elit',
+        'Sed do eiusmod tempor',
+        'Incididunt ut labore',
+        'Dolore magna aliqua'
       ],
       link: '#'
     },
     {
-      title: 'Mobile X',
-      description: 'A cutting-edge mobile app development platform that helps businesses create stunning mobile applications. Our platform provides tools for both iOS and Android development, with features focused on user experience and performance.',
-      image: '/works/mobile.jpg',
+      title: 'Project Beta',
+      description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.',
+      image: 'https://images.unsplash.com/photo-1555066931-4365d14bab8c?w=800&auto=format&fit=crop&q=60',
       features: [
-        'Cross-platform development',
-        'Native UI components',
-        'Real-time testing',
-        'Performance analytics',
-        'Easy deployment process'
+        'Lorem ipsum dolor sit amet',
+        'Consectetur adipiscing elit',
+        'Sed do eiusmod tempor',
+        'Incididunt ut labore',
+        'Dolore magna aliqua'
       ],
       link: '#'
     },
     {
-      title: 'Photoshop Services',
-      description: 'Professional photo editing and graphic design services tailored for businesses and individuals. Our team of expert designers can help transform your visual content with advanced editing techniques and creative solutions.',
-      image: '/works/photoshop.jpg',
+      title: 'Project Gamma',
+      description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.',
+      image: 'https://images.unsplash.com/photo-1555949963-ff9fe0c870eb?w=800&auto=format&fit=crop&q=60',
       features: [
-        'Professional retouching',
-        'Background removal',
-        'Color correction',
-        'Digital art creation',
-        'Batch processing'
+        'Lorem ipsum dolor sit amet',
+        'Consectetur adipiscing elit',
+        'Sed do eiusmod tempor',
+        'Incididunt ut labore',
+        'Dolore magna aliqua'
       ],
       link: '#'
     }
@@ -186,9 +186,8 @@ useEffect(() => {
               <h3>Shreya Tiwari</h3>
               <p>Frontend Developer</p>
               <div className={styles.socialLinks}>
-                <a href="#"><FaTwitter /></a>
-                <a href="#"><FaLinkedinIn /></a>
-                <a href="#"><FaDribbble /></a>
+                <a href="https://www.linkedin.com/in/shreyatiwari10/"><FaLinkedinIn /></a>
+                <a href="https://www.linkedin.com/in/shreyatiwari10/"><FaInstagram /></a>
               </div>
             </div>
             <div className={styles.teamCard}>
@@ -198,9 +197,8 @@ useEffect(() => {
               <h3>Samir Chand</h3>
               <p>Researcher</p>
               <div className={styles.socialLinks}>
-                <a href="#"><FaTwitter /></a>
-                <a href="#"><FaLinkedinIn /></a>
-                <a href="#"><FaDribbble /></a>
+                <a href="https://www.linkedin.com/in/samirchand/"><FaLinkedinIn /></a>
+                <a href="https://www.linkedin.com/in/samirchand/"><FaInstagram /></a>
               </div>
             </div>
             <div className={styles.teamCard}>
@@ -210,9 +208,8 @@ useEffect(() => {
               <h3>Kashmita Koirala</h3>
               <p>Frontend Developer</p>
               <div className={styles.socialLinks}>
-                <a href="#"><FaTwitter /></a>
-                <a href="#"><FaLinkedinIn /></a>
-                <a href="#"><FaDribbble /></a>
+                <a href="https://www.linkedin.com/in/kassmita-koirala/"><FaLinkedinIn /></a>
+                <a href="https://www.linkedin.com/in/kassmita-koirala/"><FaInstagram /></a>
               </div>
             </div>
             <div className={styles.teamCard}>
@@ -222,9 +219,8 @@ useEffect(() => {
               <h3>Abhishek Magar</h3>
               <p>Backend Developer</p>
               <div className={styles.socialLinks}>
-                <a href="#"><FaTwitter /></a>
-                <a href="#"><FaLinkedinIn /></a>
-                <a href="#"><FaDribbble /></a>
+                <a href="https://www.linkedin.com/in/abhishekmagar-np/"><FaLinkedinIn /></a>
+                <a href="https://www.linkedin.com/in/abhishekmagar-np/"><FaInstagram /></a>
               </div>
             </div>
           </div>

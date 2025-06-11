@@ -1071,3 +1071,133 @@ html {
   scroll-behavior: smooth;
   scroll-padding-top: 80px; /* Adjust this value based on your navbar height */
 }
+
+.modalOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.75);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  backdrop-filter: blur(5px);
+}
+
+.modalContent {
+  background: white;
+  padding: 2rem;
+  border-radius: 12px;
+  max-width: 800px;
+  width: 90%;
+  max-height: 90vh;
+  overflow-y: auto;
+  position: relative;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+}
+
+.modalClose {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  cursor: pointer;
+  color: #666;
+  width: 30px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  transition: all 0.2s;
+}
+
+.modalClose:hover {
+  background: #f0f0f0;
+  color: #333;
+}
+
+.modalHeader {
+  margin-bottom: 1.5rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid #eee;
+}
+
+.modalHeader h2 {
+  font-size: 1.75rem;
+  color: #333;
+  margin: 0;
+}
+
+.modalBody {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2rem;
+}
+
+.modalImage {
+  width: 100%;
+  height: 300px;
+  overflow: hidden;
+  border-radius: 8px;
+}
+
+.modalImage img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.modalInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.modalDescription {
+  color: #666;
+  line-height: 1.6;
+  font-size: 1rem;
+}
+
+.modalFeatures {
+  background: #f8f9fa;
+  padding: 1.5rem;
+  border-radius: 8px;
+}
+
+.modalFeatures h3 {
+  color: #333;
+  margin-bottom: 1rem;
+  font-size: 1.2rem;
+}
+
+.modalFeatures ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.modalFeatures li {
+  color: #666;
+  padding: 0.5rem 0;
+  border-bottom: 1px solid #eee;
+}
+
+.modalFeatures li:last-child {
+  border-bottom: none;
+}
+
+@media (max-width: 768px) {
+  .modalBody {
+    grid-template-columns: 1fr;
+  }
+  
+  .modalImage {
+    height: 250px;
+  }
+}
