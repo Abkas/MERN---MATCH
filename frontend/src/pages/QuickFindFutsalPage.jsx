@@ -14,6 +14,7 @@ const QuickFindFutsalPage = () => {
   const [price, setPrice] = useState(50);
   const [seats, setSeats] = useState(40);
   const [maxSlotPrice, setMaxSlotPrice] = useState(null);
+  const [selectedDate, setSelectedDate] = useState(new Date().toISOString().split('T')[0]);
 
   // Futsal data state
   const [futsals, setFutsals] = useState([]);
@@ -67,6 +68,13 @@ const QuickFindFutsalPage = () => {
     if (value < 50) return 150;
     if (value < 75) return 200;
     return 1000000; // 250+ means no upper limit
+  };
+
+  const getMaxDistance = (value) => {
+    if (value < 25) return 1;
+    if (value < 50) return 3;
+    if (value < 75) return 5;
+    return 100; // 10+km means no upper limit
   };
 
   const [userLocation, setUserLocation] = useState(null);
@@ -172,6 +180,40 @@ const QuickFindFutsalPage = () => {
       const response = await futsalService.getAllFutsals();
       if (response && Array.isArray(response.message)) {
         setFutsals(response.message);
+        
+        // Log distances for all futsals if user location is available
+        if (userLocation) {
+          console.log('\n=== Initial Distance Check ===');
+          console.log('User Location:', {
+            lat: userLocation.latitude,
+            lng: userLocation.longitude
+          });
+          
+          response.message.forEach(futsal => {
+            if (futsal.mapLink) {
+              try {
+                const decodedUrl = decodeURIComponent(futsal.mapLink);
+                const coordMatch = decodedUrl.match(/@(-?\d+\.\d+),(-?\d+\.\d+)/);
+                if (coordMatch) {
+                  const [futsalLat, futsalLng] = [parseFloat(coordMatch[1]), parseFloat(coordMatch[2])];
+                  const distance = calculateDistance(
+                    userLocation.latitude,
+                    userLocation.longitude,
+                    futsalLat,
+                    futsalLng
+                  );
+                  console.log(`${futsal.name}: ${distance.toFixed(2)}km`);
+                } else {
+                  console.log(`${futsal.name}: Could not extract coordinates`);
+                }
+              } catch (error) {
+                console.log(`${futsal.name}: Error calculating distance - ${error.message}`);
+              }
+            } else {
+              console.log(`${futsal.name}: No map link available`);
+            }
+          });
+        }
       } else {
         setFutsals([]);
       }
@@ -229,85 +271,164 @@ const QuickFindFutsalPage = () => {
 
   // Update handleFindNow to use the current location for distance calculations
   const handleFindNow = async () => {
-    console.log('Current user location for filtering:', userLocation);
     setFiltering(true);
     setFilterActive(false);
 
-    setTimeout(async () => {
-      setFilterActive(true);
-      if (!priceActive && !seatsActive && !distanceFilterActive) {
-        setFilteredFutsals(
-          futsals.map(futsal => {
-            let slots = slotCache[futsal._id];
-            if (!slots) return { ...futsal, slots: undefined };
-            return { ...futsal, slots };
-          })
-        );
+    // Check if any filters are active
+    const hasActiveFilters = distanceFilterActive || priceActive || seatsActive;
+    
+    if (!hasActiveFilters) {
+        console.log('No filters active - showing all futsals');
+        setFilteredFutsals(futsals);
         setFiltering(false);
         return;
-      }
+    }
 
-      const today = new Date().toISOString().slice(0, 10);
-      const seatsValue = (() => {
-        const idx = Math.round((seats / 100) * (seatsLabels.length - 1));
-        return parseInt(seatsLabels[idx], 10);
-      })();
+    console.log('=== Location Filter Status ===');
+    console.log('Filter Active:', distanceFilterActive);
+    console.log('Max Distance:', maxDistance >= 10 ? '10+km' : `${maxDistance}km`);
+    console.log('User Location:', userLocation ? {
+        lat: userLocation.latitude,
+        lng: userLocation.longitude
+    } : 'Not available');
 
-      const futsalWithSlots = await Promise.all(
-        futsals.map(async (futsal) => {
-          // Always calculate distance if we have user location
-          let distance = null;
-          if (userLocation && futsal.location) {
-            distance = calculateDistance(
-              userLocation.latitude,
-              userLocation.longitude,
-              futsal.location.latitude,
-              futsal.location.longitude
-            );
-            
-            // Skip futsals that are too far if distance filter is active
-            if (distanceFilterActive && distance > maxDistance) {
-              return null;
-            }
-          }
+    setTimeout(async () => {
+        setFilterActive(true);
+        
+        console.log('\n=== Processing Futsals ===');
+        const futsalWithSlots = await Promise.all(
+            futsals.map(async (futsal) => {
+                // Only calculate distance if distance filter is active
+                let distance = null;
+                if (distanceFilterActive && userLocation && futsal.mapLink) {
+                    console.log(`\nProcessing Futsal: ${futsal.name}`);
+                    
+                    // Extract coordinates from Google Maps URL
+                    let futsalLat, futsalLng;
+                    try {
+                        // Decode the URL first
+                        const decodedUrl = decodeURIComponent(futsal.mapLink);
+                        console.log('Decoded URL:', decodedUrl);
+                        
+                        // Try to extract coordinates directly from URL first
+                        const coordMatch = decodedUrl.match(/@(-?\d+\.\d+),(-?\d+\.\d+)/);
+                        if (coordMatch) {
+                            [futsalLat, futsalLng] = [parseFloat(coordMatch[1]), parseFloat(coordMatch[2])];
+                            console.log('Coordinates from URL:', { lat: futsalLat, lng: futsalLng });
+                        } else {
+                            // If no coordinates in URL, try to get place ID
+                            const placeIdMatch = decodedUrl.match(/place\/([^/]+)/);
+                            if (placeIdMatch) {
+                                const placeId = placeIdMatch[1];
+                                console.log('Place ID:', placeId);
+                                
+                                // Use Google Maps Geocoding API
+                                const response = await fetch(
+                                    `https://maps.googleapis.com/maps/api/geocode/json?place_id=${placeId}&key=${import.meta.env.VITE_GOOGLE_MAPS_API_KEY}`
+                                );
+                                
+                                if (!response.ok) {
+                                    throw new Error(`API request failed with status ${response.status}`);
+                                }
+                                
+                                const data = await response.json();
+                                
+                                if (data.status === 'OK' && data.results && data.results[0]) {
+                                    const location = data.results[0].geometry.location;
+                                    futsalLat = location.lat;
+                                    futsalLng = location.lng;
+                                    console.log('Coordinates from API:', { lat: futsalLat, lng: futsalLng });
+                                } else {
+                                    console.log('API Response:', data);
+                                    throw new Error(`API returned status: ${data.status}`);
+                                }
+                            }
+                        }
+                    } catch (error) {
+                        console.log(`⚠️ Error getting coordinates for futsal: ${futsal.name}`, {
+                            mapLink: futsal.mapLink,
+                            error: error.message
+                        });
+                    }
 
-          let slots = slotCache[futsal._id];
-          if (!slots) {
-            slots = await fetchSlotsForFutsal(futsal._id, today);
-            setSlotCache((prev) => ({ ...prev, [futsal._id]: slots }));
-          }
+                    if (!futsalLat || !futsalLng) {
+                        console.log(`⚠️ Could not get coordinates for futsal: ${futsal.name}`, {
+                            mapLink: futsal.mapLink,
+                            parsedLat: futsalLat,
+                            parsedLng: futsalLng
+                        });
+                        return null;
+                    }
 
-          const matchingSlots = slots.filter(slot => {
-            let ok = true;
-            
-            if (priceActive) {
-              const maxPrice = getMaxPrice(price);
-              ok = ok && typeof slot.price === 'number' && slot.price <= maxPrice;
-            }
+                    console.log('Futsal Location:', {
+                        lat: futsalLat,
+                        lng: futsalLng,
+                        mapLink: futsal.mapLink
+                    });
 
-            if (seatsActive) {
-              const currentPlayersCount = Array.isArray(slot.players) ? slot.players.length : (slot.currentPlayers || 0);
-              const availableSeats = slot.maxPlayers - currentPlayersCount;
-              ok = ok && availableSeats >= seatsValue;
-            }
+                    distance = calculateDistance(
+                        userLocation.latitude,
+                        userLocation.longitude,
+                        futsalLat,
+                        futsalLng
+                    );
+                    
+                    console.log('Distance Calculation:', {
+                        distance: distance.toFixed(2) + ' km',
+                        maxDistance: maxDistance >= 10 ? '10+km' : `${maxDistance}km`,
+                        isWithinRange: maxDistance >= 10 || distance <= maxDistance,
+                        willBeFiltered: maxDistance < 10 && distance > maxDistance
+                    });
+                    
+                    // Skip futsals that are too far (only if not 10+km)
+                    if (maxDistance < 10 && distance > maxDistance) {
+                        console.log(`❌ Filtered out: ${futsal.name} - Distance (${distance.toFixed(2)}km) > Max (${maxDistance}km)`);
+                        return null;
+                    }
+                } else if (distanceFilterActive && (!userLocation || !futsal.mapLink)) {
+                    console.log(`⚠️ Missing location data for futsal: ${futsal.name}`, {
+                        hasUserLocation: !!userLocation,
+                        hasMapLink: !!futsal.mapLink,
+                        mapLinkType: futsal.mapLink ? typeof futsal.mapLink : 'undefined'
+                    });
+                    return null; // Skip futsals without location data when distance filter is active
+                }
 
-            return ok;
-          });
+                // Only check slots if price or seats filter is active
+                if (priceActive || seatsActive) {
+                    const slots = await fetchSlotsForFutsal(futsal._id, selectedDate);
+                    const hasSlots = slots.some(slot => slot.status === 'available');
+                    
+                    if (!hasSlots) {
+                        console.log(`❌ Filtered out: ${futsal.name} - No available slots`);
+                        return null;
+                    }
+                }
 
-          if (matchingSlots.length > 0) {
-            return { 
-              ...futsal, 
-              slots: matchingSlots,
-              distance: distance ? formatDistance(distance) : null
-            };
-          }
-          return null;
-        })
-      );
+                console.log(`✅ Included: ${futsal.name} - Distance: ${distance ? distance.toFixed(2) + 'km' : 'N/A'}`);
+                return {
+                    ...futsal,
+                    distance: distance ? formatDistance(distance) : null,
+                    hasSlots: true
+                };
+            })
+        );
 
-      const filtered = futsalWithSlots.filter(Boolean);
-      setFilteredFutsals(filtered);
-      setFiltering(false);
+        const filtered = futsalWithSlots.filter(Boolean);
+        console.log('\n=== Final Results ===');
+        console.log('Total Futsals:', futsals.length);
+        console.log('Filtered Count:', filtered.length);
+        console.log('Filtered Futsals:', filtered.map(f => ({
+            name: f.name,
+            distance: f.distance,
+            location: f.location ? {
+                lat: f.location.latitude,
+                lng: f.location.longitude
+            } : 'No location'
+        })));
+
+        setFilteredFutsals(filtered);
+        setFiltering(false);
     }, 0);
   };
 
@@ -459,16 +580,27 @@ const QuickFindFutsalPage = () => {
                   }}
                   title="Toggle distance filter"
                 ></div>
-                <label>Distance: <span className={styles.filterValue}>{maxDistance}km</span></label>
+                <label>Distance: <span className={styles.filterValue}>{maxDistance >= 10 ? '10+km' : `${maxDistance}km`}</span></label>
                 <div className={styles.sliderContainer}>
                   <div className={styles.sliderTrack}>
-                    <div className={styles.sliderFill} style={{ width: `${(maxDistance / 10) * 100}%`, opacity: distanceFilterActive ? 1 : 0.3 }}></div>
+                    <div 
+                      className={styles.sliderFill} 
+                      style={{ 
+                        width: maxDistance >= 10 ? '100%' : `${(maxDistance / 10) * 100}%`, 
+                        opacity: distanceFilterActive ? 1 : 0.3 
+                      }}
+                    ></div>
                     <input
                       type="range"
                       min="1"
                       max="10"
-                      value={maxDistance}
-                      onChange={e => distanceFilterActive && setMaxDistance(Number(e.target.value))}
+                      value={maxDistance >= 10 ? 10 : maxDistance}
+                      onChange={e => {
+                        if (distanceFilterActive) {
+                          const value = Number(e.target.value);
+                          setMaxDistance(value >= 10 ? 100 : value); // Set to 100 for 10+km
+                        }
+                      }}
                       className={styles.slider}
                       style={{
                         accentColor: distanceFilterActive ? '#007bff' : '#bbb',
@@ -482,7 +614,7 @@ const QuickFindFutsalPage = () => {
                   <div className={styles.sliderLabels} style={{ opacity: distanceFilterActive ? 1 : 0.5 }}>
                     <span>1km</span>
                     <span>5km</span>
-                    <span>10km</span>
+                    <span>10+km</span>
                   </div>
                 </div>
               </div>
@@ -645,61 +777,70 @@ const QuickFindFutsalPage = () => {
 
         <section className={styles.registerMatch}>
           <div className={styles.lightBoxContent}>
-            <h2 style={{ color: '#666', marginBottom: '20px' }}>Register for a Match</h2>
+            <div className={styles.registerHeader}>
+              <h2>Upcoming Matches</h2>
+              <p className={styles.subtitle}>Register and join matches in your preferred venues</p>
+            </div>
             <div className={styles.registerForm}>
               <div className={styles.formGroup}>
-                <label style={{ color: '#666' }}>Suitable Futsal's:</label>
+                <label>Selected Venues</label>
                 <div className={styles.selectedVenues}>
                   <div className={styles.venueChip}>
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                      <polygon points="5 3 19 12 5 21 5 3"></polygon>
-                    </svg>
-                    Golden Futsal, Lalitpur
+                    <span className={styles.venueName}>Golden Futsal, Lalitpur</span>
+                    <span className={styles.venueDistance}>2.5km away</span>
                   </div>
                   <div className={styles.venueChip}>
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                      <polygon points="5 3 19 12 5 21 5 3"></polygon>
-                    </svg>
-                    Golden Futsal, Lalitpur
+                    <span className={styles.venueName}>Elite Futsal, Kathmandu</span>
+                    <span className={styles.venueDistance}>3.8km away</span>
                   </div>
                   <div className={styles.venueChip}>
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                      <polygon points="5 3 19 12 5 21 5 3"></polygon>
-                    </svg>
-                    Golden Futsal, Lalitpur
+                    <span className={styles.venueName}>Pro Futsal, Bhaktapur</span>
+                    <span className={styles.venueDistance}>4.2km away</span>
                   </div>
-                  <button className={styles.addVenueBtn}>Add Futsal's</button>
-                  <button className={styles.editBtn}>
+                  <button className={styles.addVenueBtn}>
                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                      <path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"></path>
+                      <line x1="12" y1="5" x2="12" y2="19"></line>
+                      <line x1="5" y1="12" x2="19" y2="12"></line>
                     </svg>
+                    Add Venue
                   </button>
                 </div>
               </div>
               <div className={styles.formGroup}>
-                <label style={{ color: '#666' }}>Available Date:</label>
+                <label>Available Time Slots</label>
                 <div className={styles.selectedDates}>
                   <div className={styles.dateChip}>
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                      <polygon points="5 3 19 12 5 21 5 3"></polygon>
-                    </svg>
-                    25th April, 12:00 - 13:00
+                    <div className={styles.dateInfo}>
+                      <span className={styles.date}>25th April</span>
+                      <span className={styles.time}>12:00 - 13:00</span>
+                    </div>
+                    <span className={styles.slots}>4 slots left</span>
                   </div>
                   <div className={styles.dateChip}>
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                      <polygon points="5 3 19 12 5 21 5 3"></polygon>
-                    </svg>
-                    25th April, 14:00 - 15:00
+                    <div className={styles.dateInfo}>
+                      <span className={styles.date}>25th April</span>
+                      <span className={styles.time}>14:00 - 15:00</span>
+                    </div>
+                    <span className={styles.slots}>6 slots left</span>
                   </div>
-                  <button className={styles.addDateBtn}>Add Available Time:</button>
-                  <button className={styles.editBtn}>
+                  <button className={styles.addDateBtn}>
                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                      <path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"></path>
+                      <line x1="12" y1="5" x2="12" y2="19"></line>
+                      <line x1="5" y1="12" x2="19" y2="12"></line>
                     </svg>
+                    Add Time Slot
                   </button>
                 </div>
               </div>
-              <button className={styles.registerBtn}>Register</button>
+              <div className={styles.formActions}>
+                <button className={styles.registerBtn}>
+                  Register for Match
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <line x1="5" y1="12" x2="19" y2="12"></line>
+                    <polyline points="12 5 19 12 12 19"></polyline>
+                  </svg>
+                </button>
+              </div>
             </div>
           </div>
         </section>

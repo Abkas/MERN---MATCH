@@ -457,131 +457,154 @@ td {
 
 /* Register Match */
 .registerMatch {
-    background-color: #f5f5f5;
-    border-radius: 16px;
-    padding: 30px;
-    margin: 40px auto;
-    max-width: 800px;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
-    position: relative;
-    transition: all 0.3s ease;
-    cursor: pointer;
-}
-
-.registerMatch:hover {
-    background-color: #e8e8e8;
-}
-
-.registerMatch:hover::after {
-    content: 'Upcoming';
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    background: rgba(0, 0, 0, 0.8);
-    color: white;
-    padding: 12px 24px;
-    border-radius: 8px;
-    font-weight: 500;
-    font-size: 18px;
-    z-index: 2;
-}
-
-.registerMatch:hover .lightBoxContent {
-    opacity: 0.3;
-    pointer-events: none;
+    padding: 2rem;
+    background: #f8f9fa;
 }
 
 .lightBoxContent {
-    padding: 30px;
-    transition: opacity 0.3s ease;
+    background: white;
+    border-radius: 12px;
+    padding: 2rem;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
 }
 
-.registerMatch h2 {
-    font-size: 24px;
-    margin-bottom: 20px;
+.registerHeader {
+    margin-bottom: 2rem;
+    text-align: center;
+}
+
+.registerHeader h2 {
+    font-size: 1.75rem;
     font-weight: 600;
-    color: #333;
-    display: flex;
-    align-items: center;
-    gap: 12px;
+    color: #1a1a1a;
+    margin-bottom: 0.5rem;
+}
+
+.subtitle {
+    color: #666;
+    font-size: 0.95rem;
 }
 
 .formGroup {
-    margin-bottom: 24px;
+    margin-bottom: 1.5rem;
 }
 
 .formGroup label {
     display: block;
-    margin-bottom: 12px;
+    font-size: 0.9rem;
     font-weight: 500;
-    color: #333;
+    color: #1a1a1a;
+    margin-bottom: 0.75rem;
 }
 
 .selectedVenues, .selectedDates {
     display: flex;
     flex-wrap: wrap;
-    gap: 12px;
-    margin-bottom: 16px;
+    gap: 0.75rem;
 }
 
 .venueChip, .dateChip {
+    background: #f8f9fa;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    padding: 0.75rem 1rem;
     display: flex;
     align-items: center;
-    gap: 8px;
-    padding: 8px 16px;
-    background: #f5f7fa;
-    border-radius: 20px;
-    font-size: 14px;
-    color: #333;
+    justify-content: space-between;
+    min-width: 200px;
+    transition: all 0.2s ease;
+}
+
+.venueChip:hover, .dateChip:hover {
+    border-color: #1a1a1a;
+    background: #f0f0f0;
+}
+
+.venueName {
+    font-weight: 500;
+    color: #1a1a1a;
+}
+
+.venueDistance {
+    font-size: 0.8rem;
+    color: #666;
+    margin-left: 0.5rem;
+}
+
+.dateInfo {
+    display: flex;
+    flex-direction: column;
+}
+
+.date {
+    font-weight: 500;
+    color: #1a1a1a;
+}
+
+.time {
+    font-size: 0.85rem;
+    color: #666;
+}
+
+.slots {
+    font-size: 0.8rem;
+    color: #666;
+    background: #f0f0f0;
+    padding: 0.25rem 0.5rem;
+    border-radius: 4px;
 }
 
 .addVenueBtn, .addDateBtn {
-    padding: 8px 16px;
-    background: #e8f0fe;
-    color: #1a73e8;
-    border: none;
-    border-radius: 20px;
-    cursor: pointer;
-    font-weight: 500;
-    transition: background 0.2s;
-}
-
-.addVenueBtn:hover, .addDateBtn:hover {
-    background: #d2e3fc;
-}
-
-.editBtn {
-    padding: 8px;
-    background: #f5f7fa;
-    border: none;
-    border-radius: 50%;
-    cursor: pointer;
     display: flex;
     align-items: center;
-    justify-content: center;
-    transition: background 0.2s;
-}
-
-.editBtn:hover {
-    background: #e8eaed;
-}
-
-.registerBtn {
-    width: 100%;
-    padding: 12px;
-    background: #1a73e8;
+    gap: 0.5rem;
+    padding: 0.75rem 1rem;
+    background: #1a1a1a;
     color: white;
     border: none;
     border-radius: 8px;
+    font-size: 0.9rem;
     font-weight: 500;
     cursor: pointer;
-    transition: background 0.2s;
-    margin-top: 20px;
+    transition: all 0.2s ease;
+}
+
+.addVenueBtn:hover, .addDateBtn:hover {
+    background: #333;
+}
+
+.formActions {
+    margin-top: 2rem;
+    display: flex;
+    justify-content: center;
+}
+
+.registerBtn {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 1rem 2rem;
+    background: #1a1a1a;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
 }
 
 .registerBtn:hover {
-    background: #1557b0;
+    background: #333;
+    transform: translateY(-1px);
+}
+
+.registerBtn svg {
+    transition: transform 0.2s ease;
+}
+
+.registerBtn:hover svg {
+    transform: translateX(4px);
 }
 
 .comingSoonBadge {
