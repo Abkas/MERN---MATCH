@@ -182,7 +182,6 @@ const HomePage = () => {
             </div>
           </div>
         </div>
-        <button className={styles.btnMoreGames}>More Games</button>
       </section>
 
       <section className={styles.moments}>
