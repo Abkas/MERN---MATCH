@@ -403,17 +403,17 @@ const generateSlotsForDate = async (futsalId, date) => {
         throw new ApiError(404, "Futsal not found");
     }
 
-    // Check if date is valid
-    const slotDate = new Date(date);
-    if (isNaN(slotDate.getTime())) {
-        throw new ApiError(400, "Invalid date format");
-    }
+    // Format date to YYYY-MM-DD
+    const formattedDate = new Date(date).toISOString().split('T')[0];
 
-    // Check if date is in the past
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
-    if (slotDate < today) {
-        throw new ApiError(400, "Cannot create slots for past dates");
+    // Check if slots already exist for this date
+    const existingSlots = await Slot.find({
+        futsal: futsalId,
+        date: formattedDate
+    });
+
+    if (existingSlots.length > 0) {
+        return existingSlots;
     }
 
     const slots = [];
@@ -452,15 +452,18 @@ const checkAndGenerateNextDaySlots = asyncHandler(async (req, res, next) => {
     }
 
     try {
+        // Format the date to ensure consistency
+        const formattedDate = new Date(date).toISOString().split('T')[0];
+
         // Check if slots exist for the requested date
         const existingSlots = await Slot.find({
             futsal: futsalId,
-            date: date
+            date: formattedDate
         });
 
         // If no slots exist for this date, generate them
         if (existingSlots.length === 0) {
-            await generateSlotsForDate(futsalId, date);
+            await generateSlotsForDate(futsalId, formattedDate);
         }
 
         next();
@@ -481,5 +484,6 @@ export {
     resetSlots,
     getPlayerJoinedSlots,
     cancelSlotBooking,
-    updateSlotsPrice
+    updateSlotsPrice,
+    checkAndGenerateNextDaySlots
 }
