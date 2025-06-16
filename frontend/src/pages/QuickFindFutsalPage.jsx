@@ -7,6 +7,7 @@ import QuickJoinSection from '../components/QuickJoinSection'
 import { axiosInstance } from '../lib/axios';
 import { getCurrentLocation, calculateDistance, formatDistance } from '../utils/locationUtils';
 import toast from 'react-hot-toast';
+import FutsalNavbar from '../components/FutsalNavbar'
 
 const QuickFindFutsalPage = () => {
   // State for filter values
@@ -460,35 +461,7 @@ const QuickFindFutsalPage = () => {
 
   return (
     <div className={styles.body}>
-        <nav>
-          <div className={styles.logo}>
-            <Link to="/">
-              <img src="/firstpage/logo.png" alt="match-logo" />
-            </Link>
-          </div>
-          <ul className={styles.navLinks}>
-            <li><Link to="/futsalhome" >Home</Link></li>
-            <li><Link to="/bookfutsal">Book Futsal</Link></li>
-            <li><Link to="/tournaments">Tournaments</Link></li>
-            <li><Link to="/quickmatch" className={styles.active}>Quick Match</Link></li>
-          </ul>
-          <div className={styles.navIcons}>
-            <div className={styles.notification}>
-              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"></path>
-                <path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"></path>
-              </svg>
-            </div>
-            <div className={styles.profile}>
-              <Link to="/profile">
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                  <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"></path>
-                  <circle cx="12" cy="7" r="4"></circle>
-                </svg>
-              </Link>
-            </div>
-          </div>
-        </nav>
+              <FutsalNavbar />
 
       <main>
         <section className={styles.searchSection}>

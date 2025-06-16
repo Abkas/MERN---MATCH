@@ -65,21 +65,21 @@ const AboutUsPage = () => {
   }
 
   // Scroll-triggered pop-in animation for elements with class 'pop-in'
-useEffect(() => {
-  const popIns = document.querySelectorAll('.pop-in');
-  const observer = new window.IntersectionObserver(
-    entries => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          entry.target.classList.add('show');
-        }
-      });
-    },
-    { threshold: 0.15 }
-  );
-  popIns.forEach(el => observer.observe(el));
-  return () => observer.disconnect();
-}, []);
+  useEffect(() => {
+    const popIns = document.querySelectorAll('.pop-in');
+    const observer = new window.IntersectionObserver(
+      entries => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('show');
+          }
+        });
+      },
+      { threshold: 0.15 }
+    );
+    popIns.forEach(el => observer.observe(el));
+    return () => observer.disconnect();
+  }, []);
 
   return (
     <div>
@@ -120,8 +120,8 @@ useEffect(() => {
                   boxShadow: 'none',
                   textDecoration: 'none',
                 }}
-                onMouseOver={e => { e.target.style.backgroundColor = '#111'; e.target.style.color = '#fff'; }}
-                onMouseOut={e => { e.target.style.backgroundColor = '#fff'; e.target.style.color = '#111'; }}
+                  onMouseOver={e => { e.target.style.backgroundColor = '#111'; e.target.style.color = '#fff'; }}
+                  onMouseOut={e => { e.target.style.backgroundColor = '#fff'; e.target.style.color = '#111'; }}
                 >
                   Sign Up
                 </Link>
@@ -137,8 +137,8 @@ useEffect(() => {
                   transition: 'all 0.2s',
                   textDecoration: 'none',
                 }}
-                onMouseOver={e => { e.target.style.backgroundColor = '#333'; }}
-                onMouseOut={e => { e.target.style.backgroundColor = '#111'; }}
+                  onMouseOver={e => { e.target.style.backgroundColor = '#333'; }}
+                  onMouseOut={e => { e.target.style.backgroundColor = '#111'; }}
                 >
                   Log In
                 </Link>
@@ -156,24 +156,24 @@ useEffect(() => {
       </div>
 
       {/* Hero Section - Minimal, Modern, Centered, No Images */}
-<section className="flex flex-col items-center justify-center min-h-[60vh] bg-gradient-to-b from-green-50 to-white text-center px-4 py-20">
-  <h1 className="text-5xl sm:text-6xl font-extrabold text-green-700 mb-6 tracking-tight">
-    We are a team
-  </h1>
-  <p className="text-lg sm:text-xl text-gray-700 font-medium mb-4 max-w-2xl">
-    It started with a simple question: <span className="italic text-green-600">How can we make it easier for <span className="font-bold text-green-800">players</span> and <span className="font-bold text-green-800">organizers</span> to connect?</span>
-  </p>
-  <p className="text-lg sm:text-xl text-gray-700 mb-4 max-w-2xl">
-    Driven by curiosity and a passion for sports, we transformed that question into a real platform for <span className="font-semibold text-green-700">sports matchmaking</span> and <span className="font-semibold text-green-700">event management</span>.
-  </p>
-  <p className="text-lg sm:text-xl text-gray-700 max-w-2xl">
-    Our journey is all about <span className="font-bold text-green-800">learning by doing</span>, building together, and making a difference—one match at a time.
-  </p>
-</section>
-{/* End Hero Section */}
+      <section className="flex flex-col items-center justify-center min-h-[60vh] bg-gradient-to-b from-green-50 to-white text-center px-4 py-20">
+        <h1 className="text-5xl sm:text-6xl font-extrabold text-green-700 mb-6 tracking-tight">
+          We are a team
+        </h1>
+        <p className="text-lg sm:text-xl text-gray-700 font-medium mb-4 max-w-2xl">
+          It started with a simple question: <span className="italic text-green-600">How can we make it easier for <span className="font-bold text-green-800">players</span> and <span className="font-bold text-green-800">organizers</span> to connect?</span>
+        </p>
+        <p className="text-lg sm:text-xl text-gray-700 mb-4 max-w-2xl">
+          Driven by curiosity and a passion for sports, we transformed that question into a real platform for <span className="font-semibold text-green-700">sports matchmaking</span> and <span className="font-semibold text-green-700">event management</span>.
+        </p>
+        <p className="text-lg sm:text-xl text-gray-700 max-w-2xl">
+          Our journey is all about <span className="font-bold text-green-800">learning by doing</span>, building together, and making a difference—one match at a time.
+        </p>
+      </section>
+      {/* End Hero Section */}
 
- 
-{/* End Team Introduction Section */}
+
+      {/* End Team Introduction Section */}
 
       <section className={styles.team + ' pop-in'}>
         <div className={styles.container + ' pop-in'}>
@@ -181,7 +181,7 @@ useEffect(() => {
           <div className={styles.teamGrid + ' pop-in'}>
             <div className={styles.teamCard}>
               <div className={styles.memberImage}>
-                <img src="/aboutus/Snapchat-790029509.jpg" alt="Team member"/>
+                <img src="/aboutus/Snapchat-790029509.jpg" alt="Team member" />
               </div>
               <h3>Shreya Tiwari</h3>
               <p>Frontend Developer</p>
@@ -192,7 +192,7 @@ useEffect(() => {
             </div>
             <div className={styles.teamCard}>
               <div className={styles.memberImage}>
-                <img src="/aboutus/sc.jpeg" alt="Team member"/>
+                <img src="/aboutus/sc.jpeg" alt="Team member" />
               </div>
               <h3>Samir Chand</h3>
               <p>Backend Developer & Researcher</p>
@@ -203,7 +203,7 @@ useEffect(() => {
             </div>
             <div className={styles.teamCard}>
               <div className={styles.memberImage}>
-                <img src="/aboutus/k.k.jpeg" alt="Team member"/>
+                <img src="/aboutus/k.k.jpeg" alt="Team member" />
               </div>
               <h3>Kashmita Koirala</h3>
               <p>Frontend Developer</p>
@@ -214,7 +214,7 @@ useEffect(() => {
             </div>
             <div className={styles.teamCard}>
               <div className={styles.memberImage}>
-                <img src="/aboutus/am.jpeg" alt="Team member"/>
+                <img src="/aboutus/am.jpeg" alt="Team member" />
               </div>
               <h3>Abhishek Magar</h3>
               <p>Backend Developer & UI Designer</p>
@@ -246,15 +246,15 @@ useEffect(() => {
           <h2 className={'pop-in'}>Other Works</h2>
           <div className={styles.worksGrid + ' pop-in'}>
             {works.map((work, index) => (
-              <div 
-                key={index} 
+              <div
+                key={index}
                 className={`${styles.workCard} ${index === 1 ? styles.purple : ''} ${index === 2 ? styles.imageCard : ''}`}
               >
                 {index === 2 ? (
                   <div className={styles.cardOverlay}>
                     <h3>{work.title}</h3>
                     <p>{work.description.substring(0, 100)}...</p>
-                    <button 
+                    <button
                       className={`${styles.btn} ${styles.btnOutline}`}
                       onClick={() => setSelectedWork(work)}
                     >
@@ -265,7 +265,7 @@ useEffect(() => {
                   <>
                     <h3>{work.title}</h3>
                     <p>{work.description.substring(0, 100)}...</p>
-                    <button 
+                    <button
                       className={`${styles.btn} ${styles.btnOutline}`}
                       onClick={() => setSelectedWork(work)}
                     >
@@ -342,10 +342,10 @@ useEffect(() => {
           <div className={styles.footerColumn}>
             <div className={styles.footerLogo}>
               <Link to="/"><img src="/firstpage/logo.png" alt="match-logo" /></Link>
-            </div>            
+            </div>
             <p className={styles.footerAbout}>
               Match Point is your ultimate platform for finding teammates, joining tournaments, and elevating your gaming experience.
-            </p>            
+            </p>
             <div className={styles.footerContact}>
               <p><i className="fas fa-map-marker-alt"></i> Kathmandu, Nepal</p>
               <p><i className="fas fa-phone"></i> 123456789</p>
@@ -371,7 +371,7 @@ useEffect(() => {
               <li><Link to="/about-us#contact">Contact Us</Link></li>
             </ul>
           </div>
-          
+
           {/* Legal Column */}
           <div className={styles.footerColumn}>
             <h3 className={styles.footerHeading}>Legal</h3>
@@ -383,7 +383,7 @@ useEffect(() => {
             </ul>
           </div>
         </div>
-        
+
         <div className={styles.footerBottom}>
           <div className={styles.copyright}>
             <p>&copy; {new Date().getFullYear()} Match Point. All rights reserved.</p>
@@ -396,7 +396,7 @@ useEffect(() => {
         </div>
       </footer>
 
-      <WorkModal 
+      <WorkModal
         isOpen={!!selectedWork}
         onClose={() => setSelectedWork(null)}
         work={selectedWork}

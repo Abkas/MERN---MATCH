@@ -51,7 +51,7 @@ const FutsalDetails = () => {
           headers: response.headers,
           config: response.config
         });
-        
+
         if (!response.data) {
           console.error('No data in response:', response);
           throw new Error('No data received from server');
@@ -131,7 +131,7 @@ const FutsalDetails = () => {
 
   const fetchSlots = async () => {
     if (!id) return;
-    
+
     try {
       console.log('Fetching slots for futsal:', id, 'date:', selectedDate);
       const response = await axiosInstance.get(`/slots/${id}/slots`, {
@@ -333,11 +333,11 @@ const FutsalDetails = () => {
               alignItems: 'center',
               textAlign: 'center'
             }}>
-              <h1 style={{ 
-                fontSize: 42, 
-                fontWeight: 900, 
-                marginBottom: 10, 
-                letterSpacing: 1, 
+              <h1 style={{
+                fontSize: 42,
+                fontWeight: 900,
+                marginBottom: 10,
+                letterSpacing: 1,
                 textShadow: '0 2px 12px #1118',
                 transition: 'all 0.3s ease',
                 cursor: 'default',
@@ -351,32 +351,32 @@ const FutsalDetails = () => {
                 {futsalData.name}
               </h1>
               <div style={{ display: 'flex', flexWrap: 'wrap', gap: 32, alignItems: 'center', marginBottom: 10, justifyContent: 'center' }}>
-                <span style={{ 
-                  display: 'flex', 
-                  alignItems: 'center', 
-                  gap: 8, 
-                  fontSize: 20, 
+                <span style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: 8,
+                  fontSize: 20,
                   textShadow: '0 2px 8px #1118',
                   background: 'rgba(0, 0, 0, 0.5)',
                   padding: '8px 16px',
                   borderRadius: '8px',
                   backdropFilter: 'blur(5px)'
                 }}>
-                  <i className="fas fa-map-marker-alt" style={{ color: '#fff' }}></i> 
+                  <i className="fas fa-map-marker-alt" style={{ color: '#fff' }}></i>
                   <span style={{ color: '#fff', fontWeight: 600 }}>{futsalData.location || 'Location not specified'}</span>
                 </span>
-                <span style={{ 
-                  display: 'flex', 
-                  alignItems: 'center', 
-                  gap: 8, 
-                  fontSize: 20, 
+                <span style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: 8,
+                  fontSize: 20,
                   textShadow: '0 2px 8px #1118',
                   background: 'rgba(0, 0, 0, 0.5)',
                   padding: '8px 16px',
                   borderRadius: '8px',
                   backdropFilter: 'blur(5px)'
                 }}>
-                  <i className="far fa-clock" style={{ color: '#fff' }}></i> 
+                  <i className="far fa-clock" style={{ color: '#fff' }}></i>
                   <span style={{ color: '#fff', fontWeight: 600 }}>{futsalData.openingHours || 'Hours not specified'}</span>
                 </span>
               </div>
@@ -391,37 +391,37 @@ const FutsalDetails = () => {
 
         {/* BOOKING SECTION */}
         <section className={styles.bookingSection}>
-          <div className={styles.container} style={{ 
-            maxWidth: 900, 
-            margin: '0 auto', 
-            background: '#fff', 
-            borderRadius: 18, 
-            boxShadow: '0 4px 24px rgba(0,0,0,0.1)', 
-            padding: '2.5rem 2rem', 
-            marginBottom: 36, 
-            border: '1.5px solid #e2e8f0' 
+          <div className={styles.container} style={{
+            maxWidth: 900,
+            margin: '0 auto',
+            background: '#fff',
+            borderRadius: 18,
+            boxShadow: '0 4px 24px rgba(0,0,0,0.1)',
+            padding: '2.5rem 2rem',
+            marginBottom: 36,
+            border: '1.5px solid #e2e8f0'
           }}>
-            <div className={styles.bookingHeader} style={{ 
-              display: 'flex', 
-              alignItems: 'center', 
-              justifyContent: 'space-between', 
+            <div className={styles.bookingHeader} style={{
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'space-between',
               marginBottom: 24,
               padding: '0 1rem'
             }}>
-              <button 
+              <button
                 className={styles.toggleSlotsBtn}
                 onClick={() => setIsSlotsVisible(!isSlotsVisible)}
-                style={{ 
-                  background: '#000', 
-                  color: '#fff', 
-                  borderRadius: 8, 
-                  padding: '12px 24px', 
-                  fontWeight: 700, 
-                  fontSize: 16, 
-                  boxShadow: '0 2px 8px rgba(0,0,0,0.2)', 
-                  border: 'none', 
-                  display: 'flex', 
-                  alignItems: 'center', 
+                style={{
+                  background: '#000',
+                  color: '#fff',
+                  borderRadius: 8,
+                  padding: '12px 24px',
+                  fontWeight: 700,
+                  fontSize: 16,
+                  boxShadow: '0 2px 8px rgba(0,0,0,0.2)',
+                  border: 'none',
+                  display: 'flex',
+                  alignItems: 'center',
                   gap: 8,
                   transition: 'all 0.3s ease',
                   cursor: 'pointer',
@@ -441,10 +441,10 @@ const FutsalDetails = () => {
                   onChange={(e) => setSelectedDate(e.target.value)}
                   min={new Date().toISOString().split('T')[0]}
                   max={new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString().split('T')[0]}
-                  style={{ 
-                    padding: '12px 20px', 
-                    borderRadius: 8, 
-                    border: '1.5px solid #e2e8f0', 
+                  style={{
+                    padding: '12px 20px',
+                    borderRadius: 8,
+                    border: '1.5px solid #e2e8f0',
                     fontSize: 16,
                     background: '#f8fafc',
                     color: '#1e293b',
@@ -458,18 +458,18 @@ const FutsalDetails = () => {
             {isSlotsVisible && (
               <div className={styles.venueDetails}>
                 {loading ? (
-                  <div className={styles.loading} style={{ 
-                    color: '#000', 
-                    fontSize: 18, 
-                    textAlign: 'center', 
+                  <div className={styles.loading} style={{
+                    color: '#000',
+                    fontSize: 18,
+                    textAlign: 'center',
                     padding: '2rem 0',
                     fontWeight: 600
                   }}>Loading slots...</div>
                 ) : slots.length === 0 ? (
-                  <div className={styles.noSlots} style={{ 
-                    color: '#64748b', 
-                    fontSize: 18, 
-                    textAlign: 'center', 
+                  <div className={styles.noSlots} style={{
+                    color: '#64748b',
+                    fontSize: 18,
+                    textAlign: 'center',
                     padding: '2rem 0',
                     background: '#f8fafc',
                     borderRadius: 12,
@@ -477,55 +477,55 @@ const FutsalDetails = () => {
                   }}>No slots available for this date</div>
                 ) : (
                   <div className={styles.timeSlots} style={{ marginTop: 24 }}>
-                    <table style={{ 
-                      width: '100%', 
+                    <table style={{
+                      width: '100%',
                       borderCollapse: 'separate',
                       borderSpacing: '0 8px',
                       background: 'transparent'
                     }}>
                       <thead>
                         <tr>
-                          <th style={{ 
-                            padding: '16px', 
-                            fontWeight: 700, 
-                            fontSize: 16, 
+                          <th style={{
+                            padding: '16px',
+                            fontWeight: 700,
+                            fontSize: 16,
                             color: '#000',
                             background: '#f8fafc',
                             borderRadius: '8px 0 0 8px',
                             textAlign: 'left',
                             borderBottom: '2px solid #000'
                           }}><Clock size={18} style={{ marginRight: 8 }} /> Time</th>
-                          <th style={{ 
-                            padding: '16px', 
-                            fontWeight: 700, 
-                            fontSize: 16, 
+                          <th style={{
+                            padding: '16px',
+                            fontWeight: 700,
+                            fontSize: 16,
                             color: '#000',
                             background: '#f8fafc',
                             textAlign: 'left',
                             borderBottom: '2px solid #000'
                           }}><Users size={18} style={{ marginRight: 8 }} /> Players</th>
-                          <th style={{ 
-                            padding: '16px', 
-                            fontWeight: 700, 
-                            fontSize: 16, 
+                          <th style={{
+                            padding: '16px',
+                            fontWeight: 700,
+                            fontSize: 16,
                             color: '#000',
                             background: '#f8fafc',
                             textAlign: 'left',
                             borderBottom: '2px solid #000'
                           }}>₹ Price</th>
-                          <th style={{ 
-                            padding: '16px', 
-                            fontWeight: 700, 
-                            fontSize: 16, 
+                          <th style={{
+                            padding: '16px',
+                            fontWeight: 700,
+                            fontSize: 16,
                             color: '#000',
                             background: '#f8fafc',
                             textAlign: 'left',
                             borderBottom: '2px solid #000'
                           }}>Status</th>
-                          <th style={{ 
-                            padding: '16px', 
-                            fontWeight: 700, 
-                            fontSize: 16, 
+                          <th style={{
+                            padding: '16px',
+                            fontWeight: 700,
+                            fontSize: 16,
                             color: '#000',
                             background: '#f8fafc',
                             borderRadius: '0 8px 8px 0',
@@ -559,10 +559,10 @@ const FutsalDetails = () => {
                           }
 
                           const canJoin = isWithinHours && timeStatus === 'upcoming' && slot.status === 'available';
-                          
+
                           return (
-                            <tr key={slot._id} style={{ 
-                              background: '#fff', 
+                            <tr key={slot._id} style={{
+                              background: '#fff',
                               boxShadow: '0 2px 8px rgba(0,0,0,0.05)',
                               borderRadius: 8,
                               transition: 'transform 0.2s ease, box-shadow 0.2s ease',
@@ -571,55 +571,55 @@ const FutsalDetails = () => {
                                 boxShadow: '0 4px 12px rgba(0,0,0,0.1)'
                               }
                             }}>
-                              <td style={{ 
-                                padding: '16px', 
-                                fontWeight: 600, 
+                              <td style={{
+                                padding: '16px',
+                                fontWeight: 600,
                                 color: '#000',
                                 borderRadius: '8px 0 0 8px',
                                 borderBottom: '1px solid #e2e8f0'
                               }}>{slot.time}</td>
-                              <td style={{ 
-                                padding: '16px', 
-                                fontWeight: 600, 
+                              <td style={{
+                                padding: '16px',
+                                fontWeight: 600,
                                 color: '#000',
                                 borderBottom: '1px solid #e2e8f0'
                               }}>{slot.currentPlayers || 0}/{slot.maxPlayers}</td>
-                              <td style={{ 
-                                padding: '16px', 
-                                fontWeight: 600, 
+                              <td style={{
+                                padding: '16px',
+                                fontWeight: 600,
                                 color: '#000',
                                 borderBottom: '1px solid #e2e8f0'
                               }}>₹{slot.price}</td>
-                              <td style={{ 
+                              <td style={{
                                 padding: '16px',
                                 borderBottom: '1px solid #e2e8f0'
                               }}>
                                 <span className={`${styles.status} ${statusClass}`}>{statusLabel}</span>
                               </td>
-                              <td style={{ 
+                              <td style={{
                                 padding: '16px',
                                 borderRadius: '0 8px 8px 0',
                                 borderBottom: '1px solid #e2e8f0'
                               }}>
                                 {canJoin ? (
-                                  <button 
+                                  <button
                                     onClick={() => handleJoinNow(slot)}
                                     className={styles.btnJoinNow}
                                   >
                                     Join Now
                                   </button>
                                 ) : (
-                                  <button 
+                                  <button
                                     className={`${styles.btnJoinNow} ${styles.btnJoinNowDisabled}`}
                                     disabled
                                   >
-                                    {!isWithinHours ? 'Outside Hours' : 
-                                     timeStatus === 'ended' ? 'Ended' :
-                                     timeStatus === 'playing' ? 'In Progress' :
-                                     timeStatus === 'soon' ? 'Starting Soon' :
-                                     slot.status === 'full' ? 'Full' :
-                                     slot.status === 'booked' ? 'Booked' :
-                                     'Unavailable'}
+                                    {!isWithinHours ? 'Outside Hours' :
+                                      timeStatus === 'ended' ? 'Ended' :
+                                        timeStatus === 'playing' ? 'In Progress' :
+                                          timeStatus === 'soon' ? 'Starting Soon' :
+                                            slot.status === 'full' ? 'Full' :
+                                              slot.status === 'booked' ? 'Booked' :
+                                                'Unavailable'}
                                   </button>
                                 )}
                               </td>
@@ -637,35 +637,35 @@ const FutsalDetails = () => {
 
         {/* ABOUT SECTION */}
         <section className={styles.aboutSection}>
-          <div className={styles.container} style={{ 
-            maxWidth: 900, 
-            margin: '0 auto', 
-            background: '#fff', 
-            borderRadius: 18, 
-            boxShadow: '0 4px 24px rgba(0,0,0,0.1)', 
-            padding: '2.5rem 2rem', 
-            marginBottom: 36, 
-            border: '1.5px solid #e2e8f0' 
+          <div className={styles.container} style={{
+            maxWidth: 900,
+            margin: '0 auto',
+            background: '#fff',
+            borderRadius: 18,
+            boxShadow: '0 4px 24px rgba(0,0,0,0.1)',
+            padding: '2.5rem 2rem',
+            marginBottom: 36,
+            border: '1.5px solid #e2e8f0'
           }}>
-            <h2 style={{ 
-              fontWeight: 800, 
-              color: '#000', 
+            <h2 style={{
+              fontWeight: 800,
+              color: '#000',
               marginBottom: 24,
               fontSize: '1.8rem',
               textAlign: 'left'
             }}>About Us:</h2>
             <div style={{ display: 'flex', flexWrap: 'wrap', gap: '2rem', justifyContent: 'space-between' }}>
               <div className={styles.aboutContent} style={{ flex: '1 1 55%', minWidth: '300px' }}>
-                <p style={{ 
-                  fontSize: 17, 
+                <p style={{
+                  fontSize: 17,
                   color: '#000',
                   lineHeight: '1.7',
                   textAlign: 'left',
                   margin: 0
                 }}>{futsalData.description}</p>
               </div>
-              <div className={styles.features} style={{ 
-                flex: '1 1 40%', 
+              <div className={styles.features} style={{
+                flex: '1 1 40%',
                 minWidth: '250px',
                 background: '#E0FFE0',
                 borderRadius: 12,
@@ -678,14 +678,14 @@ const FutsalDetails = () => {
               }}>
                 {futsalData.features && futsalData.features.length > 0 ? (
                   futsalData.features.map((feature, index) => (
-                    <div key={index} className={styles.feature} style={{ 
+                    <div key={index} className={styles.feature} style={{
                       background: 'transparent',
                       color: '#000',
-                      borderRadius: 0, 
-                      padding: '0', 
-                      fontWeight: 600, 
-                      display: 'flex', 
-                      alignItems: 'center', 
+                      borderRadius: 0,
+                      padding: '0',
+                      fontWeight: 600,
+                      display: 'flex',
+                      alignItems: 'center',
                       gap: 10,
                       transition: 'none',
                       border: 'none',
@@ -700,7 +700,7 @@ const FutsalDetails = () => {
                     </div>
                   ))
                 ) : (
-                  <p className={styles.noFeatures} style={{ 
+                  <p className={styles.noFeatures} style={{
                     color: '#64748b',
                     fontSize: 16,
                     textAlign: 'center',
@@ -714,30 +714,30 @@ const FutsalDetails = () => {
 
         {/* OWNER SECTION */}
         <section className={styles.ownerSection}>
-          <div className={styles.container} style={{ 
-            maxWidth: 900, 
-            margin: '0 auto', 
-            background: 'transparent', 
-            borderRadius: 0, 
-            boxShadow: 'none', 
-            padding: '0', 
-            marginBottom: 36, 
+          <div className={styles.container} style={{
+            maxWidth: 900,
+            margin: '0 auto',
+            background: 'transparent',
+            borderRadius: 0,
+            boxShadow: 'none',
+            padding: '0',
+            marginBottom: 36,
             border: 'none',
-            display: 'flex', 
-            flexDirection: 'column', 
-            alignItems: 'center' 
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center'
           }}>
-            <h2 style={{ 
-              fontWeight: 800, 
-              color: '#fff', 
+            <h2 style={{
+              fontWeight: 800,
+              color: '#fff',
               marginBottom: 24,
               fontSize: '1.8rem',
               textAlign: 'center'
             }}>Meet the Owner:</h2>
-            <div className={styles.ownerProfile} style={{ 
-              display: 'flex', 
+            <div className={styles.ownerProfile} style={{
+              display: 'flex',
               flexDirection: 'column',
-              alignItems: 'center', 
+              alignItems: 'center',
               gap: 16,
               background: '#1A1A1A', // Dark background for the main owner profile box
               padding: '1.5rem',
@@ -753,10 +753,10 @@ const FutsalDetails = () => {
                 <img
                   src={futsalData.owner.image}
                   alt={futsalData.owner.name}
-                  style={{ 
-                    width: 150, 
-                    height: 150, 
-                    borderRadius: '50%', 
+                  style={{
+                    width: 150,
+                    height: 150,
+                    borderRadius: '50%',
                     objectFit: 'cover',
                     border: 'none',
                     background: '#f8fafc',
@@ -772,15 +772,15 @@ const FutsalDetails = () => {
                   }}
                 />
               </div>
-              <h3 style={{ 
-                fontWeight: 700, 
-                fontSize: 24, 
+              <h3 style={{
+                fontWeight: 700,
+                fontSize: 24,
                 marginBottom: 0,
                 color: '#fff'
               }}>
                 {futsalData.owner.name}
-                <span style={{ 
-                  fontWeight: 500, 
+                <span style={{
+                  fontWeight: 500,
                   fontSize: 18,
                   color: '#ccc',
                   display: 'block',
@@ -789,28 +789,28 @@ const FutsalDetails = () => {
                   Founder - {futsalData.name}
                 </span>
               </h3>
-              <p className={styles.ownerBio} style={{ 
-                color: '#e2e8f0', 
-                fontSize: 16, 
+              <p className={styles.ownerBio} style={{
+                color: '#e2e8f0',
+                fontSize: 16,
                 marginBottom: 12,
                 lineHeight: '1.6',
                 textAlign: 'center'
               }}>
                 {futsalData.owner.bio}
               </p>
-              <div className={styles.ownerContact} style={{ 
-                display: 'flex', 
-                alignItems: 'center', 
+              <div className={styles.ownerContact} style={{
+                display: 'flex',
+                alignItems: 'center',
                 justifyContent: 'center',
-                gap: 16, 
+                gap: 16,
                 marginBottom: 12,
                 flexWrap: 'wrap'
               }}>
-                <div className={styles.contactItem} style={{ 
-                  color: '#fff', 
-                  fontWeight: 600, 
-                  display: 'flex', 
-                  alignItems: 'center', 
+                <div className={styles.contactItem} style={{
+                  color: '#fff',
+                  fontWeight: 600,
+                  display: 'flex',
+                  alignItems: 'center',
                   gap: 8,
                   background: 'rgba(255,255,255,0.1)',
                   padding: '8px 16px',
@@ -821,11 +821,11 @@ const FutsalDetails = () => {
                   <span>{futsalData.owner.phone}</span>
                 </div>
                 {futsalData.owner.email && (
-                  <div className={styles.contactItem} style={{ 
-                    color: '#fff', 
-                    fontWeight: 600, 
-                    display: 'flex', 
-                    alignItems: 'center', 
+                  <div className={styles.contactItem} style={{
+                    color: '#fff',
+                    fontWeight: 600,
+                    display: 'flex',
+                    alignItems: 'center',
                     gap: 8,
                     background: 'rgba(255,255,255,0.1)',
                     padding: '8px 16px',
@@ -837,18 +837,18 @@ const FutsalDetails = () => {
                   </div>
                 )}
               </div>
-              <div className={styles.ownerActions} style={{ 
-                display: 'flex', 
+              <div className={styles.ownerActions} style={{
+                display: 'flex',
                 gap: 10,
                 marginTop: '12px'
               }}>
-                <button className={styles.addFriendBtn} style={{ 
-                  background: '#e2e8f0', 
-                  color: '#000', 
-                  borderRadius: 8, 
-                  padding: '8px 18px', 
-                  fontWeight: 600, 
-                  border: 'none', 
+                <button className={styles.addFriendBtn} style={{
+                  background: '#e2e8f0',
+                  color: '#000',
+                  borderRadius: 8,
+                  padding: '8px 18px',
+                  fontWeight: 600,
+                  border: 'none',
                   boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
                   cursor: 'pointer',
                   transition: 'all 0.3s ease',
@@ -860,13 +860,13 @@ const FutsalDetails = () => {
                 }}>
                   Add Friend
                 </button>
-                <button className={styles.messageBtn} style={{ 
-                  background: '#e2e8f0', 
-                  color: '#000', 
-                  border: 'none', 
-                  borderRadius: 8, 
-                  padding: '8px 18px', 
-                  fontWeight: 600, 
+                <button className={styles.messageBtn} style={{
+                  background: '#e2e8f0',
+                  color: '#000',
+                  border: 'none',
+                  borderRadius: 8,
+                  padding: '8px 18px',
+                  fontWeight: 600,
                   cursor: 'pointer',
                   boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
                   transition: 'all 0.3s ease',
@@ -885,33 +885,33 @@ const FutsalDetails = () => {
 
         {/* LOCATION SECTION */}
         <section className={styles.locationSection}>
-          <div className={styles.container} style={{ 
-            maxWidth: 900, 
-            margin: '0 auto', 
-            background: '#fff', 
-            borderRadius: 18, 
-            boxShadow: '0 4px 24px rgba(0,0,0,0.1)', 
-            padding: '2.5rem 2rem', 
-            marginBottom: 36, 
-            border: '1.5px solid #e2e8f0', 
-            display: 'flex', 
-            flexDirection: 'column', 
-            alignItems: 'center' 
+          <div className={styles.container} style={{
+            maxWidth: 900,
+            margin: '0 auto',
+            background: '#fff',
+            borderRadius: 18,
+            boxShadow: '0 4px 24px rgba(0,0,0,0.1)',
+            padding: '2.5rem 2rem',
+            marginBottom: 36,
+            border: '1.5px solid #e2e8f0',
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center'
           }}>
-            <h2 style={{ 
-              fontWeight: 800, 
-              color: '#000', 
+            <h2 style={{
+              fontWeight: 800,
+              color: '#000',
               marginBottom: 24,
               fontSize: '1.8rem',
-              textAlign: 'center' 
+              textAlign: 'center'
             }}>Find Us</h2>
 
-            <div className={styles.locationMap} style={{ 
-              display: 'flex', 
-              alignItems: 'center', 
-              justifyContent: 'center', 
-              gap: 24, 
-              width: '100%' 
+            <div className={styles.locationMap} style={{
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              gap: 24,
+              width: '100%'
             }}>
               {(() => {
                 let mapLinkRaw = (futsalData.mapImage || '').trim();
@@ -1044,18 +1044,18 @@ const FutsalDetails = () => {
                       gap: 16,
                       padding: '20px'
                     }}>
-                      <i className="fas fa-map" style={{ 
-                        fontSize: 48, 
+                      <i className="fas fa-map" style={{
+                        fontSize: 48,
                         color: '#64748b',
                         marginBottom: 16
                       }}></i>
-                      <h3 style={{ 
-                        fontSize: 20, 
-                        fontWeight: 700, 
+                      <h3 style={{
+                        fontSize: 20,
+                        fontWeight: 700,
                         color: '#64748b',
                         marginBottom: 8
                       }}>Location Not Available</h3>
-                      <p style={{ 
+                      <p style={{
                         color: '#64748b',
                         maxWidth: '400px'
                       }}>
