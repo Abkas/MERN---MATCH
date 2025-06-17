@@ -1,0 +1,213 @@
+.playerCard {
+    background: white;
+    border-radius: 12px;
+    padding: 20px;
+    width: 100%;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    gap: 20px;
+    align-items: center;
+    border: 1px solid #eaeaea;
+    min-height: 120px;
+    margin: 0;
+}
+
+.playerCard:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 150, 255, 0.1);
+}
+
+.organizerCard {
+    background: linear-gradient(to right, #fff, #f0f7ff);
+    border-color: #e3f2fd;
+    box-shadow: 0 0 15px rgba(33, 150, 243, 0.1);
+    border-width: 2px;
+}
+
+.organizerCard:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 0 20px rgba(33, 150, 243, 0.2);
+    border-color: #90caf9;
+}
+
+.cardHeader {
+    display: contents;
+}
+
+.playerAvatar {
+    width: 80px;
+    height: 80px;
+    border-radius: 12px;
+    object-fit: cover;
+    border: 2px solid #fff;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    grid-column: 1;
+    transition: transform 0.3s ease;
+}
+
+.playerCard:hover .playerAvatar {
+    transform: scale(1.05);
+}
+
+.organizerAvatar {
+    border-color: #90caf9;
+    box-shadow: 0 2px 10px rgba(33, 150, 243, 0.15);
+}
+
+.organizerCard:hover .organizerAvatar {
+    transform: scale(1.05);
+    box-shadow: 0 4px 15px rgba(33, 150, 243, 0.25);
+}
+
+.headerInfo {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    grid-column: 2;
+}
+
+.headerInfo h3 {
+    margin: 0;
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #1f2937;
+}
+
+.username {
+    color: #6b7280;
+    font-size: 0.9rem;
+}
+
+.detailsContainer {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+    margin-top: 4px;
+}
+
+.detailItem {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    color: #4b5563;
+    font-size: 0.9rem;
+}
+
+.detailItem svg {
+    color: #6b7280;
+    width: 16px;
+    height: 16px;
+}
+
+.bio {
+    margin-top: 8px;
+    color: #4b5563;
+    font-size: 0.9rem;
+    line-height: 1.4;
+}
+
+.organizerBio {
+    color: #1976d2;
+}
+
+.premiumBadge {
+    background: linear-gradient(135deg, #2196f3 0%, #1976d2 100%);
+    color: white;
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    box-shadow: 0 2px 8px rgba(33, 150, 243, 0.2);
+    grid-column: 3;
+    height: fit-content;
+    white-space: nowrap;
+}
+
+.cardActions {
+    grid-column: 3;
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    justify-content: flex-end;
+}
+
+.addFriendBtn {
+    background-color: #10b981;
+    color: white;
+    padding: 8px 16px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.2s ease;
+    font-size: 0.9rem;
+    min-width: 120px;
+    justify-content: center;
+}
+
+.addFriendBtn:hover {
+    background-color: #059669;
+    transform: translateY(-1px);
+    box-shadow: 0 2px 8px rgba(16, 185, 129, 0.2);
+}
+
+.acceptBtn,
+.rejectBtn {
+    padding: 6px 12px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    transition: all 0.2s ease;
+    font-size: 0.9rem;
+}
+
+.acceptBtn {
+    background-color: #10b981;
+    color: white;
+    min-width: 100px;
+}
+
+.acceptBtn:hover {
+    background-color: #059669;
+    transform: translateY(-1px);
+    box-shadow: 0 2px 8px rgba(16, 185, 129, 0.2);
+}
+
+.rejectBtn {
+    background-color: #ef4444;
+    color: white;
+    min-width: 80px;
+}
+
+.rejectBtn:hover {
+    background-color: #dc2626;
+    transform: translateY(-1px);
+    box-shadow: 0 2px 8px rgba(239, 68, 68, 0.2);
+}
+
+.actions {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    margin-left: auto;
+}
+
+.preferences {
+    grid-column: 2;
+    margin-top: 4px;
+    color: #4b5563;
+    font-size: 0.9rem;
+}

@@ -44,6 +44,32 @@ user: {
     ref: 'Futsal' 
     }
   ],
+
+  friends: [
+    {
+      type: Schema.Types.ObjectId,
+      ref: 'User'
+    }
+  ],
+
+  pendingFriendRequests: [
+    {
+      user: {
+        type: Schema.Types.ObjectId,
+        ref: 'User'
+      },
+      status: {
+        type: String,
+        enum: ['pending', 'accepted', 'rejected'],
+        default: 'pending'
+      },
+      createdAt: {
+        type: Date,
+        default: Date.now
+      }
+    }
+  ],
+
   dateOfBirth:{
     type: Date
   },

@@ -1,0 +1,105 @@
+.playerCard {
+    background: white;
+    border-radius: 12px;
+    padding: 20px;
+    margin-bottom: 20px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.playerCard:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.cardHeader {
+    display: flex;
+    align-items: center;
+    margin-bottom: 16px;
+}
+
+.playerAvatar {
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin-right: 16px;
+    border: 2px solid #e0e0e0;
+}
+
+.headerInfo {
+    flex: 1;
+}
+
+.headerInfo h3 {
+    margin: 0;
+    font-size: 1.2rem;
+    color: #2c3e50;
+}
+
+.username {
+    color: #7f8c8d;
+    font-size: 0.9rem;
+}
+
+.playerDetails {
+    margin: 16px 0;
+    padding: 16px;
+    background: #f8f9fa;
+    border-radius: 8px;
+}
+
+.detailItem {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 8px;
+    color: #555;
+}
+
+.detailItem svg {
+    color: #666;
+}
+
+.preferences {
+    margin: 12px 0;
+    font-size: 0.95rem;
+    color: #2c3e50;
+}
+
+.preferences strong {
+    color: #34495e;
+    margin-right: 4px;
+}
+
+.bio {
+    margin-top: 12px;
+    font-size: 0.9rem;
+    color: #555;
+    line-height: 1.4;
+    font-style: italic;
+}
+
+.cardActions {
+    margin-top: 16px;
+}
+
+/* Responsive styles */
+@media (max-width: 768px) {
+    .playerCard {
+        padding: 16px;
+    }
+
+    .playerAvatar {
+        width: 48px;
+        height: 48px;
+    }
+
+    .headerInfo h3 {
+        font-size: 1.1rem;
+    }
+
+    .playerDetails {
+        padding: 12px;
+    }
+}

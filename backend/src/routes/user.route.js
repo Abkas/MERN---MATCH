@@ -12,7 +12,9 @@ import {
     updateUserAvatar,
     checkAuth,
     updateUserLocation,
-    moveToHistory
+    moveToHistory,
+    searchUsers,
+    getAllUsers
 } from '../controllers/user.controller.js'
 import {upload} from '../middlewares/multer.middleware.js'
 import {verifyJWT} from '../middlewares/auth.middleware.js'
@@ -85,5 +87,8 @@ router
 router
 .route('/update-location')
 .post(verifyJWT, updateUserLocation)
+
+router.get('/search', verifyJWT, searchUsers)
+router.get('/all', verifyJWT, getAllUsers)
 
 export default router

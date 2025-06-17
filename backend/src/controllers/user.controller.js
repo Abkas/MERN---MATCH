@@ -483,6 +483,113 @@ const moveToHistory = asyncHandler(async(req, res) => {
     }
 });
 
+const searchUsers = asyncHandler(async (req, res) => {
+    const { username } = req.query;
+    const currentUserId = req.user._id;
+
+    if (!username?.trim()) {
+        throw new ApiError(400, "Username is required");
+    }
+
+    // Search for players (users with role='player') whose username includes the search term
+    // Exclude the current user from results
+    const users = await User.find({
+        username: { $regex: username, $options: 'i' },
+        _id: { $ne: currentUserId },
+        role: 'player'
+    })
+    .populate({
+        path: 'playerProfile',
+        select: 'bio skillLevel preferences availability location'
+    })
+    .select("username avatar fullName playerProfile");    return res.json(
+        new ApiResponse(200, usersWithDetails, "Users retrieved successfully")
+    );
+});
+
+const getAllUsers = asyncHandler(async (req, res) => {
+    const currentUserId = req.user._id;
+    console.log('\n=== Current User ===');
+    console.log('ID:', currentUserId);
+
+    // First, get total count of users
+    const totalUsers = await User.countDocuments();
+    console.log('\n=== Database Stats ===');
+    console.log('Total users in database:', totalUsers);
+
+    // Find all users excluding the current user
+    const users = await User.find({
+        _id: { $ne: currentUserId }
+    })
+    .populate({
+        path: 'playerProfile',
+        select: 'bio skillLevel preferences availability location'
+    })
+    .populate({
+        path: 'organizerProfile',
+        select: 'bio futsals'
+    })
+    .select("username avatar fullName role playerProfile organizerProfile")
+    .lean();
+
+    console.log('\n=== Fetched Users ===');
+    console.log('Total Users:', users.length);
+    console.log('Players:', users.filter(u => u.role === 'player').length);
+    console.log('Organizers:', users.filter(u => u.role === 'organizer').length);
+
+    const usersWithDetails = await Promise.all(users.map(async (user) => {
+        if (user.role === 'organizer' && user.organizerProfile) {
+            const futsalCount = user.organizerProfile.futsals?.length || 0;
+            return {
+                ...user,
+                futsalCount,
+                organizerProfile: {
+                    ...user.organizerProfile,
+                    futsalCount
+                }
+            };
+        }
+        return user;
+    }));
+
+    console.log('\nDetailed User Samples:');
+    if (usersWithDetails.length > 0) {
+        // Log a player sample if exists
+        const samplePlayer = usersWithDetails.find(u => u.role === 'player');
+        if (samplePlayer) {
+            console.log('\nSample Player:', {
+                _id: samplePlayer._id,
+                username: samplePlayer.username,
+                role: samplePlayer.role,
+                playerProfile: {
+                    bio: samplePlayer.playerProfile?.bio,
+                    skillLevel: samplePlayer.playerProfile?.skillLevel,
+                    preferences: samplePlayer.playerProfile?.preferences,
+                    availability: samplePlayer.playerProfile?.availability
+                }
+            });
+        }
+
+        // Log an organizer sample if exists
+        const sampleOrganizer = usersWithDetails.find(u => u.role === 'organizer');
+        if (sampleOrganizer) {
+            console.log('\nSample Organizer:', {
+                _id: sampleOrganizer._id,
+                username: sampleOrganizer.username,
+                role: sampleOrganizer.role,
+                organizerProfile: {
+                    bio: sampleOrganizer.organizerProfile?.bio,
+                    futsalCount: sampleOrganizer.futsalCount
+                }
+            });
+        }
+    }
+
+    return res.json(
+        new ApiResponse(200, usersWithDetails, "Users retrieved successfully")
+    );
+});
+
 export {
     registerUser,
     loginUser,
@@ -496,5 +603,6 @@ export {
     signUpUser,
     checkAuth,
     updateUserLocation,
-    moveToHistory
-}
+    moveToHistory,    searchUsers,
+    getAllUsers
+};

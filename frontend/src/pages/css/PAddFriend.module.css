@@ -23,14 +23,100 @@
 
 /* Body */
 .body {
+  background-color: #f4f6fb;
   min-height: 100vh;
-  background-color: var(--bg-light);
   color: var(--text-primary);
   line-height: 1.5;
   font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Open Sans",
     "Helvetica Neue", sans-serif;
   display: flex;
   flex-direction: column;
+}
+
+/* Action Buttons */
+.addFriendBtn {
+    background-color: var(--primary);
+    color: white;
+    padding: 8px 16px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.2s ease;
+    font-size: 0.9rem;
+    min-width: 120px;
+    justify-content: center;
+}
+
+.addFriendBtn:hover {
+    background-color: var(--primary-dark);
+    transform: translateY(-1px);
+    box-shadow: 0 2px 8px rgba(16, 185, 129, 0.2);
+}
+
+.acceptBtn, .rejectBtn {
+    padding: 6px 12px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    transition: all 0.2s ease;
+    font-size: 0.9rem;
+}
+
+.acceptBtn {
+    background-color: var(--primary);
+    color: white;
+    min-width: 100px;
+}
+
+.acceptBtn:hover {
+    background-color: var(--primary-dark);
+    transform: translateY(-1px);
+    box-shadow: 0 2px 8px rgba(16, 185, 129, 0.2);
+}
+
+.rejectBtn {
+    background-color: #ef4444;
+    color: white;
+    min-width: 80px;
+}
+
+.rejectBtn:hover {
+    background-color: #dc2626;
+    transform: translateY(-1px);
+    box-shadow: 0 2px 8px rgba(239, 68, 68, 0.2);
+}
+
+.actions {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+}
+
+/* Loading and Empty States */
+.loadingMessage, .emptyMessage, .noResults {
+    text-align: center;
+    color: var(--text-secondary);
+    padding: 2rem;
+    font-size: 1rem;
+}
+
+/* Badge */
+.badge {
+    background-color: #ef4444;
+    color: white;
+    font-size: 0.75rem;
+    padding: 0.125rem 0.375rem;
+    border-radius: 9999px;
+    margin-left: 6px;
+    font-weight: 500;
 }
 
 /* Header */
@@ -135,14 +221,19 @@ header nav ul li a:hover::after {
 .container {
   display: flex;
   flex: 1;
-  position: relative;
+}
+
+.mainContent {
+  flex: 1;
+  padding: 2rem;
+  background-color: var(--bg-light);
 }
 
 /* Sidebar - Fixed on the left */
 .sidebar {
-  width: var(--sidebar-width);
-  background-color: var(--bg-white);
-  box-shadow: var(--shadow);
+  width: 250px;
+  background-color: #fff;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
   padding: 1.5rem 0;
   height: calc(100vh - 73px); /* Adjust based on your header height */
   position: fixed;
@@ -164,26 +255,25 @@ header nav ul li a:hover::after {
 .sidebarMenu li a {
   display: block;
   padding: 0.75rem 1.5rem;
-  color: var(--text-secondary);
+  color: #4b5563;
   font-weight: 500;
   border-left: 4px solid transparent;
-  transition: all 0.2s ease;
+  transition: all 0.3s ease;
   text-decoration: none;
 }
 
 .sidebarMenu li a:hover {
-  background-color: rgba(16, 185, 129, 0.1);
-  color: var(--primary);
-  border-left-color: var(--primary);
+  background-color: #f3f4f6;
+  color: #2563eb;
+  border-left-color: #2563eb;
 }
 
 .sidebarMenu li a.active {
-  background-color: rgba(16, 185, 129, 0.15);
-  color: var(--primary);
-  border-left-color: var(--primary);
-  font-weight: 600;
-  position: relative;
+  background-color: #eff6ff;
+  color: #2563eb;
+  border-left-color: #2563eb;
 }
+
 .sidebarMenu li button {
   display: block;
   padding: 0.75rem 1.5rem;
@@ -220,85 +310,436 @@ header nav ul li a:hover::after {
 }
 
 .logoutBtn {
-  margin-top: 2rem;
-  color: #ef4444 !important;
+  width: 100%;
+  padding: 0.75rem 1.5rem;
+  margin-top: 1rem;
+  background: none;
+  border: none;
+  color: #dc2626;
+  font-weight: 500;
+  text-align: left;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
 }
 
 .logoutBtn:hover {
-  background-color: rgba(239, 68, 68, 0.1) !important;
-  border-left-color: #ef4444 !important;
+  background-color: #fef2f2;
 }
 
 /* Main Content - Always on the right of sidebar */
 .container main {
   flex: 1;
   padding: 2rem;
-  margin-left: var(--sidebar-width);
-  width: calc(100% - var(--sidebar-width));
+  margin-left: 250px;
 }
 
-/* Responsive Design - Keeping sidebar fixed */
-@media (max-width: 1024px) {
-  .container main {
-    padding: 1.5rem;
-  }
+/* Friends Management Interface */
+.friendsContainer {
+  max-width: 1400px;
+  margin: 0 auto;
+  background-color: var(--bg-white);
+  border-radius: 12px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
 }
 
-@media (max-width: 768px) {
-  .body header {
-    padding: 1rem;
-  }
+.tabs {
+  display: flex;
+  gap: 1rem;
+  padding: 1rem;
+  background: #f8fafc;
+  border-bottom: 1px solid #e5e7eb;
+}
 
-  .body header nav ul {
-    gap: 1rem;
-  }
+.tab {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.5rem;
+  background: none;
+  border: none;
+  border-radius: 8px;
+  color: #64748b;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+}
 
-  /* Sidebar remains fixed but smaller */
-  :root {
-    --sidebar-width: 200px;
-  }
+.tab:hover {
+  background: #e2e8f0;
+  color: #334155;
+}
 
-  .sidebarMenu li a {
-    padding: 0.75rem 1rem;
-  }
+.activeTab {
+  background: #2563eb;
+  color: white;
+}
+
+.activeTab:hover {
+  background: #1d4ed8;
+  color: white;
+}
+
+.badge {
+  background: #ef4444;
+  color: white;
+  padding: 0.1rem 0.5rem;
+  border-radius: 999px;
+  font-size: 0.75rem;
+  margin-left: 0.5rem;
+}
+
+.content {
+  padding: 1.5rem;
+}
+
+.searchSection {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.searchForm {
+  width: 100%;
+  max-width: 600px;
+  margin: 0 auto 16px;
+}
+
+.searchForm input {
+    width: 100%;
+    max-width: 1200px;
+    min-width: 900px;
+    padding: 10px 16px;
+    border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  font-size: 0.875rem;
+  transition: all 0.2s ease;
+}
+
+.searchForm input:focus {
+  outline: none;
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.1);
+}
+
+.searchForm button {
+  padding: 12px 24px;
+  background: #3498db;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: background-color 0.2s;
+}
+
+.searchForm button:hover {
+  background: #2980b9;
+}
+
+.searchResults, .requestsList, .friendsList {
+  display: grid;
+  gap: 1rem;
+}
+
+.searchResults {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px 40px;
+    width: 100%;
+    min-width: 1000px;
+}
+
+.searchForm {
+    margin: 20px;
+    position: relative;
+}
+
+.searchForm input {
+    width: 100%;
+    padding: 16px;
+    padding-left: 48px;
+    border: 2px solid var(--border-light);
+    border-radius: var(--radius);
+    font-size: 1rem;
+    transition: all 0.3s ease;
+    background-color: var(--bg-white);
+}
+
+.searchForm input:focus {
+    outline: none;
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1);
+}
+
+.searchForm::before {
+    content: '';
+    position: absolute;
+    left: 16px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 20px;
+    height: 20px;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%239ca3af'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z'%3E%3C/path%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: contain;
+    opacity: 0.5;
+}
+
+.loadingMessage, .noResults {
+    color: #6b7280;
+    text-align: center;
+    padding: 24px;
+    font-size: 0.875rem;
+}
+
+.userCard, .requestCard, .friendCard {
+  display: flex;
+  align-items: center;
+  padding: 1rem;
+  background: #f8fafc;
+  border-radius: 8px;
+  gap: 1rem;
+  transition: transform 0.2s;
+}
+
+.userCard:hover, .requestCard:hover, .friendCard:hover {
+  transform: translateY(-2px);
+}
+
+.avatar {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  margin-right: 16px;
+  object-fit: cover;
+}
+
+.userInfo, .requestInfo, .friendInfo {
+  flex: 1;
+}
+
+.userInfo h3, .requestInfo h3, .friendInfo h3 {
+  margin: 0 0 0.25rem;
+  font-size: 1rem;
+  color: #1e293b;
+}
+
+.friendInfo p {
+  margin: 4px 0 0;
+  color: #7f8c8d;
+  font-size: 0.9rem;
+}
+
+.actions {
+  display: flex;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+}
+
+.addBtn, .acceptBtn, .rejectBtn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 20px;
+  border: none;
+  border-radius: var(--radius);
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+  width: 100%;
+  justify-content: center;
+}
+
+.addBtn {
+  background: #2563eb;
+  color: white;
+}
+
+.addBtn:hover {
+  background: #1d4ed8;
+}
+
+.acceptBtn {
+  background: #22c55e;
+  color: white;
+}
+
+.acceptBtn:hover {
+  background: #16a34a;
+}
+
+.rejectBtn {
+  background: #ef4444;
+  color: white;
+}
+
+.rejectBtn:hover {
+  background: #dc2626;
+}
+
+.emptyMessage {
+  text-align: center;
+  color: #64748b;
+  font-size: 0.875rem;
+  padding: 2rem;
+}
+
+/* Action Buttons */
+.addFriendBtn {
+    background-color: var(--primary);
+    color: white;
+    padding: 8px 16px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.2s ease;
+    font-size: 0.9rem;
+    min-width: 120px;
+    justify-content: center;
+}
+
+.addFriendBtn:hover {
+    background-color: var(--primary-dark);
+    transform: translateY(-1px);
+    box-shadow: 0 2px 8px rgba(16, 185, 129, 0.2);
+}
+
+.acceptBtn, .rejectBtn {
+    padding: 6px 12px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    transition: all 0.2s ease;
+    font-size: 0.9rem;
+}
+
+.acceptBtn {
+    background-color: var(--primary);
+    color: white;
+    min-width: 100px;
+}
+
+.acceptBtn:hover {
+    background-color: var(--primary-dark);
+    transform: translateY(-1px);
+    box-shadow: 0 2px 8px rgba(16, 185, 129, 0.2);
+}
+
+.rejectBtn {
+    background-color: #ef4444;
+    color: white;
+    min-width: 80px;
+}
+
+.rejectBtn:hover {
+    background-color: #dc2626;
+    transform: translateY(-1px);
+    box-shadow: 0 2px 8px rgba(239, 68, 68, 0.2);
+}
+
+.actions {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+}
+
+/* Loading and Empty States */
+.loadingMessage, .emptyMessage, .noResults {
+    text-align: center;
+    color: var(--text-secondary);
+    padding: 2rem;
+    font-size: 1rem;
+}
+
+/* Badge */
+.badge {
+    background-color: #ef4444;
+    color: white;
+    font-size: 0.75rem;
+    padding: 0.125rem 0.375rem;
+    border-radius: 9999px;
+    margin-left: 6px;
+    font-weight: 500;
+}
+
+.container {
+  display: flex;
+  flex: 1;
+}
+
+.mainContent {
+  flex: 1;
+  padding: 2rem;
+  background-color: var(--bg-light);
+}
+
+.friendsContainer {
+  max-width: 1400px;
+  margin: 0 auto;
+  background-color: var(--bg-white);
+  border-radius: 12px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+}
+
+.profileCardContainer {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(600px, 1fr));
+  gap: 16px;
+  padding: 20px;
+  max-width: 1400px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+.searchContainer {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 20px;
+  width: 100%;
+}
+
+.searchInput {
+  width: 100%;
+  max-width: 600px;
+  padding: 12px 16px;
+  border: 2px solid #e5e7eb;
+  border-radius: 8px;
+  font-size: 1rem;
+  transition: all 0.2s ease;
+  margin-bottom: 20px;
+}
+
+.searchInput:focus {
+  outline: none;
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
 }
 
 @media (max-width: 640px) {
-  /* For very small screens, we'll use a mobile-friendly approach */
-  .body header {
-    flex-direction: column;
-    gap: 1rem;
+  .profileCardContainer {
+    grid-template-columns: 1fr;
+    padding: 12px;
   }
-
-  .body header nav ul {
-    flex-wrap: wrap;
-    justify-content: center;
+  
+  .searchContainer {
+    padding: 12px;
   }
-
-  /* Sidebar becomes a drawer that can be toggled */
-  :root {
-    --sidebar-width: 180px;
-  }
-
-  .sidebar {
-    transform: translateX(-100%);
-    transition: transform 0.3s ease;
-  }
-
-  .sidebar.open {
-    transform: translateX(0);
-  }
-
-  /* When sidebar is closed, main content takes full width */
-  .container main {
-    margin-left: 0;
-    width: 100%;
+  
+  .mainContent {
     padding: 1rem;
-  }
-
-  /* When sidebar is open, main content shifts */
-  .sidebar.open + main {
-    margin-left: var(--sidebar-width);
-    width: calc(100% - var(--sidebar-width));
   }
 }
