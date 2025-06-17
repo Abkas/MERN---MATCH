@@ -1,15 +1,16 @@
 .playerCard {
     background: white;
     border-radius: 12px;
-    padding: 20px;
+    padding: 24px;
     margin-bottom: 20px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+    transition: all 0.3s ease;
+    border: 1px solid rgba(0, 0, 0, 0.05);
 }
 
 .playerCard:hover {
     transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
 }
 
 .cardHeader {
@@ -82,6 +83,119 @@
 
 .cardActions {
     margin-top: 16px;
+}
+
+/* Action Button Styles */
+.actionButton {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 16px;
+    border-radius: 8px;
+    font-weight: 500;
+    font-size: 0.9rem;
+    transition: all 0.2s ease;
+    cursor: pointer;
+    border: none;
+    white-space: nowrap;
+}
+
+.actionButton svg {
+    transition: transform 0.2s ease;
+}
+
+.actionButton:hover svg {
+    transform: scale(1.1);
+}
+
+.sendRequest {
+    background-color: #10b981;
+    color: white;
+}
+
+.sendRequest:hover {
+    background-color: #059669;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(16, 185, 129, 0.2);
+}
+
+.sendRequest:disabled {
+    background-color: #d1d5db;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+}
+
+.cancelRequest {
+    background-color: #ef4444;
+    color: white;
+}
+
+.cancelRequest:hover {
+    background-color: #dc2626;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(239, 68, 68, 0.2);
+}
+
+.cancelRequest:disabled {
+    background-color: #d1d5db;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+}
+
+.pendingRequest {
+    background-color: #f59e0b;
+    color: white;
+    cursor: default;
+}
+
+.friendStatus {
+    background-color: #3b82f6;
+    color: white;
+    cursor: default;
+}
+
+.spinIcon {
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* Organizer Card Styles */
+.organizerCard {
+    border: 1px solid rgba(59, 130, 246, 0.2);
+    background: linear-gradient(to bottom right, #ffffff, #f0f9ff);
+}
+
+.organizerCard:hover {
+    border-color: rgba(59, 130, 246, 0.4);
+}
+
+.premiumBadge {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    background: linear-gradient(45deg, #3b82f6, #2563eb);
+    color: white;
+    padding: 4px 12px;
+    border-radius: 16px;
+    font-size: 0.8rem;
+    font-weight: 500;
+    margin-bottom: 12px;
+    box-shadow: 0 2px 8px rgba(59, 130, 246, 0.2);
+}
+
+.organizerAvatar {
+    border: 3px solid #3b82f6;
+    box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2);
 }
 
 /* Responsive styles */

@@ -44,14 +44,12 @@ user: {
     ref: 'Futsal' 
     }
   ],
-
   friends: [
     {
       type: Schema.Types.ObjectId,
       ref: 'User'
     }
   ],
-
   pendingFriendRequests: [
     {
       user: {
@@ -74,14 +72,24 @@ user: {
     type: Date
   },
   reviews: [
-    { player: { 
-    type: Schema.Types.ObjectId, 
-    ref: 'User' 
-    },
-      comment: String,
-      rating: Number,
-    }
-  ]
-}, { timestamps: true });
+      { 
+        player: { 
+          type: Schema.Types.ObjectId, 
+          ref: 'User' 
+        },
+        comment: String,
+        rating: Number,
+        createdAt: {
+          type: Date,
+          default: Date.now
+        }
+      }
+    ]
+}, 
+{
+    timestamps: true
+})
+
+PlayerProfileSchema.plugin(mongooseAggregatePaginate)
 
 export const PlayerProfile = mongoose.model('PlayerProfile', PlayerProfileSchema)

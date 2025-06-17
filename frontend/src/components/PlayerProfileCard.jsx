@@ -1,5 +1,5 @@
 import React from 'react';
-import { MapPin, Calendar, Star, UserPlus, MessageSquare, Award, Building2 } from 'lucide-react';
+import { MapPin, Calendar, Star, UserPlus, MessageSquare, Award, Building2, UserX, UserCheck, Clock } from 'lucide-react';
 import styles from '../pages/css/PlayerProfileCard.module.css';
 
 const getSkillLevelColor = (level) => {
@@ -16,7 +16,12 @@ const PlayerProfileCard = ({
     player, 
     actionButton, 
     showFullProfile = false, 
-    className = '' 
+    className = '',
+    requestStatus = null, // 'none', 'pending', 'sent', 'accepted'
+    onCancelRequest = () => {},
+    onSendRequest = () => {},
+    sendingRequest = false,
+    cancellingRequest = false
 }) => {
     const {
         username,
@@ -30,6 +35,66 @@ const PlayerProfileCard = ({
 
     const isOrganizer = role === 'organizer';
 
+    // Render friend request button/status based on requestStatus
+    const renderFriendRequestButton = () => {
+        switch(requestStatus) {
+            case 'sent':
+                return (
+                    <button 
+                        onClick={onCancelRequest} 
+                        className={`${styles.actionButton} ${styles.cancelRequest}`}
+                        disabled={cancellingRequest}
+                    >
+                        {cancellingRequest ? (
+                            <>
+                                <Clock size={16} className={styles.spinIcon} />
+                                <span>Cancelling</span>
+                            </>
+                        ) : (
+                            <>
+                                <UserX size={16} />
+                                <span>Cancel Request</span>
+                            </>
+                        )}
+                    </button>
+                );
+            case 'pending':
+                return (
+                    <div className={`${styles.actionButton} ${styles.pendingRequest}`}>
+                        <Clock size={16} />
+                        <span>Pending</span>
+                    </div>
+                );
+            case 'accepted':
+                return (
+                    <div className={`${styles.actionButton} ${styles.friendStatus}`}>
+                        <UserCheck size={16} />
+                        <span>Friends</span>
+                    </div>
+                );
+            default: // 'none'
+                return (
+                    <button 
+                        onClick={onSendRequest} 
+                        className={`${styles.actionButton} ${styles.sendRequest}`}
+                        disabled={sendingRequest}
+                    >
+                        {sendingRequest ? (
+                            <>
+                                <Clock size={16} className={styles.spinIcon} />
+                                <span>Sending</span>
+                            </>
+                        ) : (
+                            <>
+                                <UserPlus size={16} />
+                                <span>Add Friend</span>
+                            </>
+                        )}
+                    </button>
+                );
+        }
+    };
+
     return (
         <div className={`${styles.playerCard} ${isOrganizer ? styles.organizerCard : ''} ${className}`}>
             {isOrganizer && <div className={styles.premiumBadge}><Award size={16} /> Organizer</div>}
@@ -42,6 +107,9 @@ const PlayerProfileCard = ({
                 <div className={styles.headerInfo}>
                     <h3>{fullName || username}</h3>
                     <span className={styles.username}>@{username}</span>
+                </div>
+                <div className={styles.actions}>
+                    {actionButton || renderFriendRequestButton()}
                 </div>
             </div>
             
@@ -107,11 +175,16 @@ const PlayerProfileCard = ({
                 )}
             </div>
             
-            {actionButton && (
-                <div className={styles.cardActions}>
-                    {actionButton}
-                </div>
-            )}
+            <div className={styles.actions}>
+                {requestStatus === 'sent' ? (
+                    <button 
+                        className={styles.cancelRequestBtn}
+                        onClick={() => onCancelRequest?.(player._id)}
+                    >
+                        Cancel Request
+                    </button>
+                ) : actionButton}
+            </div>
         </div>
     );
 };

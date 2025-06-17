@@ -7,9 +7,14 @@ const notificationSchema = new mongoose.Schema({
     ref: 'User',
     required: true
   },
+  recipient: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User',
+    required: true
+  },
   type: {
     type: String,
-    enum: ['match_joined', 'slot_full', 'payment_ready', 'reminder', 'custom'],
+    enum: ['match_joined', 'slot_full', 'payment_ready', 'reminder', 'custom', 'FRIEND_REQUEST', 'FRIEND_REQUEST_ACCEPTED'],
     required: true
   },
   title: {
