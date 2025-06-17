@@ -1,5 +1,6 @@
 import MyTeam from '../models/myteam.model.js';
 import { User } from '../models/user.model.js';
+import { Notification } from '../models/notification.model.js';
 
 const createTeam = async (req, res) => {
   try {
@@ -39,6 +40,15 @@ const inviteToSlot = async (req, res) => {
     team.pendingInvites.push({ user: friendId, slotIndex });
     team.slots[slotIndex] = { status: 'pending' };
     await team.save();
+    // Send notification to invited user
+    await Notification.create({
+      user: friendId,
+      recipient: friendId,
+      type: 'TEAM_INVITE',
+      title: 'Team Invitation',
+      message: `You have been invited to join the team "${team.name}"!`,
+      link: `/team/${team._id}`
+    });
     res.json({ success: true, team });
   } catch (err) {
     console.error('Error in inviteToSlot:', err);
@@ -58,6 +68,15 @@ const acceptInvite = async (req, res) => {
     invite.status = 'accepted';
     await team.save();
     await User.findByIdAndUpdate(userId, { myTeam: team._id });
+    // Send notification to team owner
+    await Notification.create({
+      user: team.owner,
+      recipient: team.owner,
+      type: 'TEAM_JOINED',
+      title: 'A player joined your team',
+      message: `${req.user.username || 'A player'} has joined your team "${team.name}"!`,
+      link: `/team/${team._id}`
+    });
     res.json({ success: true, team });
   } catch (err) {
     res.status(500).json({ success: false, message: err.message });
@@ -171,6 +190,25 @@ const getPendingInvites = async (req, res) => {
   }
 };
 
+const deleteTeam = async (req, res) => {
+  try {
+    const { teamId } = req.body;
+    const team = await MyTeam.findById(teamId);
+    if (!team) return res.status(404).json({ success: false, message: 'Team not found' });
+    if (!team.owner.equals(req.user._id)) return res.status(403).json({ success: false, message: 'Only owner can delete the team' });
+    // Remove team reference from all users in slots
+    for (const slot of team.slots) {
+      if (slot.user) {
+        await User.findByIdAndUpdate(slot.user, { $unset: { myTeam: '' } });
+      }
+    }
+    await team.deleteOne();
+    res.json({ success: true, message: 'Team deleted' });
+  } catch (err) {
+    res.status(500).json({ success: false, message: err.message });
+  }
+};
+
 export default {
   createTeam,
   inviteToSlot,
@@ -181,4 +219,5 @@ export default {
   removeMember,
   cancelInvite,
   getPendingInvites,
+  deleteTeam,
 };

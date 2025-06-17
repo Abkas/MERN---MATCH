@@ -322,6 +322,22 @@
   margin-left: auto;
   margin-right: 1rem;
 }
+.deleteBtn {
+  background: #ef4444;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  padding: 0.8rem 2.2rem;
+  font-size: 1.15rem;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(35,41,70,0.08);
+  transition: background 0.18s;
+  margin-top: 2rem;
+}
+.deleteBtn:hover {
+  background: #b91c1c;
+}
 
 /* Responsive */
 @media (max-width: 900px) {

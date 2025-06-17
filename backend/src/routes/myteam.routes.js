@@ -13,5 +13,6 @@ router.get('/get-by-user', verifyJWT, myTeamController.getTeamByUser);
 router.post('/remove-member', verifyJWT, myTeamController.removeMember);
 router.post('/cancel-invite', verifyJWT, myTeamController.cancelInvite);
 router.get('/pending-invites', verifyJWT, myTeamController.getPendingInvites);
+router.post('/delete', verifyJWT, myTeamController.deleteTeam);
 
 export default router;

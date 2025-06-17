@@ -2,9 +2,13 @@ import { Notification } from '../models/notification.model.js';
 
 const getUserNotifications = async (req, res) => {
   try {
+    // Delete notifications older than 3 hours
+    const threeHoursAgo = new Date(Date.now() - 3 * 60 * 60 * 1000);
+    await Notification.deleteMany({ user: req.user._id, createdAt: { $lt: threeHoursAgo } });
+    // Get 5 most recent notifications
     const notifications = await Notification.find({ user: req.user._id })
       .sort({ createdAt: -1 })
-      .limit(30);
+      .limit(5);
     res.json({ notifications });
   } catch (err) {
     res.status(500).json({ error: 'Failed to fetch notifications' });

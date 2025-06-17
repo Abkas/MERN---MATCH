@@ -96,9 +96,24 @@ const FutsalNavbar = () => {
                   <div className={styles.notifEmpty}>No notifications</div>
                 ) : (
                   notifications.map(n => (
-                    <div key={n._id} className={styles.notifCard + (n.read ? ' ' + styles.read : '')}>
+                    <div
+                      key={n._id}
+                      className={styles.notifCard + (n.read ? ' ' + styles.read : '')}
+                      title={n.title + '\n' + n.message}
+                      onClick={() => {
+                        if (!n.read) {
+                          axiosInstance.patch(`/notifications/${n._id}/read`).then(() => {
+                            setNotifications(prev => prev.map(x => x._id === n._id ? { ...x, read: true } : x));
+                          });
+                        }
+                        if (n.link) {
+                          window.location.href = n.link;
+                        }
+                      }}
+                    >
                       <div className={styles.notifTitle}>{n.title}</div>
                       <div className={styles.notifMsg}>{n.message}</div>
+                      <div style={{fontSize:'0.8em',color:'#888',marginTop:4}}>{new Date(n.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</div>
                     </div>
                   ))
                 )}

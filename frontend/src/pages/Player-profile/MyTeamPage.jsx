@@ -89,6 +89,12 @@ const MyTeamPage = () => {
     fetchTeam();
   };
 
+  const handleDeleteTeam = async () => {
+    if (!window.confirm('Are you sure you want to delete your team? This action cannot be undone.')) return;
+    await axiosInstance.post('/myteam/delete', { teamId: team._id });
+    setTeam(null);
+  };
+
   const isOwner = team && team.owner && authUser && team.owner._id === authUser._id;
 
   return (
@@ -173,6 +179,13 @@ const MyTeamPage = () => {
                       );
                     })}
                   </div>
+                  {team && isOwner && (
+                    <div style={{ display: 'flex', justifyContent: 'center', margin: '2rem 0 1rem 0' }}>
+                      <button className={styles.deleteBtn} onClick={handleDeleteTeam}>
+                        Delete Team
+                      </button>
+                    </div>
+                  )}
                 </>
               ) : (
                 <div className={styles.createTeamBox}>
