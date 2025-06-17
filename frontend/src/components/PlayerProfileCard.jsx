@@ -122,9 +122,6 @@ const PlayerProfileCard = ({
                     <h3>{fullName || username}</h3>
                     <span className={styles.username}>@{username}</span>
                 </div>
-                <div className={styles.actions}>
-                    {actionButton || renderFriendRequestButton()}
-                </div>
             </div>
             <div className={styles.playerDetails}>
                 {isOrganizer ? (
@@ -184,6 +181,9 @@ const PlayerProfileCard = ({
                         </>
                     )
                 )}
+            </div>
+            <div className={styles.actions}>
+                {actionButton || renderFriendRequestButton()}
             </div>
         </div>
     );
