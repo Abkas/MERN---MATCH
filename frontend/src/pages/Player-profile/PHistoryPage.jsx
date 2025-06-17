@@ -4,6 +4,7 @@ import { Link, useNavigate } from 'react-router-dom'
 import { LogOut, User } from 'lucide-react'
 import { useAuthStore } from '../../store/useAuthStore'
 import FutsalNavbar from '../../components/FutsalNavbar'
+import PlayerSidebar from '../../components/PlayerSidebar'
 
 const PHistoryPage = () => {
     const { logOut } = useAuthStore()
@@ -16,23 +17,9 @@ const PHistoryPage = () => {
 
     return (
         <div className={styles.body}>
-                    <FutsalNavbar />
-
+            <FutsalNavbar />
             <div className={styles.container}>
-                <aside className={styles.sidebar}>
-                    <ul className={styles.sidebarMenu}>
-                        <li><Link to="/player-dashboard">Dashboard</Link></li>
-                        <li><Link to="/player-profile">Profile</Link></li>
-                        <li><Link to="/player-addfriend" style={{ color: '#9ca3af' }}>Add Friends</Link></li>
-                        <li><Link to="/player-history" className={styles.active}>History</Link></li>
-                        <li><Link to="/player-upcomingmatches">Upcoming Matches</Link></li>
-                        <li>
-                            <button className={styles.logoutBtn} onClick={handleLogout}>
-                                Logout
-                            </button>
-                        </li>
-                    </ul>
-                </aside>        
+                <PlayerSidebar />
                 <main className={styles.mainContent}>
                           <div style={{
                             display: 'flex',

@@ -7,6 +7,7 @@ import { axiosInstance } from '../../lib/axios'
 import toast from 'react-hot-toast'
 import { getSlotTimeStatus } from '../../utils/slotTimeStatus'
 import FutsalNavbar from '../../components/FutsalNavbar'
+import PlayerSidebar from '../../components/PlayerSidebar'
 
 const PUpcomingMatchesPage = () => {
     const { logOut } = useAuthStore()
@@ -82,23 +83,9 @@ const PUpcomingMatchesPage = () => {
 
     return (
         <div className={styles.body}>
-                   <FutsalNavbar />
-
+            <FutsalNavbar />
             <div className={styles.container}>
-                <aside className={styles.sidebar}>
-                    <ul className={styles.sidebarMenu}>
-                        <li><Link to="/player-dashboard">Dashboard</Link></li>
-                        <li><Link to="/player-profile">Profile</Link></li>
-                        <li><Link to="/player-addfriend">Add Friends</Link></li>
-                        <li><Link to="/player-history">History</Link></li>
-                        <li><Link to="/player-upcomingmatches" className={styles.active}>Upcoming Matches</Link></li>
-                        <li>
-                            <button className={styles.logoutBtn} onClick={handleLogout}>
-                                Logout
-                            </button>
-                        </li>
-                    </ul>
-                </aside>
+                <PlayerSidebar />
                 <main className={styles.mainContent}>
                     <h1 className={styles.pageTitle}>
                         <span>Upcoming Matches</span>

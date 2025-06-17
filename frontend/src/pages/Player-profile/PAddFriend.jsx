@@ -6,6 +6,7 @@ import { useAuthStore } from '../../store/useAuthStore';
 import { axiosInstance } from '../../lib/axios';
 import FutsalNavbar from '../../components/FutsalNavbar';
 import PlayerProfileCard from '../../components/PlayerProfileCard';
+import PlayerSidebar from '../../components/PlayerSidebar';
 import { toast } from 'react-hot-toast';
 
 const PAddFriend = () => {
@@ -127,18 +128,7 @@ const PAddFriend = () => {
         <div className={styles.body} style={{ background: '#f4f6fb', minHeight: '100vh' }}>
             <FutsalNavbar />
             <div className={styles.container}>
-                <aside className={styles.sidebar}>
-                    <ul className={styles.sidebarMenu}>
-                        <li><Link to="/player-dashboard">Dashboard</Link></li>
-                        <li><Link to="/player-profile">Profile</Link></li>
-                        <li><Link to="/player-addfriend" className={styles.active}>Add Friends</Link></li>
-                        <li><Link to="/player-history">History</Link></li>
-                        <li><Link to="/player-upcomingmatches">Upcoming Matches</Link></li>
-                        <li>
-                            <button className={styles.logoutBtn} onClick={() => { logOut(); navigate('/login'); }}>Logout</button>
-                        </li>
-                    </ul>
-                </aside>
+                <PlayerSidebar />
                 <main style={{ maxWidth: 1100, margin: '0 auto', padding: '3rem 0', width: '100%' }}>
                     <div className={styles.tabs}>
                         <button 

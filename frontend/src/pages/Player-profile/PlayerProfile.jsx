@@ -4,6 +4,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useAuthStore } from '../../store/useAuthStore';
 import { axiosInstance } from '../../lib/axios';
 import FutsalNavbar from '../../components/FutsalNavbar'
+import PlayerSidebar from '../../components/PlayerSidebar'
 
 const PlayerProfile = () => {
   const { logOut, fetchPlayerProfile } = useAuthStore();
@@ -75,18 +76,7 @@ const PlayerProfile = () => {
     <div className={styles.body} style={{ background: '#f4f6fb', minHeight: '100vh' }}>     
       <FutsalNavbar />
       <div className={styles.container}>
-        <aside className={styles.sidebar}>
-          <ul className={styles.sidebarMenu}>
-            <li><Link to="/player-dashboard">Dashboard</Link></li>
-            <li><Link to="/player-profile" className={styles.active}>Profile</Link></li>
-            <li><Link to="/player-addfriend" style={{ color: '#9ca3af' }}>Add Friends</Link></li>
-            <li><Link to="/player-history">History</Link></li>
-            <li><Link to="/player-upcomingmatches">Upcoming Matches</Link></li>
-            <li>
-              <button className={styles.logoutBtn} onClick={handleLogout}>Logout</button>
-            </li>
-          </ul>
-        </aside>
+        <PlayerSidebar />
         <main style={{ maxWidth: 900, margin: '0 auto', padding: '3rem 0' }}>
           <div className={styles.profileHeaderRow} style={{ marginBottom: 40 }}>
             <h1 style={{ fontSize: '2.5rem', fontWeight: 800, color: '#232946', letterSpacing: 1 }}>Player Profile</h1>
