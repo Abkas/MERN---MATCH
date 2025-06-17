@@ -20,6 +20,8 @@ const PlayerProfileCard = ({
     requestStatus = null, // 'none', 'pending', 'sent', 'accepted'
     onCancelRequest = () => {},
     onSendRequest = () => {},
+    onAcceptRequest = () => {},
+    onRejectRequest = () => {},
     sendingRequest = false,
     cancellingRequest = false
 }) => {
@@ -60,9 +62,21 @@ const PlayerProfileCard = ({
                 );
             case 'pending':
                 return (
-                    <div className={`${styles.actionButton} ${styles.pendingRequest}`}>
-                        <Clock size={16} />
-                        <span>Pending</span>
+                    <div className={styles.pendingActionsWrap}>
+                        <button 
+                            onClick={onAcceptRequest} 
+                            className={`${styles.actionButton} ${styles.acceptRequest}`}
+                            disabled={sendingRequest}
+                        >
+                            <UserCheck size={16} /> Accept
+                        </button>
+                        <button 
+                            onClick={onRejectRequest} 
+                            className={`${styles.actionButton} ${styles.rejectRequest}`}
+                            disabled={cancellingRequest}
+                        >
+                            <UserX size={16} /> Reject
+                        </button>
                     </div>
                 );
             case 'accepted':
@@ -112,10 +126,8 @@ const PlayerProfileCard = ({
                     {actionButton || renderFriendRequestButton()}
                 </div>
             </div>
-            
             <div className={styles.playerDetails}>
                 {isOrganizer ? (
-                    // Organizer Details
                     <>
                         {organizerProfile?.bio && (
                             <div className={`${styles.bio} ${styles.organizerBio}`}>
@@ -134,7 +146,6 @@ const PlayerProfileCard = ({
                         )}
                     </>
                 ) : (
-                    // Player Details
                     playerProfile && (
                         <>
                             {playerProfile.location && (
@@ -165,7 +176,7 @@ const PlayerProfileCard = ({
                                     <span>{playerProfile.availability}</span>
                                 </div>
                             )}
-                            {showFullProfile && playerProfile.bio && (
+                            {playerProfile.bio && (
                                 <div className={styles.bio}>
                                     {playerProfile.bio}
                                 </div>
@@ -173,17 +184,6 @@ const PlayerProfileCard = ({
                         </>
                     )
                 )}
-            </div>
-            
-            <div className={styles.actions}>
-                {requestStatus === 'sent' ? (
-                    <button 
-                        className={styles.cancelRequestBtn}
-                        onClick={() => onCancelRequest?.(player._id)}
-                    >
-                        Cancel Request
-                    </button>
-                ) : actionButton}
             </div>
         </div>
     );

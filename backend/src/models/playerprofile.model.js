@@ -37,34 +37,10 @@ user: {
     enum: ['weekdays', 'weekends', 'Weekdays and Weekends'],
     default: 'Weekdays and Weekends',
   },
-  
-  followedFutsals: [
+    followedFutsals: [
     { 
     type: Schema.Types.ObjectId, 
     ref: 'Futsal' 
-    }
-  ],
-  friends: [
-    {
-      type: Schema.Types.ObjectId,
-      ref: 'User'
-    }
-  ],
-  pendingFriendRequests: [
-    {
-      user: {
-        type: Schema.Types.ObjectId,
-        ref: 'User'
-      },
-      status: {
-        type: String,
-        enum: ['pending', 'accepted', 'rejected'],
-        default: 'pending'
-      },
-      createdAt: {
-        type: Date,
-        default: Date.now
-      }
     }
   ],
 

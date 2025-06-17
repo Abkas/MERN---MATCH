@@ -57,12 +57,16 @@ const UserSchema = new Schema(
         playerProfile: {
         type: Schema.Types.ObjectId,
         ref: 'PlayerProfile'
-        },
-
-        organizerProfile: {
+        },        organizerProfile: {
         type: Schema.Types.ObjectId,
         ref: 'OrganizerProfile'
         },
+
+        // Friend system
+        friendships: [{
+            type: Schema.Types.ObjectId,
+            ref: 'Friendship'
+        }],
 
         location: {
             latitude: {

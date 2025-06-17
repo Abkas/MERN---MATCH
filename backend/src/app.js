@@ -25,7 +25,7 @@ import OrganizerRouter from './routes/organizer.route.js'
 import FutsalRouter from './routes/futsal.route.js'
 import playerRoutes from './routes/player.route.js' // Importing player routes
 import NotificationRouter from './routes/notification.route.js' // Importing notification routes
-import FriendRouter from './routes/friend.route.js' // Importing friend routes
+import FriendshipRouter from './routes/friendship.routes.js' // Importing friendship routes
 //routes declaration
 
 app.use('/api/v1/users', UserRouter)
@@ -35,6 +35,6 @@ app.use('/api/v1/organizer', OrganizerRouter)
 app.use('/api/v1/futsals', FutsalRouter)
 app.use('/api/v1/player', playerRoutes) // Registering player routes under correct API prefix
 app.use('/api/v1/notifications', NotificationRouter) // Registering notification routes
-app.use('/api/v1/friends', FriendRouter) // Registering friend routes
+app.use('/api/v1/friendships', FriendshipRouter) // Registering friendship routes
 
 export {app}
