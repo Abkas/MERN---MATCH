@@ -1,0 +1,339 @@
+.body {
+  background: #f7f8fa;
+  min-height: 100vh;
+  color: #232946;
+  font-family: 'Inter', sans-serif;
+}
+
+.container {
+  display: flex;
+  min-height: 100vh;
+}
+
+.mainContent {
+  flex: 1;
+  padding: 3.5rem 2rem 2rem 2rem;
+  margin-left: 260px;
+  max-width: 1100px;
+  margin-right: auto;
+  margin-left: auto;
+  background: #fff;
+  border-radius: 18px;
+  box-shadow: 0 4px 24px rgba(35,41,70,0.08);
+}
+
+.title {
+  font-size: 2.4rem;
+  font-weight: 800;
+  margin-bottom: 2.5rem;
+  color: #232946;
+  letter-spacing: -1px;
+}
+
+.teamHeader {
+  display: flex;
+  align-items: center;
+  gap: 2.5rem;
+  margin-bottom: 2.5rem;
+  background: #f1f5f9;
+  border-radius: 14px;
+  padding: 1.5rem 2rem;
+  box-shadow: 0 2px 8px rgba(35,41,70,0.04);
+}
+
+.teamAvatar {
+  width: 110px;
+  height: 110px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 3px solid #e0e0e0;
+  box-shadow: 0 2px 8px rgba(35,41,70,0.08);
+}
+
+.teamName {
+  font-size: 2rem;
+  font-weight: 700;
+  margin-bottom: 0.7rem;
+  color: #232946;
+}
+
+.updateBtn {
+  background: #3b82f6;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  padding: 0.7rem 1.6rem;
+  font-size: 1.1rem;
+  font-weight: 600;
+  cursor: pointer;
+  margin-left: auto;
+  transition: background 0.18s;
+  box-shadow: 0 2px 8px rgba(35,41,70,0.06);
+}
+.updateBtn:hover {
+  background: #2563eb;
+}
+
+.slotsGrid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 2.2rem;
+  margin-bottom: 2.5rem;
+  margin-top: 1.5rem;
+}
+
+.slotCard {
+  background: #f7f8fa;
+  border-radius: 16px;
+  box-shadow: 0 2px 12px rgba(35,41,70,0.07);
+  padding: 2.2rem 1rem 1.5rem 1rem;
+  min-height: 210px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  transition: box-shadow 0.18s, background 0.18s;
+}
+.slotCard:hover {
+  box-shadow: 0 6px 24px rgba(35,41,70,0.13);
+  background: #e0e7ff;
+}
+
+.addBtn {
+  background: #e0e7ff;
+  color: #3b82f6;
+  border: 2.5px dashed #3b82f6;
+  border-radius: 50%;
+  width: 80px;
+  height: 80px;
+  font-size: 3.2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 0.7rem auto;
+  cursor: pointer;
+  transition: background 0.18s, border 0.18s;
+}
+.addBtn:hover {
+  background: #c7d2fe;
+  border-color: #2563eb;
+}
+.addText {
+  display: block;
+  font-size: 1.1rem;
+  color: #3b82f6;
+  margin-top: 0.3rem;
+}
+.memberAvatar {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  object-fit: cover;
+  margin-bottom: 0.7rem;
+  box-shadow: 0 2px 8px rgba(35,41,70,0.10);
+}
+.memberName {
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: #232946;
+  margin-bottom: 0.3rem;
+}
+.ownerTag {
+  background: #10b981;
+  color: #fff;
+  border-radius: 8px;
+  font-size: 1rem;
+  padding: 0.2rem 0.8rem;
+  margin-top: 0.3rem;
+}
+.slotPending {
+  color: #f59e0b;
+  font-weight: 700;
+  font-size: 1.1rem;
+}
+.slotEmpty {
+  color: #b0b3b8;
+  font-size: 1.1rem;
+}
+.removeBtn {
+  background: #ef4444;
+  color: #fff;
+  border: none;
+  border-radius: 7px;
+  padding: 0.5rem 1.1rem;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  margin-top: 0.7rem;
+  transition: background 0.18s;
+}
+.removeBtn:hover {
+  background: #b91c1c;
+}
+.inviteBtn {
+  background: #3b82f6;
+  color: #fff;
+  border: none;
+  border-radius: 7px;
+  padding: 0.7rem 1.3rem;
+  font-size: 1.1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.18s;
+}
+.inviteBtn:hover {
+  background: #2563eb;
+}
+.inviteModalOverlay {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(35,41,70,0.18);
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.inviteModal {
+  background: #fff;
+  border-radius: 14px;
+  padding: 2.5rem 2rem 2rem 2rem;
+  min-width: 340px;
+  box-shadow: 0 4px 24px rgba(35,41,70,0.13);
+  position: relative;
+}
+.closeBtn {
+  position: absolute;
+  top: 1.2rem;
+  right: 1.2rem;
+  background: none;
+  border: none;
+  font-size: 2rem;
+  color: #b0b3b8;
+  cursor: pointer;
+}
+.friendList {
+  margin-top: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.1rem;
+}
+.friendItem {
+  display: flex;
+  align-items: center;
+  gap: 1.1rem;
+  background: #f7f8fa;
+  border-radius: 8px;
+  padding: 0.7rem 1rem;
+}
+.friendItem img {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+.acceptBtn {
+  background: #10b981;
+  color: #fff;
+  border: none;
+  border-radius: 7px;
+  padding: 0.6rem 1.2rem;
+  font-size: 1.1rem;
+  font-weight: 600;
+  cursor: pointer;
+  margin-right: 0.7rem;
+  transition: background 0.18s;
+}
+.acceptBtn:hover {
+  background: #059669;
+}
+.rejectBtn {
+  background: #ef4444;
+  color: #fff;
+  border: none;
+  border-radius: 7px;
+  padding: 0.6rem 1.2rem;
+  font-size: 1.1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.18s;
+}
+.rejectBtn:hover {
+  background: #b91c1c;
+}
+.createTeamBox {
+  background: #f7f8fa;
+  border-radius: 14px;
+  padding: 2.5rem 2rem 2rem 2rem;
+  min-width: 340px;
+  box-shadow: 0 4px 24px rgba(35,41,70,0.13);
+  margin: 0 auto;
+  text-align: center;
+}
+.skipBtn {
+  background: #f3f4f6;
+  color: #232946;
+  border: 1.5px solid #b0b3b8;
+  border-radius: 8px;
+  padding: 0.7rem 1.6rem;
+  font-size: 1.05rem;
+  font-weight: 500;
+  cursor: pointer;
+  margin-top: 1.2rem;
+  transition: background 0.18s, border 0.18s;
+}
+.skipBtn:hover {
+  background: #e5e7eb;
+  border-color: #232946;
+}
+.requestBtn {
+  background: #e0e7ff;
+  color: #3b82f6;
+  border: 2px solid #3b82f6;
+  border-radius: 8px;
+  padding: 0.7rem 1.6rem;
+  font-size: 1.05rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.18s, border 0.18s;
+}
+.requestBtn:hover {
+  background: #c7d2fe;
+  border-color: #2563eb;
+}
+.friendRequestList {
+  margin-top: 1.2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.1rem;
+}
+.friendRequestItem {
+  display: flex;
+  align-items: center;
+  gap: 1.1rem;
+  background: #f7f8fa;
+  border-radius: 8px;
+  padding: 0.7rem 1rem;
+  box-shadow: 0 1px 4px rgba(35,41,70,0.04);
+}
+.requestStatus {
+  color: #f59e0b;
+  font-weight: 600;
+  margin-left: auto;
+  margin-right: 1rem;
+}
+
+/* Responsive */
+@media (max-width: 900px) {
+  .slotsGrid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+@media (max-width: 600px) {
+  .mainContent {
+    padding: 1rem 0.2rem;
+  }
+  .slotsGrid {
+    grid-template-columns: 1fr;
+  }
+}

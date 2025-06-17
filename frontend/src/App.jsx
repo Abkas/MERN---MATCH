@@ -33,6 +33,7 @@ import UpdateFutsal from "./components/updatefutsal"
 import OrganizerProfile from "./pages/organizer-profile/OrganizerProfile"
 import OrganizerUpdateProfile from "./pages/organizer-profile/OrganizerUpdateProfile"
 import PlayerProfile from "./pages/Player-profile/PlayerProfile"
+import MyTeamPage from "./pages/Player-profile/MyTeamPage"
 
 import { useAuthStore } from "./store/useAuthStore"
 import { useEffect } from "react"
@@ -92,6 +93,7 @@ const App = () => {
         <Route path="/player-profile" element={authUser ? <PlayerProfile /> : <Navigate to="/login" />} />
         <Route path="/player-profile/:id" element={authUser ? <PlayerProfile /> : <Navigate to="/login" />} />
         <Route path="/player-update-profile" element={authUser ? <PlayerUpdateProfile /> : <Navigate to="/login" />} />
+        <Route path="/player-myteam" element={authUser ? <MyTeamPage /> : <Navigate to="/login" />} />
         
         {/* Organizer Profile Routes */}
         <Route path="/organizer-profile/:id" element={authUser ? <OrganizerProfile /> : <Navigate to="/login" />} />
