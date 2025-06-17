@@ -5,6 +5,7 @@ import { Game } from '../models/game.model.js'
 import { ApiResponse } from '../utils/ApiResponse.js'
 import { Futsal } from '../models/futsal.model.js'
 import { SLOT_STATUS } from '../constants.js'
+import { createNotification } from './notification.controller.js'
 
 const createSlot = asyncHandler(async (req, res) => {
     const { date, time, price, maxPlayers } = req.body
@@ -131,6 +132,38 @@ const joinSlot = asyncHandler(async (req, res) => {
             game.status = 'ready_to_play';
             await game.save();
         }
+
+        // Send notification to futsal owner that slot is full
+        try {
+            const futsal = await Futsal.findById(futsalId).populate('owner');
+            if (futsal && futsal.owner) {
+                const slotDate = new Date(updatedSlot.date).toLocaleDateString();
+                await createNotification(
+                    futsal.owner._id,
+                    'slot_full',
+                    'Slot is now full',
+                    `Your futsal slot on ${slotDate} at ${updatedSlot.time} is now fully booked.`,
+                    `/organizer-slots`
+                );
+            }
+        } catch (err) {
+            console.log("Error sending slot full notification:", err);
+        }
+    }
+
+    // Send notification to player that they joined the slot
+    try {
+        const futsal = await Futsal.findById(futsalId);
+        const slotDate = new Date(updatedSlot.date).toLocaleDateString();
+        await createNotification(
+            playerId,
+            'match_joined',
+            'Slot Booked Successfully',
+            `You've booked ${seats} seat(s) at ${futsal.name} on ${slotDate} at ${updatedSlot.time}.`,
+            `/player-upcomingmatches`
+        );
+    } catch (err) {
+        console.log("Error sending join slot notification:", err);
     }
 
     return res

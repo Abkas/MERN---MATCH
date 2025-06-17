@@ -315,6 +315,93 @@ nav {
     height: 24px;
 }
 
+/* Notification Styles */
+.notifBadge {
+    position: absolute;
+    top: 7px;
+    right: 7px;
+    width: 10px;
+    height: 10px;
+    background: #ff3b3b;
+    border-radius: 50%;
+    border: 2px solid #f8fafc;
+    z-index: 2;
+}
+.notification {
+    position: relative;
+}
+.notifPanel {
+    position: absolute;
+    top: 48px;
+    right: 0;
+    min-width: 340px;
+    max-width: 95vw;
+    background: #fff;
+    border-radius: 16px;
+    box-shadow: 0 8px 32px rgba(35,41,70,0.18);
+    padding: 0.5rem 0;
+    z-index: 1000;
+    animation: notifFadeIn 0.2s;
+    border: 1.5px solid #e5e7eb;
+    font-family: 'Poppins', 'Inter', sans-serif;
+}
+@keyframes notifFadeIn {
+    from { opacity: 0; transform: translateY(-10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+.notifHeader {
+    font-weight: 800;
+    font-size: 1.18rem;
+    padding: 1rem 1.5rem 0.7rem 1.5rem;
+    border-bottom: 1.5px solid #e5e7eb;
+    color: #232946;
+    letter-spacing: 0.5px;
+    background: #f8fafc;
+    border-radius: 16px 16px 0 0;
+}
+.notifEmpty {
+    padding: 1.5rem;
+    color: #9ca3af;
+    text-align: center;
+    font-size: 1.05rem;
+}
+.notifCard {
+    padding: 1.1rem 1.5rem 1rem 1.5rem;
+    border-bottom: 1px solid #f1f5f9;
+    cursor: pointer;
+    transition: background 0.15s, box-shadow 0.15s;
+    border-radius: 10px;
+    margin: 0.5rem 0.7rem;
+    background: #f9fafb;
+    box-shadow: 0 2px 8px #6366f122;
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+}
+.notifCard:last-child {
+    border-bottom: none;
+}
+.notifCard:hover {
+    background: #e0e7ff;
+    box-shadow: 0 4px 16px #4169e133;
+}
+.notifTitle {
+    font-weight: 700;
+    color: #232946;
+    margin-bottom: 2px;
+    font-size: 1.08rem;
+    letter-spacing: 0.2px;
+}
+.notifMsg {
+    font-size: 1.01rem;
+    color: #64748b;
+    line-height: 1.5;
+}
+.read {
+    opacity: 0.6;
+    background: #f3f4f6;
+}
+
 /* Responsive Design */
 @media (max-width: 1200px) {
     .futsaltext {
