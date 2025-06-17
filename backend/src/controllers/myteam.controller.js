@@ -77,6 +77,15 @@ const acceptInvite = async (req, res) => {
       message: `${req.user.username || 'A player'} has joined your team "${team.name}"!`,
       link: `/team/${team._id}`
     });
+    // Send notification to user who joined
+    await Notification.create({
+      user: userId,
+      recipient: userId,
+      type: 'TEAM_JOINED',
+      title: 'You joined a team',
+      message: `You have joined the team "${team.name}"!`,
+      link: `/team/${team._id}`
+    });
     res.json({ success: true, team });
   } catch (err) {
     res.status(500).json({ success: false, message: err.message });
@@ -94,6 +103,15 @@ const declineInvite = async (req, res) => {
     team.slots[invite.slotIndex] = { status: 'empty' };
     invite.status = 'declined';
     await team.save();
+    // Notify owner that invite was declined
+    await Notification.create({
+      user: team.owner,
+      recipient: team.owner,
+      type: 'TEAM_INVITE_DECLINED',
+      title: 'Team Invite Declined',
+      message: `${req.user.username || 'A player'} declined your invitation to join "${team.name}".`,
+      link: `/team/${team._id}`
+    });
     res.json({ success: true, team });
   } catch (err) {
     res.status(500).json({ success: false, message: err.message });
@@ -138,8 +156,20 @@ const removeMember = async (req, res) => {
     if (!team) return res.status(404).json({ success: false, message: 'Team not found' });
     if (!team.owner.equals(req.user._id)) return res.status(403).json({ success: false, message: 'Only owner can remove members' });
     if (slotIndex === 0) return res.status(400).json({ success: false, message: 'Owner cannot be removed' });
+    const removedUser = team.slots[slotIndex].user;
     team.slots[slotIndex] = { status: 'empty' };
     await team.save();
+    // Notify removed user
+    if (removedUser) {
+      await Notification.create({
+        user: removedUser,
+        recipient: removedUser,
+        type: 'TEAM_REMOVED',
+        title: 'Removed from Team',
+        message: `You have been removed from the team "${team.name}" by the owner.`,
+        link: `/team/${team._id}`
+      });
+    }
     res.json({ success: true, team });
   } catch (err) {
     res.status(500).json({ success: false, message: err.message });
@@ -153,9 +183,21 @@ const cancelInvite = async (req, res) => {
     if (!team) return res.status(404).json({ success: false, message: 'Team not found' });
     if (!team.owner.equals(req.user._id)) return res.status(403).json({ success: false, message: 'Only owner can cancel invites' });
     // Remove invite for this slot
+    const removedInvite = team.pendingInvites.find(i => i.slotIndex === slotIndex && i.status === 'pending');
     team.pendingInvites = team.pendingInvites.filter(i => i.slotIndex !== slotIndex || i.status !== 'pending');
     team.slots[slotIndex] = { status: 'empty' };
     await team.save();
+    // Notify user if invite was canceled
+    if (removedInvite) {
+      await Notification.create({
+        user: removedInvite.user,
+        recipient: removedInvite.user,
+        type: 'TEAM_INVITE_CANCELED',
+        title: 'Team Invite Canceled',
+        message: `Your invitation to join the team "${team.name}" was canceled by the owner.`,
+        link: `/team/${team._id}`
+      });
+    }
     res.json({ success: true, team });
   } catch (err) {
     res.status(500).json({ success: false, message: err.message });
