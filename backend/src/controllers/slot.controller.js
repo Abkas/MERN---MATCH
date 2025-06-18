@@ -20,7 +20,9 @@ const createSlot = asyncHandler(async (req, res) => {
         date,
         time,
         price,
-        maxPlayers
+        maxPlayers,
+        teamA: [],
+        teamB: []
     })
 
     const newGame = await Game.create({
@@ -77,7 +79,9 @@ const getSlotsByFutsal = asyncHandler(async (req, res) => {
 
         const slots = await Slot.find(query)
             .sort({ date: 1, time: 1 })
-            .populate('players', 'username fullName avatar');
+            .populate('players', 'username fullName avatar')
+            .populate('teamA', 'username fullName avatar')
+            .populate('teamB', 'username fullName avatar');
 
         return res.status(200).json(
             new ApiResponse(200, slots, 'Slots fetched successfully')
@@ -90,7 +94,7 @@ const getSlotsByFutsal = asyncHandler(async (req, res) => {
 
 const joinSlot = asyncHandler(async (req, res) => {
     const { futsalId, slotId } = req.params;
-    const { seats } = req.body;
+    const { seats, teamChoice } = req.body; // teamChoice: 'A' or 'B'
     const playerId = req.user._id;
     
     // Validate seats parameter
@@ -114,13 +118,15 @@ const joinSlot = asyncHandler(async (req, res) => {
         throw new ApiError(400, `Only ${availableSlots} slots available`);
     }
 
-    // Add the player multiple times based on seats
-    for (let i = 0; i < seats; i++) {
-        await slot.addPlayer(playerId);
-    }
+    // Add the player multiple times based on seats (use new count param)
+    await slot.addPlayer(playerId, teamChoice, seats);
+    console.log(`[joinSlot] playerId: ${playerId}, team: ${teamChoice}, seats: ${seats}`);
 
     // Reload slot to get updated currentPlayers and players
-    const updatedSlot = await Slot.findById(slot._id);
+    const updatedSlot = await Slot.findById(slot._id)
+        .populate('players', 'username fullName avatar')
+        .populate('teamA', 'username fullName avatar')
+        .populate('teamB', 'username fullName avatar');
 
     // Update slot status if full
     if (updatedSlot.isFull()) {
@@ -168,7 +174,7 @@ const joinSlot = asyncHandler(async (req, res) => {
 
     return res
         .status(200)
-        .json(new ApiResponse(200, updatedSlot, 'Player added to slot successfully'));
+        .json(new ApiResponse(200, updatedSlot, 'Player added to slot successfully'))
 })
 
 const deleteSlot = asyncHandler(async (req, res) => {
@@ -238,7 +244,9 @@ const addSlot = asyncHandler(async (req, res) => {
         price,
         status: SLOT_STATUS.AVAILABLE,
         players: [],
-        paymentStatus: []
+        paymentStatus: [],
+        teamA: [],
+        teamB: []
     })
 
     return res.status(201).json(
@@ -292,7 +300,9 @@ const resetSlots = asyncHandler(async (req, res) => {
                 price: slot.price,
                 status: SLOT_STATUS.AVAILABLE,
                 players: [],
-                paymentStatus: []
+                paymentStatus: [],
+                teamA: [],
+                teamB: []
             })
         )
     );
@@ -347,6 +357,10 @@ const cancelSlotBooking = asyncHandler(async (req, res) => {
         // Remove player from the slot
         slot.players = slot.players.filter(id => id.toString() !== playerId.toString());
         slot.currentPlayers = slot.players.length;
+
+        // Remove player from teamA and teamB as well
+        slot.teamA = (slot.teamA || []).filter(id => id.toString() !== playerId.toString());
+        slot.teamB = (slot.teamB || []).filter(id => id.toString() !== playerId.toString());
 
         // Update slot status if it was full
         if (slot.status === SLOT_STATUS.FULL) {
@@ -466,7 +480,9 @@ const generateSlotsForDate = async (futsalId, date) => {
             price: defaultPrice,
             status: SLOT_STATUS.AVAILABLE,
             players: [],
-            paymentStatus: []
+            paymentStatus: [],
+            teamA: [],
+            teamB: []
         });
     }
 

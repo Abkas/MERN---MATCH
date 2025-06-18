@@ -21,6 +21,14 @@ const SlotSchema = new Schema({
         type: Schema.Types.ObjectId,
         ref: 'User' 
     }],
+    teamA: [{
+        type: Schema.Types.ObjectId,
+        ref: 'User'
+    }],
+    teamB: [{
+        type: Schema.Types.ObjectId,
+        ref: 'User'
+    }],
     maxPlayers: {
         type: Number,
         default: 10 
@@ -85,29 +93,51 @@ SlotSchema.statics.generateDefaultSlots = async function(futsalId) {
     return slots;
 };
 
-SlotSchema.methods.addPlayer = function (playerId) {
+SlotSchema.methods.addPlayer = function (playerId, teamChoice, count = 1) {
     if (!this.isAvailable()) {
         throw new ApiError(400, 'Slot is not available for booking');
     }
-    
-
-    
-    // Check if adding this player would exceed maxPlayers
-    if (this.players.length >= this.maxPlayers) {
-        throw new ApiError(400, 'Slot is full');
+    // Check if adding these players would exceed maxPlayers
+    if (this.players.length + count > this.maxPlayers) {
+        throw new ApiError(400, 'Not enough available slots');
     }
-
-    // Add the player to the players array
-    this.players.push(playerId);
-    
+    // Team size limit (half of maxPlayers)
+    const teamLimit = Math.ceil(this.maxPlayers / 2);
+    let teamArr;
+    if (teamChoice === 'A') {
+        this.teamA = this.teamA || [];
+        teamArr = this.teamA;
+    } else if (teamChoice === 'B') {
+        this.teamB = this.teamB || [];
+        teamArr = this.teamB;
+    } else {
+        // Auto-balance if not specified
+        const aCount = this.teamA ? this.teamA.length : 0;
+        const bCount = this.teamB ? this.teamB.length : 0;
+        if (aCount <= bCount) {
+            this.teamA = this.teamA || [];
+            teamArr = this.teamA;
+        } else {
+            this.teamB = this.teamB || [];
+            teamArr = this.teamB;
+        }
+    }
+    // Check if enough space in the team
+    if (teamArr.length + count > teamLimit) {
+        throw new ApiError(400, `Not enough space in Team ${teamChoice || (teamArr === this.teamA ? 'A' : 'B')}. Max ${teamLimit} players allowed.`);
+    }
+    // Add the playerId 'count' times to team and players (allow multiple bookings by same user)
+    for (let i = 0; i < count; i++) {
+        teamArr.push(playerId);
+        this.players.push(playerId);
+    }
     // Update currentPlayers count
     this.currentPlayers = this.players.length;
-    
     // Update status if full
     if (this.isFull()) {
         this.status = SLOT_STATUS.FULL;
     }
-    
+    console.log(`[addPlayer] playerId: ${playerId}, team: ${teamChoice}, count: ${count}, players: ${this.players.length}, teamA: ${this.teamA.length}, teamB: ${this.teamB.length}`);
     return this.save();
 }
 

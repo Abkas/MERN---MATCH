@@ -110,7 +110,12 @@ const PUpcomingMatchesPage = () => {
                                 const timeStatus = getSlotTimeStatus(slot, slot.date);
                                 let statusLabel = '';
                                 let statusClass = '';
-                                
+                                // Get current user
+                                const authUser = useAuthStore.getState().authUser;
+                                let userTeam = null;
+                                if (authUser && slot.teamA && slot.teamA.some(u => (u._id || u) === authUser._id)) userTeam = 'A';
+                                if (authUser && slot.teamB && slot.teamB.some(u => (u._id || u) === authUser._id)) userTeam = 'B';
+
                                 if (timeStatus === 'ended') {
                                     statusLabel = 'Ended';
                                     statusClass = styles.statusEnded;
@@ -150,6 +155,11 @@ const PUpcomingMatchesPage = () => {
                                             <div className={styles.detailItem}>
                                                 <MapPin size={18} />
                                                 <span>{slot.futsal?.location || 'Location not set'}</span>
+                                            </div>
+                                            <div className={styles.detailItem}>
+                                                <span style={{fontWeight:600, color:userTeam==='A'?'#2563eb':userTeam==='B'?'#b91c1c':'#888'}}>
+                                                    {userTeam ? `Your Team: Team ${userTeam}` : 'No Team Assigned'}
+                                                </span>
                                             </div>
                                         </div>
                                         <div className={styles.matchActions}>

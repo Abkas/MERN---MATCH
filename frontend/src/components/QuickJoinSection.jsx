@@ -5,6 +5,7 @@ import { axiosInstance } from '../lib/axios';
 import toast from 'react-hot-toast';
 import SeatSelectionModal from './SeatSelectionModal';
 import { getSlotTimeStatus } from '../utils/slotTimeStatus';
+import { useAuthStore } from '../store/useAuthStore';
 
 // Helper function to check if a slot is within opening hours
 const isSlotWithinOpeningHours = (slot, futsal) => {
@@ -21,6 +22,7 @@ const isSlotWithinOpeningHours = (slot, futsal) => {
 
 // Accept maxPrice as prop
 const QuickJoinSection = ({ futsal, maxPrice, onHasSlots, requiredSeats }) => {
+  const { authUser } = useAuthStore();
   const [isExpanded, setIsExpanded] = useState(false);
   const [slots, setSlots] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -67,10 +69,11 @@ const QuickJoinSection = ({ futsal, maxPrice, onHasSlots, requiredSeats }) => {
     setIsModalOpen(true);
   };
 
-  const handleConfirmBooking = async (seats) => {
+  const handleConfirmBooking = async (seats, teamChoice) => {
     try {
       const response = await axiosInstance.post(`/slots/${futsal._id}/slots/${selectedSlot._id}/join`, {
-        seats: seats
+        seats: seats,
+        teamChoice: teamChoice
       });
       if (response.data.success) {
         toast.success('Successfully joined the slot!');
@@ -194,6 +197,9 @@ const QuickJoinSection = ({ futsal, maxPrice, onHasSlots, requiredSeats }) => {
                       statusClass = styles[`status${slot.status.charAt(0).toUpperCase() + slot.status.slice(1)}`] || '';
                     }
                     const canJoin = isWithinHours && timeStatus === 'upcoming' && slot.status === 'available';
+                    let userTeam = null;
+                    if (authUser && slot.teamA && slot.teamA.some(u => (u._id || u) === authUser._id)) userTeam = 'A';
+                    if (authUser && slot.teamB && slot.teamB.some(u => (u._id || u) === authUser._id)) userTeam = 'B';
                     return (
                       <tr key={slot._id} style={{ 
                         background: '#fff', 
@@ -236,6 +242,11 @@ const QuickJoinSection = ({ futsal, maxPrice, onHasSlots, requiredSeats }) => {
                           padding: '16px',
                           borderBottom: '1px solid #e2e8f0'
                         }}>
+                          {userTeam && (
+                            <div style={{marginBottom:6,fontWeight:600,color:userTeam==='A'?'#2563eb':'#b91c1c'}}>
+                              You are in Team {userTeam}
+                            </div>
+                          )}
                           <button
                             className={`${styles.btnJoinNow} ${!canJoin ? styles.btnJoinNowDisabled : ''}`}
                             onClick={() => canJoin && handleJoinNow(slot)}

@@ -156,7 +156,9 @@ const FutsalDetails = () => {
           currentPlayers: slot.players?.length || 0,
           price: slot.price,
           status: slot.status,
-          players: slot.players || []
+          players: slot.players || [],
+          teamA: slot.teamA || [],
+          teamB: slot.teamB || []
         }));
 
         console.log('Processed slots:', mappedSlots);
