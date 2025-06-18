@@ -81,6 +81,11 @@ const UserSchema = new Schema(
                 type: Date,
                 default: null
             }
+        },
+        myTeam: {
+            type: Schema.Types.ObjectId,
+            ref: 'MyTeam',
+            default: null
         }
 
 },{timestamps: true})

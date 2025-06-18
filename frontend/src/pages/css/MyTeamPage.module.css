@@ -93,11 +93,16 @@
   align-items: center;
   justify-content: center;
   position: relative;
-  transition: box-shadow 0.18s, background 0.18s;
+  transition: box-shadow 0.18s, transform 0.13s, border 0.18s;
+  box-shadow: 0 1px 8px #0001;
+  border: 1.5px solid #f3f3f3;
+  background: #fff;
 }
 .slotCard:hover {
-  box-shadow: 0 6px 24px rgba(35,41,70,0.13);
-  background: #e0e7ff;
+  box-shadow: 0 4px 24px #3b82f622;
+  border: 1.5px solid #3b82f6;
+  transform: translateY(-2px) scale(1.03);
+  z-index: 2;
 }
 
 .addBtn {
@@ -339,10 +344,105 @@
   background: #b91c1c;
 }
 
+.teamDescCard {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #f1f5f9;
+  border-radius: 18px;
+  box-shadow: 0 4px 24px rgba(35,41,70,0.10);
+  padding: 2.5rem 2.5rem 2.5rem 2.5rem;
+  margin-bottom: 2.5rem;
+  position: relative;
+  min-height: 180px;
+  gap: 2.5rem;
+}
+.teamDescLeft {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.teamDescAvatar {
+  width: 120px;
+  height: 120px;
+  border-radius: 18px;
+  object-fit: cover;
+  border: 3px solid #e0e0e0;
+  box-shadow: 0 2px 8px rgba(35,41,70,0.08);
+}
+.teamDescRight {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.7rem;
+  align-items: flex-start;
+  justify-content: center;
+}
+.teamDescName {
+  font-size: 2.2rem;
+  font-weight: 800;
+  color: #232946;
+}
+.teamDescTag {
+  background: #e0e7ff;
+  color: #3b82f6;
+  border-radius: 8px;
+  font-size: 1.1rem;
+  padding: 0.2rem 0.8rem;
+  margin-left: 0.5rem;
+}
+.teamDescDesc {
+  color: #555;
+  font-size: 1.1rem;
+  margin-top: 0.2rem;
+}
+.teamDescLoc {
+  color: #3b82f6;
+  font-size: 1.1rem;
+  margin-top: 0.2rem;
+}
+.teamActionBtns {
+  display: flex;
+  gap: 2rem;
+  justify-content: center;
+  margin-bottom: 2.5rem;
+}
+.actionBtn {
+  background: #fff;
+  color: #232946;
+  border: 2px solid #3b82f6;
+  border-radius: 12px;
+  padding: 1.1rem 2.2rem;
+  font-size: 1.2rem;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(35,41,70,0.08);
+  transition: background 0.18s, border 0.18s, box-shadow 0.18s, color 0.18s, transform 0.13s;
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+}
+.actionBtn:hover {
+  background: #e0e7ff;
+  border-color: #2563eb;
+  color: #1e293b;
+  box-shadow: 0 4px 16px #2563eb22;
+  transform: translateY(-2px) scale(1.03);
+}
+
 /* Responsive */
 @media (max-width: 900px) {
   .slotsGrid {
     grid-template-columns: repeat(2, 1fr);
+  }
+  .teamDescCard {
+    flex-direction: column;
+    gap: 1.2rem;
+    padding: 1.5rem 0.7rem;
+  }
+  .teamActionBtns {
+    flex-direction: column;
+    gap: 1.2rem;
   }
 }
 @media (max-width: 600px) {
@@ -351,5 +451,8 @@
   }
   .slotsGrid {
     grid-template-columns: 1fr;
+  }
+  .teamDescCard {
+    padding: 1rem 0.2rem;
   }
 }

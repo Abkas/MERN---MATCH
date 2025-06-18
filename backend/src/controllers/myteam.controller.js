@@ -1,6 +1,7 @@
 import MyTeam from '../models/myteam.model.js';
 import { User } from '../models/user.model.js';
 import { Notification } from '../models/notification.model.js';
+import { uploadOnCloudinary } from '../utils/cloudinary.js';
 
 const createTeam = async (req, res) => {
   try {
@@ -120,14 +121,51 @@ const declineInvite = async (req, res) => {
 
 const updateTeam = async (req, res) => {
   try {
-    const { teamId, name, avatar } = req.body;
+    const { teamId, name, avatar, location, description } = req.body;
     const team = await MyTeam.findById(teamId);
     if (!team) return res.status(404).json({ success: false, message: 'Team not found' });
     if (!team.owner.equals(req.user._id)) return res.status(403).json({ success: false, message: 'Only owner can update' });
     if (name) team.name = name;
-    if (avatar) team.avatar = avatar;
+    if (typeof avatar !== 'undefined') {
+      if (avatar === '' || avatar === null) {
+        team.avatar = '';
+      } else if (typeof avatar === 'string' && avatar.trim() !== '') {
+        team.avatar = avatar;
+      }
+    }
+    if (typeof location !== 'undefined') {
+      if (location === '' || location === null) {
+        team.location = '';
+      } else if (typeof location === 'string' && location.trim() !== '') {
+        team.location = location;
+      }
+    }
+    if (typeof description !== 'undefined') {
+      if (description === '' || description === null) {
+        team.description = '';
+      } else if (typeof description === 'string' && description.trim() !== '') {
+        team.description = description;
+      }
+    }
     await team.save();
     res.json({ success: true, team });
+  } catch (err) {
+    res.status(500).json({ success: false, message: err.message });
+  }
+};
+
+const updateTeamAvatar = async (req, res) => {
+  try {
+    const { teamId } = req.body;
+    const team = await MyTeam.findById(teamId);
+    if (!team) return res.status(404).json({ success: false, message: 'Team not found' });
+    if (!team.owner.equals(req.user._id)) return res.status(403).json({ success: false, message: 'Only owner can update avatar' });
+    if (!req.file) return res.status(400).json({ success: false, message: 'No file uploaded' });
+    const uploadResult = await uploadOnCloudinary(req.file.path);
+    if (!uploadResult || !uploadResult.secure_url) return res.status(500).json({ success: false, message: 'Cloudinary upload failed' });
+    team.avatar = uploadResult.secure_url;
+    await team.save();
+    res.json({ success: true, avatar: team.avatar, team });
   } catch (err) {
     res.status(500).json({ success: false, message: err.message });
   }
@@ -251,15 +289,142 @@ const deleteTeam = async (req, res) => {
   }
 };
 
+// Get all teams for public listing
+const getAllTeams = async (req, res) => {
+  try {
+    const teams = await MyTeam.find({}, 'name avatar owner slots').populate('owner', 'username avatar');
+    res.json({ success: true, teams });
+  } catch (err) {
+    res.status(500).json({ success: false, message: err.message });
+  }
+};
+
+// Player requests to join a team
+const requestToJoinTeam = async (req, res) => {
+  try {
+    const { teamId } = req.body;
+    const userId = req.user._id;
+    // Check if user is already in a team
+    const user = await User.findById(userId);
+    if (user.myTeam) return res.status(400).json({ success: false, message: 'Already in a team' });
+    // Remove all pending join requests from other teams
+    await MyTeam.updateMany(
+      { 'joinRequests.user': userId, 'joinRequests.status': 'pending' },
+      { $pull: { joinRequests: { user: userId, status: 'pending' } } }
+    );
+    const team = await MyTeam.findById(teamId);
+    if (!team) return res.status(404).json({ success: false, message: 'Team not found' });
+    if (team.slots.some(s => s.user && s.user.equals(userId))) return res.status(400).json({ success: false, message: 'Already in team' });
+    if (team.joinRequests && team.joinRequests.some(j => j.user.equals(userId) && j.status === 'pending')) return res.status(400).json({ success: false, message: 'Already requested' });
+    team.joinRequests = team.joinRequests || [];
+    team.joinRequests.push({ user: userId, status: 'pending' });
+    await team.save();
+    res.json({ success: true });
+  } catch (err) {
+    res.status(500).json({ success: false, message: err.message });
+  }
+};
+
+// Owner accepts a join request
+const acceptJoinRequest = async (req, res) => {
+  try {
+    const { teamId, userId } = req.body;
+    const team = await MyTeam.findById(teamId);
+    if (!team) return res.status(404).json({ success: false, message: 'Team not found' });
+    if (!team.owner.equals(req.user._id)) return res.status(403).json({ success: false, message: 'Only owner can accept' });
+    const reqIdx = team.joinRequests.findIndex(j => j.user.equals(userId) && j.status === 'pending');
+    if (reqIdx === -1) return res.status(404).json({ success: false, message: 'Request not found' });
+    // Check if user is already in another team
+    const user = await User.findById(userId);
+    if (user.myTeam && user.myTeam.toString() !== teamId) {
+      // Remove this join request
+      team.joinRequests = team.joinRequests.filter(j => !(j.user.equals(userId) && j.status === 'pending'));
+      await team.save();
+      return res.status(400).json({ success: false, message: 'Player already in another team. Request removed.' });
+    }
+    // Find first empty slot
+    const slotIdx = team.slots.findIndex(s => s.status === 'empty');
+    if (slotIdx === -1) return res.status(400).json({ success: false, message: 'No empty slot' });
+    team.slots[slotIdx] = { user: userId, status: 'filled' };
+    team.joinRequests[reqIdx].status = 'accepted';
+    await team.save();
+    await User.findByIdAndUpdate(userId, { myTeam: team._id });
+    // Remove all pending join requests from other teams
+    await MyTeam.updateMany(
+      { 'joinRequests.user': userId, 'joinRequests.status': 'pending', _id: { $ne: teamId } },
+      { $pull: { joinRequests: { user: userId, status: 'pending' } } }
+    );
+    res.json({ success: true });
+  } catch (err) {
+    res.status(500).json({ success: false, message: err.message });
+  }
+};
+
+// Owner declines a join request
+const declineJoinRequest = async (req, res) => {
+  try {
+    const { teamId, userId } = req.body;
+    const team = await MyTeam.findById(teamId);
+    if (!team) return res.status(404).json({ success: false, message: 'Team not found' });
+    if (!team.owner.equals(req.user._id)) return res.status(403).json({ success: false, message: 'Only owner can decline' });
+    const reqIdx = team.joinRequests.findIndex(j => j.user.equals(userId) && j.status === 'pending');
+    if (reqIdx === -1) return res.status(404).json({ success: false, message: 'Request not found' });
+    team.joinRequests[reqIdx].status = 'declined';
+    await team.save();
+    res.json({ success: true });
+  } catch (err) {
+    res.status(500).json({ success: false, message: err.message });
+  }
+};
+
+// Get all team IDs where the current user has a pending join request
+const getMyJoinRequests = async (req, res) => {
+  try {
+    const teams = await MyTeam.find({
+      'joinRequests.user': req.user._id,
+      'joinRequests.status': 'pending'
+    }, '_id');
+    const teamIds = teams.map(t => t._id);
+    res.json({ success: true, teamIds });
+  } catch (err) {
+    res.status(500).json({ success: false, message: err.message });
+  }
+};
+
+// Cancel a join request (by the user)
+const cancelJoinRequest = async (req, res) => {
+  try {
+    const { teamId } = req.body;
+    const userId = req.user._id;
+    const team = await MyTeam.findById(teamId);
+    if (!team) return res.status(404).json({ success: false, message: 'Team not found' });
+    // Remove the pending join request for this user
+    const before = team.joinRequests.length;
+    team.joinRequests = team.joinRequests.filter(j => !(j.user.equals(userId) && j.status === 'pending'));
+    if (team.joinRequests.length === before) return res.status(400).json({ success: false, message: 'No pending join request found' });
+    await team.save();
+    res.json({ success: true });
+  } catch (err) {
+    res.status(500).json({ success: false, message: err.message });
+  }
+};
+
 export default {
   createTeam,
   inviteToSlot,
   acceptInvite,
   declineInvite,
   updateTeam,
+  updateTeamAvatar,
   getTeamByUser,
   removeMember,
   cancelInvite,
   getPendingInvites,
   deleteTeam,
+  getAllTeams,
+  requestToJoinTeam,
+  acceptJoinRequest,
+  declineJoinRequest,
+  getMyJoinRequests,
+  cancelJoinRequest,
 };
