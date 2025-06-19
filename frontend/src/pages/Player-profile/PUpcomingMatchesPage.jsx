@@ -9,12 +9,18 @@ import { getSlotTimeStatus } from '../../utils/slotTimeStatus'
 import FutsalNavbar from '../../components/FutsalNavbar'
 import OrganizerSidebar from '../../components/OrganizerSidebar';
 import PlayerSidebar from '../../components/PlayerSidebar';
+import Modal from 'react-modal';
 
 const PUpcomingMatchesPage = () => {
     const { logOut, authUser } = useAuthStore();
     const navigate = useNavigate()
     const [joinedSlots, setJoinedSlots] = useState([])
     const [loading, setLoading] = useState(true)
+
+    // Ping modal state
+    const [pingModal, setPingModal] = useState({ open: false, slot: null });
+    const [pingMessage, setPingMessage] = useState('');
+    const [pingLoading, setPingLoading] = useState(false);
 
     const isOrganizer = authUser?.role === 'organizer';
 
@@ -83,6 +89,29 @@ const PUpcomingMatchesPage = () => {
         }
         navigate(`/futsal/${futsalId}`);
     }
+
+    const handleOpenPing = (slot) => {
+        setPingModal({ open: true, slot });
+        setPingMessage('');
+    };
+    const handleClosePing = () => setPingModal({ open: false, slot: null });
+    const handleSendPing = async () => {
+        if (!pingMessage.trim()) return toast.error('Message required');
+        setPingLoading(true);
+        try {
+            await axiosInstance.post('/notifications/ping-all', {
+                futsalId: pingModal.slot.futsal?._id,
+                message: pingMessage,
+                senderId: authUser?._id,
+            });
+            toast.success('Ping sent to all users!');
+            handleClosePing();
+        } catch (e) {
+            toast.error('Failed to send ping');
+        } finally {
+            setPingLoading(false);
+        }
+    };
 
     return (
         <div className={styles.body}>
@@ -179,6 +208,14 @@ const PUpcomingMatchesPage = () => {
                                             >
                                                 Cancel Booking
                                             </button>
+                                            <button
+                                                className={styles.viewDetailsBtn}
+                                                style={{ background: '#2563eb', color: '#fff', marginLeft: 8 }}
+                                                onClick={() => handleOpenPing(slot)}
+                                                disabled={timeStatus === 'ended'}
+                                            >
+                                                Ping
+                                            </button>
                                         </div>
                                     </div>
                                 );
@@ -187,6 +224,26 @@ const PUpcomingMatchesPage = () => {
                     )}
                 </main>
             </div>
+            <Modal
+                isOpen={pingModal.open}
+                onRequestClose={handleClosePing}
+                ariaHideApp={false}
+                style={{ content: { maxWidth: 400, margin: 'auto', borderRadius: 12, padding: 32 } }}
+            >
+                <h2 style={{ fontWeight: 700, fontSize: 20, marginBottom: 18 }}>Send a Ping Message</h2>
+                <textarea
+                    value={pingMessage}
+                    onChange={e => setPingMessage(e.target.value)}
+                    rows={4}
+                    style={{ width: '100%', borderRadius: 8, border: '1px solid #bbb', padding: 10, fontSize: 16, marginBottom: 18 }}
+                    placeholder="Write your message to notify others about the futsal match..."
+                    disabled={pingLoading}
+                />
+                <div style={{ display: 'flex', justifyContent: 'flex-end', gap: 12 }}>
+                    <button onClick={handleClosePing} style={{ background: '#eee', color: '#333', border: 'none', borderRadius: 6, padding: '8px 18px', fontWeight: 600 }} disabled={pingLoading}>Cancel</button>
+                    <button onClick={handleSendPing} style={{ background: '#2563eb', color: '#fff', border: 'none', borderRadius: 6, padding: '8px 18px', fontWeight: 600 }} disabled={pingLoading}>{pingLoading ? 'Sending...' : 'Send'}</button>
+                </div>
+            </Modal>
         </div>
     )
 }
