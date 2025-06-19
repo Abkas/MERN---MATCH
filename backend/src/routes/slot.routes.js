@@ -14,6 +14,7 @@ import {
     updateSlotsPrice,
     checkAndGenerateNextDaySlots
 } from '../controllers/slot.controller.js';
+import { getBookedButOpenSlots } from '../controllers/slot.special.controller.js';
 
 const router = Router();
 
@@ -35,4 +36,7 @@ router.post('/:futsalId/slots/add', addSlot);
 router.post('/:futsalId/slots/reset', resetSlots);
 router.patch('/:futsalId/update-slots-price', updateSlotsPrice);
 
-export default router; 
+// Special: slots with bookings but still open
+router.get('/:futsalId/slots/booked-open', getBookedButOpenSlots);
+
+export default router;

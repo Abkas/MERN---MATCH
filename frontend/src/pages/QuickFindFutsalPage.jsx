@@ -602,10 +602,121 @@ const QuickFindFutsalPage = () => {
     }
   };
 
+  const [joinedFutsalsWithOpenSlots, setJoinedFutsalsWithOpenSlots] = useState([]);
+  const [loadingJoinedFutsals, setLoadingJoinedFutsals] = useState(false);
+
+  // Fetch futsals where user has joined at least one slot and there are open slots for today
+  useEffect(() => {
+    const fetchJoinedFutsalsWithOpenSlots = async () => {
+      if (!futsals.length) return;
+      const userId = window.localStorage.getItem('userId');
+      if (!userId) return;
+      setLoadingJoinedFutsals(true);
+      const today = new Date().toISOString().split('T')[0];
+      const results = await Promise.all(
+        futsals.map(async (futsal) => {
+          try {
+            const res = await axiosInstance.get(`/slots/${futsal._id}/slots`, { params: { date: today } });
+            if (!res.data.success || !Array.isArray(res.data.message)) return null;
+            const slots = res.data.message;
+            const userJoined = slots.some(slot => Array.isArray(slot.players) && slot.players.includes(userId));
+            const openSlots = slots.filter(slot => slot.status === 'available');
+            if (userJoined && openSlots.length > 0) {
+              return { ...futsal, slots: slots };
+            }
+          } catch (e) {
+            // Ignore errors for individual futsals
+          }
+          return null;
+        })
+      );
+      setJoinedFutsalsWithOpenSlots(results.filter(Boolean));
+      setLoadingJoinedFutsals(false);
+    };
+    fetchJoinedFutsalsWithOpenSlots();
+  }, [futsals, userInfo]);
+
+  const [bookedOpenSlotsByFutsal, setBookedOpenSlotsByFutsal] = useState([]);
+  const [loadingBookedOpenSlots, setLoadingBookedOpenSlots] = useState(false);
+
+  useEffect(() => {
+    const fetchBookedOpenSlots = async () => {
+      if (!futsals.length) return;
+      setLoadingBookedOpenSlots(true);
+      const today = new Date().toISOString().split('T')[0];
+      const results = await Promise.all(
+        futsals.map(async (futsal) => {
+          try {
+            const res = await axiosInstance.get(`/slots/${futsal._id}/slots/booked-open`, { params: { date: today } });
+            if (Array.isArray(res.data.data) && res.data.data.length > 0) {
+              return { ...futsal, slots: res.data.data };
+            }
+          } catch (e) {}
+          return null;
+        })
+      );
+      setBookedOpenSlotsByFutsal(results.filter(Boolean));
+      setLoadingBookedOpenSlots(false);
+    };
+    fetchBookedOpenSlots();
+  }, [futsals]);
+
   return (
     <div className={styles.body} style={{ background: '#fff', color: '#111' }}>
       <FutsalNavbar />
       <main style={{ width: '100%' }}>
+        {/* Section: Slots with Bookings by Others (Today) */}
+        <React.Fragment>
+          {loadingBookedOpenSlots ? (
+            <section style={{ background: '#fff', color: '#111', borderBottom: '1px solid #eee', padding: '32px 0' }}>
+              <h2 style={{ fontWeight: 700, fontSize: '1.5rem', marginBottom: 24, letterSpacing: 0.5 }}>Today's Slots with Bookings by Others</h2>
+              <div style={{ minHeight: 80, border: '1px dashed #bbb', borderRadius: 10, background: '#fafafa', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#888', fontSize: 18 }}>
+                Loading slots with bookings...
+              </div>
+            </section>
+          ) : bookedOpenSlotsByFutsal.length > 0 && (
+            <section style={{ background: '#fff', color: '#111', borderBottom: '1px solid #eee', padding: '32px 0' }}>
+              <h2 style={{ fontWeight: 700, fontSize: '1.5rem', marginBottom: 24, letterSpacing: 0.5 }}>Today's Slots with Bookings by Others</h2>
+              <div className={styles.venueList}>
+                {bookedOpenSlotsByFutsal.map(futsal => (
+                  <QuickJoinSection
+                    key={futsal._id}
+                    futsal={futsal}
+                    slots={futsal.slots}
+                    minPrice={0}
+                    availableOnly={true}
+                  />
+                ))}
+              </div>
+            </section>
+          )}
+        </React.Fragment>
+
+        {/* Section: Your Joined Matches with Open Slots */}
+        {loadingJoinedFutsals ? (
+          <section style={{ background: '#fff', color: '#111', borderBottom: '1px solid #eee', padding: '32px 0' }}>
+            <h2 style={{ fontWeight: 700, fontSize: '1.5rem', marginBottom: 24, letterSpacing: 0.5 }}>Your Joined Matches with Open Slots (Today)</h2>
+            <div style={{ minHeight: 80, border: '1px dashed #bbb', borderRadius: 10, background: '#fafafa', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#888', fontSize: 18 }}>
+              Loading your joined matches...
+            </div>
+          </section>
+        ) : joinedFutsalsWithOpenSlots.length > 0 && (
+          <section style={{ background: '#fff', color: '#111', borderBottom: '1px solid #eee', padding: '32px 0' }}>
+            <h2 style={{ fontWeight: 700, fontSize: '1.5rem', marginBottom: 24, letterSpacing: 0.5 }}>Your Joined Matches with Open Slots (Today)</h2>
+            <div className={styles.venueList}>
+              {joinedFutsalsWithOpenSlots.map(futsal => (
+                <QuickJoinSection
+                  key={futsal._id}
+                  futsal={futsal}
+                  slots={futsal.slots}
+                  minPrice={0}
+                  availableOnly={true}
+                />
+              ))}
+            </div>
+          </section>
+        )}
+
         {/* Section 1: Join Quick Matches */}
         <section style={{ background: '#fff', color: '#111', borderBottom: '1px solid #eee', padding: '32px 0' }}>
           <h2 style={{ fontWeight: 700, fontSize: '1.5rem', marginBottom: 24, letterSpacing: 0.5 }}>Join Quick Matches</h2>
@@ -779,6 +890,7 @@ const QuickFindFutsalPage = () => {
         </section>
         {/* Original content below */}
         <section className={styles.searchSection}>
+          <h2 style={{ fontWeight: 700, fontSize: '2rem', margin: '0 0 18px 0', letterSpacing: 0.5, textAlign: 'center' }}>Book Futsal</h2>
           <div className={styles.searchBar} style={{ position: 'relative' }}>
             <div className={styles.searchInput}>
               <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -1061,43 +1173,72 @@ const QuickFindFutsalPage = () => {
             )}
           </div>
         </section>
-        {/* Preferred Time Section */}
-        <section style={{ background: '#f9fafb', borderBottom: '1px solid #eee', padding: '32px 0', marginBottom: 32 }}>
-          <h2 style={{ fontWeight: 700, fontSize: '1.5rem', marginBottom: 18, letterSpacing: 0.5 }}>Your Preferred Times</h2>
-          <div style={{ display: 'flex', gap: 16, alignItems: 'center', marginBottom: 18 }}>
-            <select value={newDay} onChange={e => setNewDay(e.target.value)} style={{ padding: 8, borderRadius: 6, border: '1px solid #bbb' }}>
-              {daysOfWeek.map(day => <option key={day} value={day}>{day}</option>)}
-            </select>
-            <select value={newStart} onChange={e => setNewStart(e.target.value)} style={{ padding: 8, borderRadius: 6, border: '1px solid #bbb' }}>
-              {timeOptions.map(t => <option key={t} value={t}>{t}</option>)}
-            </select>
-            <span>to</span>
-            <select value={newEnd} onChange={e => setNewEnd(e.target.value)} style={{ padding: 8, borderRadius: 6, border: '1px solid #bbb' }}>
-              {timeOptions.map(t => <option key={t} value={t}>{t}</option>)}
-            </select>
-            <button onClick={handleAddPreferredTime} disabled={savingPreferred} style={{ background: '#10b981', color: '#fff', border: 'none', borderRadius: 6, padding: '8px 20px', fontWeight: 600, cursor: savingPreferred ? 'not-allowed' : 'pointer' }}>{savingPreferred ? 'Saving...' : 'Add'}</button>
-          </div>
-          {/* Debug: Log preferred times */}
-          {console.log('userInfo.preferredTime:', userInfo && userInfo.preferredTime)}
-          {console.log('preferredTimes state:', preferredTimes)}
-          {/* Render selected slots visually */}
-          <div style={{ background: '#e0f2fe', borderRadius: 10, padding: 16, minHeight: 60, display: 'flex', flexWrap: 'wrap', gap: 12 }}>
-            {((userInfo && Array.isArray(userInfo.preferredTime) && userInfo.preferredTime.length > 0)
-              ? userInfo.preferredTime
-              : preferredTimes).length === 0 ? (
-              <span style={{ color: '#888' }}>No preferred times set.</span>
-            ) : (
-              ((userInfo && Array.isArray(userInfo.preferredTime) && userInfo.preferredTime.length > 0)
+        {/* Preferred Time Section (hidden) */}
+        {false && (
+          <section style={{ background: '#f9fafb', borderBottom: '1px solid #eee', padding: '32px 0', marginBottom: 32 }}>
+            <h2 style={{ fontWeight: 700, fontSize: '1.5rem', marginBottom: 18, letterSpacing: 0.5 }}>Your Preferred Times</h2>
+            <div style={{ display: 'flex', gap: 16, alignItems: 'center', marginBottom: 18 }}>
+              <select value={newDay} onChange={e => setNewDay(e.target.value)} style={{ padding: 8, borderRadius: 6, border: '1px solid #bbb' }}>
+                {daysOfWeek.map(day => <option key={day} value={day}>{day}</option>)}
+              </select>
+              <select value={newStart} onChange={e => setNewStart(e.target.value)} style={{ padding: 8, borderRadius: 6, border: '1px solid #bbb' }}>
+                {timeOptions.map(t => <option key={t} value={t}>{t}</option>)}
+              </select>
+              <span>to</span>
+              <select value={newEnd} onChange={e => setNewEnd(e.target.value)} style={{ padding: 8, borderRadius: 6, border: '1px solid #bbb' }}>
+                {timeOptions.map(t => <option key={t} value={t}>{t}</option>)}
+              </select>
+              <button onClick={handleAddPreferredTime} disabled={savingPreferred} style={{ background: '#10b981', color: '#fff', border: 'none', borderRadius: 6, padding: '8px 20px', fontWeight: 600, cursor: savingPreferred ? 'not-allowed' : 'pointer' }}>{savingPreferred ? 'Saving...' : 'Add'}</button>
+            </div>
+            {/* Debug: Log preferred times */}
+            {/* Render selected slots visually */}
+            <div style={{ background: '#e0f2fe', borderRadius: 10, padding: 16, minHeight: 60, display: 'flex', flexWrap: 'wrap', gap: 12 }}>
+              {((userInfo && Array.isArray(userInfo.preferredTime) && userInfo.preferredTime.length > 0)
                 ? userInfo.preferredTime
-                : preferredTimes).map((pt, idx) => (
-                <div key={idx} style={{ background: '#2563eb', color: '#fff', borderRadius: 8, padding: '8px 18px', display: 'flex', alignItems: 'center', gap: 10, fontWeight: 500, fontSize: 15, boxShadow: '0 1px 4px #2563eb22' }}>
-                  <span>{pt.dayOfWeek}: {pt.startTime} - {pt.endTime}</span>
-                  <button onClick={() => handleDeletePreferredTime(idx)} disabled={savingPreferred} style={{ background: '#ef4444', color: '#fff', border: 'none', borderRadius: 6, padding: '2px 10px', fontWeight: 600, cursor: savingPreferred ? 'not-allowed' : 'pointer', marginLeft: 8 }}>Delete</button>
-                </div>
-              ))
-            )}
-          </div>
-        </section>
+                : preferredTimes).length === 0 ? (
+                <span style={{ color: '#888' }}>No preferred times set.</span>
+              ) : (
+                <React.Fragment>
+                  {((userInfo && Array.isArray(userInfo.preferredTime) && userInfo.preferredTime.length > 0)
+                    ? userInfo.preferredTime
+                    : preferredTimes).map((pt, idx) => (
+                    <div key={idx} style={{ background: '#2563eb', color: '#fff', borderRadius: 8, padding: '8px 18px', display: 'flex', alignItems: 'center', gap: 10, fontWeight: 500, fontSize: 15, boxShadow: '0 1px 4px #2563eb22' }}>
+                      <span>{pt.dayOfWeek}: {pt.startTime} - {pt.endTime}</span>
+                      <button onClick={() => handleDeletePreferredTime(idx)} disabled={savingPreferred} style={{ background: '#ef4444', color: '#fff', border: 'none', borderRadius: 6, padding: '2px 10px', fontWeight: 600, cursor: savingPreferred ? 'not-allowed' : 'pointer', marginLeft: 8 }}>Delete</button>
+                    </div>
+                  ))}
+                </React.Fragment>
+              )}
+            </div>
+          </section>
+        )}
+        {/* Book Futsal Heading above search */}
+        <h2 style={{ fontWeight: 700, fontSize: '2rem', margin: '32px 0 12px 0', letterSpacing: 0.5, textAlign: 'center' }}>Book Futsal</h2>
+
+        {/* Section: Slots with Bookings by Others (Today) */}
+        {loadingBookedOpenSlots ? (
+          <section style={{ background: '#fff', color: '#111', borderBottom: '1px solid #eee', padding: '32px 0' }}>
+            <h2 style={{ fontWeight: 700, fontSize: '1.5rem', marginBottom: 24, letterSpacing: 0.5 }}>Today's Slots with Bookings by Others</h2>
+            <div style={{ minHeight: 80, border: '1px dashed #bbb', borderRadius: 10, background: '#fafafa', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#888', fontSize: 18 }}>
+              Loading slots with bookings...
+            </div>
+          </section>
+        ) : bookedOpenSlotsByFutsal.length > 0 && (
+          <section style={{ background: '#fff', color: '#111', borderBottom: '1px solid #eee', padding: '32px 0' }}>
+            <h2 style={{ fontWeight: 700, fontSize: '1.5rem', marginBottom: 24, letterSpacing: 0.5 }}>Today's Slots with Bookings by Others</h2>
+            <div className={styles.venueList}>
+              {bookedOpenSlotsByFutsal.map(futsal => (
+                <QuickJoinSection
+                  key={futsal._id}
+                  futsal={futsal}
+                  slots={futsal.slots}
+                  minPrice={0}
+                  availableOnly={true}
+                />
+              ))}
+            </div>
+          </section>
+        )}
       </main>
     </div>
   )

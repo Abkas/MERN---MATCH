@@ -135,7 +135,6 @@ const rejectFriendRequest = asyncHandler(async (req, res) => {
 // Get all friends
 const getAllFriends = asyncHandler(async (req, res) => {
     const userId = req.user._id;
-
     const user = await User.findById(userId).populate({
         path: 'friendships',
         populate: [
@@ -148,9 +147,12 @@ const getAllFriends = asyncHandler(async (req, res) => {
         throw new ApiError(404, "User not found");
     }
 
+    // Debug log for friendships
+    console.log('DEBUG: user.friendships for user', userId, user.friendships);
+
     // Filter accepted friendships and format the response
-    const friends = user.friendships
-        .filter(f => f.status === 'accepted')
+    const friends = (user.friendships || [])
+        .filter(f => f.status === 'accepted' && f.requester && f.recipient)
         .map(f => {
             // Return the other user in the friendship
             const friend = f.requester._id.toString() === userId.toString() 
