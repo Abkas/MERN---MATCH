@@ -241,7 +241,7 @@ const MyTeamPage = () => {
 
   // Filter out own challenges from open challenges
   const filteredChallenges = availableChallenges.filter(
-    challenge => challenge.challengerTeamId !== team._id
+    challenge => team && challenge.challengerTeamId !== team._id
   );
 
   // Fetch upcoming matches (slots where team is A or B and slot is booked)
@@ -251,6 +251,10 @@ const MyTeamPage = () => {
   const fetchUpcomingMatches = async () => {
     const res = await axiosInstance.get('/myteam/get-by-user');
     const teamData = res.data.team;
+    if (!teamData) {
+      setUpcomingMatches([]);
+      return;
+    }
     // Log all slots for debugging
     console.log('DEBUG: teamData.slots', teamData.slots);
     // Show all slots with a challenge involving this team, regardless of status
@@ -259,7 +263,7 @@ const MyTeamPage = () => {
       const challengerId = typeof slot.challenge.challenger === 'object' ? slot.challenge.challenger._id : slot.challenge.challenger;
       const opponentId = typeof slot.challenge.opponent === 'object' ? slot.challenge.opponent._id : slot.challenge.opponent;
       // Accept any slot with a challenge involving this team
-      return (challengerId === team._id || opponentId === team._id);
+      return (challengerId === teamData._id || opponentId === teamData._id);
     });
     setUpcomingMatches(matches);
   };

@@ -339,6 +339,7 @@ const QuickFindFutsalPage = () => {
                                     `https://maps.googleapis.com/maps/api/geocode/json?place_id=${placeId}&key=${import.meta.env.VITE_GOOGLE_MAPS_API_KEY}`
                                 );
                                 
+
                                 if (!response.ok) {
                                     throw new Error(`API request failed with status ${response.status}`);
                                 }
@@ -531,72 +532,75 @@ const QuickFindFutsalPage = () => {
       .finally(() => setJoiningTeamId(null));
   };
 
+  const [userInfo, setUserInfo] = useState(null);
+  const [loadingUserInfo, setLoadingUserInfo] = useState(true);
+
+  // Preferred Time State
   const [preferredTimes, setPreferredTimes] = useState([]);
-  const [loadingPreferred, setLoadingPreferred] = useState(true);
-
-  // Fetch preferred times on mount
-  const fetchPreferredTimes = () => {
-    setLoadingPreferred(true);
-    console.log('Fetching preferred times from backend...');
-    axiosInstance.get('/users/preferred-time')
-      .then(res => {
-        console.log('Backend response for preferred times:', res);
-        const data = res.data.data;
-        console.log('Extracted preferredTimes:', data);
-        // Ensure we always get an array, even if data is null/undefined
-        const safeData = Array.isArray(data) ? data : [];
-        console.log('Safe preferredTimes to set:', safeData);
-        setPreferredTimes(safeData);
-      })
-      .catch((err) => {
-        console.error('Error fetching preferred times:', err);
-        toast.error('Failed to load your preferred times');
-        setPreferredTimes([]);
-      })
-      .finally(() => {
-        setLoadingPreferred(false);
-        console.log('Finished fetching preferred times.');
-      });
-  };
-
-  useEffect(() => {
-    fetchPreferredTimes();
-  }, []);
-
-  const handleAddPreferredTime = () => {
-    if (!newDay || !newStart || !newEnd) return;
-    const updated = [
-      ...preferredTimes,
-      { dayOfWeek: newDay, startTime: newStart, endTime: newEnd }
-    ];
-    setPreferredTimes(updated);
-    axiosInstance.put('/users/preferred-time', { preferredTime: updated })
-      .then(() => {
-        // Optionally show a success toast
-        // toast.success('Preferred time updated');
-      })
-      .catch((err) => {
-        toast.error('Failed to update preferred time');
-        console.error('Preferred time update error:', err);
-      });
-  };
-  const handleDeletePreferredTime = idx => {
-    const updated = preferredTimes.filter((_, i) => i !== idx);
-    setPreferredTimes(updated);
-    axiosInstance.put('/users/preferred-time', { preferredTime: updated })
-      .then(() => {
-        // Optionally show a success toast
-        // toast.success('Preferred time updated');
-      })
-      .catch((err) => {
-        toast.error('Failed to update preferred time');
-        console.error('Preferred time update error:', err);
-      });
-  };
-
-  const [newDay, setNewDay] = useState('Monday');
+  const [newDay, setNewDay] = useState(daysOfWeek[0]);
   const [newStart, setNewStart] = useState('18:00');
   const [newEnd, setNewEnd] = useState('20:00');
+  const [savingPreferred, setSavingPreferred] = useState(false);
+
+  // Fetch user info and preferred times on mount
+  useEffect(() => {
+    const fetchUserInfo = async () => {
+      try {
+        setLoadingUserInfo(true);
+        const response = await axiosInstance.get('/users/current-user');
+        console.log('Full user fetch response:', response.data); // Debug log
+        if (response.data && response.data.data) {
+          setUserInfo(response.data.data);
+          // Treat null/undefined as empty array
+          setPreferredTimes(Array.isArray(response.data.data.preferredTime) ? response.data.data.preferredTime : (response.data.data.preferredTime ? [response.data.data.preferredTime] : []));
+        } else {
+          setUserInfo(null);
+          setPreferredTimes([]);
+        }
+      } catch (error) {
+        setUserInfo(null);
+        setPreferredTimes([]);
+      } finally {
+        setLoadingUserInfo(false);
+      }
+    };
+    fetchUserInfo();
+  }, []);
+
+  // Add preferred time slot
+  const handleAddPreferredTime = async () => {
+    if (!newDay || !newStart || !newEnd) return toast.error('Select day and time');
+    if (newStart >= newEnd) return toast.error('End time must be after start');
+    if (preferredTimes.some(pt => pt.dayOfWeek === newDay && pt.startTime === newStart && pt.endTime === newEnd)) {
+      return toast.error('This slot already exists');
+    }
+    const updated = [...preferredTimes, { dayOfWeek: newDay, startTime: newStart, endTime: newEnd }];
+    setSavingPreferred(true);
+    try {
+      await axiosInstance.patch('/users/update-account', { preferredTime: updated });
+      setPreferredTimes(updated);
+      toast.success('Preferred time added');
+    } catch (e) {
+      toast.error('Failed to add preferred time');
+    } finally {
+      setSavingPreferred(false);
+    }
+  };
+
+  // Delete preferred time slot
+  const handleDeletePreferredTime = async (idx) => {
+    const updated = preferredTimes.filter((_, i) => i !== idx);
+    setSavingPreferred(true);
+    try {
+      await axiosInstance.patch('/users/update-account', { preferredTime: updated });
+      setPreferredTimes(updated);
+      toast.success('Slot removed');
+    } catch (e) {
+      toast.error('Failed to remove slot');
+    } finally {
+      setSavingPreferred(false);
+    }
+  };
 
   return (
     <div className={styles.body} style={{ background: '#fff', color: '#111' }}>
@@ -1057,98 +1061,41 @@ const QuickFindFutsalPage = () => {
             )}
           </div>
         </section>
-
-        <section className={styles.registerMatch}>
-          <div className={styles.lightBoxContent}>
-            <div className={styles.registerHeader}>
-              <h2>Let Us Know When You're Free</h2>
-            </div>
-            <div className={styles.registerForm}>
-              <div className={styles.formGroup}>
-                <label>Preferred Availability</label>
-                <div style={{ display: 'flex', gap: 12, alignItems: 'center', marginBottom: 12 }}>
-                  <select value={newDay} onChange={e => setNewDay(e.target.value)}>
-                    {daysOfWeek.map(day => <option key={day} value={day}>{day}</option>)}
-                  </select>
-                  <select value={newStart} onChange={e => setNewStart(e.target.value)}>
-                    {timeOptions.map(t => <option key={t} value={t}>{t}</option>)}
-                  </select>
-                  <span>to</span>
-                  <select value={newEnd} onChange={e => setNewEnd(e.target.value)}>
-                    {timeOptions.map(t => <option key={t} value={t}>{t}</option>)}
-                  </select>
-                  <button type="button" style={{ background: '#10b981', color: '#fff', border: 'none', borderRadius: 6, padding: '6px 16px', fontWeight: 600, cursor: 'pointer' }} onClick={handleAddPreferredTime}>
-                    Add
-                  </button>
+        {/* Preferred Time Section */}
+        <section style={{ background: '#f9fafb', borderBottom: '1px solid #eee', padding: '32px 0', marginBottom: 32 }}>
+          <h2 style={{ fontWeight: 700, fontSize: '1.5rem', marginBottom: 18, letterSpacing: 0.5 }}>Your Preferred Times</h2>
+          <div style={{ display: 'flex', gap: 16, alignItems: 'center', marginBottom: 18 }}>
+            <select value={newDay} onChange={e => setNewDay(e.target.value)} style={{ padding: 8, borderRadius: 6, border: '1px solid #bbb' }}>
+              {daysOfWeek.map(day => <option key={day} value={day}>{day}</option>)}
+            </select>
+            <select value={newStart} onChange={e => setNewStart(e.target.value)} style={{ padding: 8, borderRadius: 6, border: '1px solid #bbb' }}>
+              {timeOptions.map(t => <option key={t} value={t}>{t}</option>)}
+            </select>
+            <span>to</span>
+            <select value={newEnd} onChange={e => setNewEnd(e.target.value)} style={{ padding: 8, borderRadius: 6, border: '1px solid #bbb' }}>
+              {timeOptions.map(t => <option key={t} value={t}>{t}</option>)}
+            </select>
+            <button onClick={handleAddPreferredTime} disabled={savingPreferred} style={{ background: '#10b981', color: '#fff', border: 'none', borderRadius: 6, padding: '8px 20px', fontWeight: 600, cursor: savingPreferred ? 'not-allowed' : 'pointer' }}>{savingPreferred ? 'Saving...' : 'Add'}</button>
+          </div>
+          {/* Debug: Log preferred times */}
+          {console.log('userInfo.preferredTime:', userInfo && userInfo.preferredTime)}
+          {console.log('preferredTimes state:', preferredTimes)}
+          {/* Render selected slots visually */}
+          <div style={{ background: '#e0f2fe', borderRadius: 10, padding: 16, minHeight: 60, display: 'flex', flexWrap: 'wrap', gap: 12 }}>
+            {((userInfo && Array.isArray(userInfo.preferredTime) && userInfo.preferredTime.length > 0)
+              ? userInfo.preferredTime
+              : preferredTimes).length === 0 ? (
+              <span style={{ color: '#888' }}>No preferred times set.</span>
+            ) : (
+              ((userInfo && Array.isArray(userInfo.preferredTime) && userInfo.preferredTime.length > 0)
+                ? userInfo.preferredTime
+                : preferredTimes).map((pt, idx) => (
+                <div key={idx} style={{ background: '#2563eb', color: '#fff', borderRadius: 8, padding: '8px 18px', display: 'flex', alignItems: 'center', gap: 10, fontWeight: 500, fontSize: 15, boxShadow: '0 1px 4px #2563eb22' }}>
+                  <span>{pt.dayOfWeek}: {pt.startTime} - {pt.endTime}</span>
+                  <button onClick={() => handleDeletePreferredTime(idx)} disabled={savingPreferred} style={{ background: '#ef4444', color: '#fff', border: 'none', borderRadius: 6, padding: '2px 10px', fontWeight: 600, cursor: savingPreferred ? 'not-allowed' : 'pointer', marginLeft: 8 }}>Delete</button>
                 </div>
-                
-                {/* Display current preferred times */}
-                <div style={{ marginBottom: 16 }}>
-                  <h3 style={{ fontSize: 16, fontWeight: 600, marginBottom: 8 }}>Your Current Availability:</h3>
-                  {loadingPreferred ? (
-                    <div style={{ color: '#888', padding: '8px 0' }}>Loading your available times...</div>
-                  ) : preferredTimes.length === 0 ? (
-                    <div style={{ color: '#888', padding: '8px 0' }}>You haven't added any available times yet.</div>
-                  ) : (
-                    <div style={{ 
-                      background: '#f0f9ff', 
-                      border: '1px solid #93c5fd', 
-                      borderRadius: 8, 
-                      padding: 16,
-                      marginBottom: 16
-                    }}>
-                      <table style={{ width: '100%', borderCollapse: 'collapse' }}>
-                        <thead>
-                          <tr style={{ borderBottom: '1px solid #bfdbfe' }}>
-                            <th style={{ textAlign: 'left', padding: '8px 16px', color: '#1e40af' }}>Day</th>
-                            <th style={{ textAlign: 'left', padding: '8px 16px', color: '#1e40af' }}>Time</th>
-                            <th style={{ textAlign: 'right', padding: '8px 16px', color: '#1e40af' }}>Action</th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          {preferredTimes.map((pt, idx) => (
-                            <tr key={idx} style={{ borderBottom: idx < preferredTimes.length - 1 ? '1px solid #e5e7eb' : 'none' }}>
-                              <td style={{ padding: '8px 16px', fontWeight: 500 }}>{pt.dayOfWeek}</td>
-                              <td style={{ padding: '8px 16px' }}>{pt.startTime} - {pt.endTime}</td>
-                              <td style={{ padding: '8px 16px', textAlign: 'right' }}>
-                                <button 
-                                  onClick={() => handleDeletePreferredTime(idx)} 
-                                  style={{ 
-                                    background: '#ef4444',
-                                    color: '#fff', 
-                                    border: 'none', 
-                                    borderRadius: 6, 
-                                    padding: '4px 12px', 
-                                    fontWeight: 600, 
-                                    cursor: 'pointer' 
-                                  }}
-                                >
-                                  Delete
-                                </button>
-                              </td>
-                            </tr>
-                          ))}
-                        </tbody>
-                      </table>
-                    </div>
-                  )}
-                </div>
-                
-                <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
-                  {loadingPreferred ? <span style={{ color: '#888' }}>Loading...</span> : null}
-                  {!loadingPreferred && preferredTimes.length === 0 && <span style={{ color: '#888' }}>No preferred times added.</span>}
-                  {preferredTimes.map((pt, idx) => (
-                    <div key={idx} style={{ display: 'flex', alignItems: 'center', gap: 12, background: '#f3f4f6', borderRadius: 6, padding: '6px 12px' }}>
-                      <span style={{ fontWeight: 500 }}>{pt.dayOfWeek}</span>
-                      <span>{pt.startTime} - {pt.endTime}</span>
-                      <button type="button" style={{ background: '#ef4444', color: '#fff', border: 'none', borderRadius: 6, padding: '2px 10px', fontWeight: 600, cursor: 'pointer', marginLeft: 8 }} onClick={() => handleDeletePreferredTime(idx)}>
-                        Delete
-                      </button>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </div>
+              ))
+            )}
           </div>
         </section>
       </main>

@@ -204,6 +204,11 @@ const getCurrentUser = asyncHandler(async(req,res) =>{
     if (!user) {
         throw new ApiError(404, 'User not found');
     }
+    // Detailed console log of all user fields
+    console.log('--- User Data Fetched by ID ---');
+    Object.keys(user._doc).forEach(key => {
+        console.log(`user.${key}:`, user[key]);
+    });
     // Return the same fields as loginUser
     return res
         .status(200)
@@ -219,6 +224,7 @@ const getCurrentUser = asyncHandler(async(req,res) =>{
             playerProfile: user.playerProfile,
             organizerProfile: user.organizerProfile,
             matchHistory: user.matchHistory, // <-- add this
+            preferredTime: user.preferredTime, // <-- add this for clarity
             createdAt: user.createdAt,
             updatedAt: user.updatedAt
         }, 'Current user fetched successfully'))
@@ -228,7 +234,7 @@ const updateAccountDetails = asyncHandler(async(req, res) =>{
     const userId = req.user._id
     const updateData = req.body
 
-    const userFields = ['username', 'phoneNumber', 'avatar', 'fullName', 'email'];
+    const userFields = ['username', 'phoneNumber', 'avatar', 'fullName', 'email', 'preferredTime']; // allow preferredTime
     const playerFields = ['bio', 'skillLevel', 'location', 'preferences','availability','dateOfBirth'];
     const organizerFields = ['bio', 'location', 'futsals'];
 
@@ -243,7 +249,22 @@ const updateAccountDetails = asyncHandler(async(req, res) =>{
 
     for (const key in updateData) {
         if (userFields.includes(key)) {
-            userUpdate[key] = updateData[key];
+            // Special handling for preferredTime: validate array of objects
+            if (key === 'preferredTime') {
+                if (!Array.isArray(updateData.preferredTime)) {
+                    throw new ApiError(400, 'preferredTime must be an array');
+                }
+                // Optionally validate each slot
+                updateData.preferredTime.forEach((slot, idx) => {
+                    if (!slot.dayOfWeek || !slot.startTime || !slot.endTime) {
+                        throw new ApiError(400, `Invalid preferredTime slot at index ${idx}`);
+                    }
+                });
+                userUpdate.preferredTime = updateData.preferredTime;
+                console.log('Updating preferredTime:', updateData.preferredTime);
+            } else {
+                userUpdate[key] = updateData[key];
+            }
         } else if (user.role === 'player' && playerFields.includes(key)) {
             playerUpdate[key] = updateData[key];
         } else if (user.role === 'organizer' && organizerFields.includes(key)) {
@@ -266,7 +287,7 @@ const updateAccountDetails = asyncHandler(async(req, res) =>{
     ).populate({
         path: 'playerProfile',
         populate: {
-            path: 'reviews matchHistory followedFutsals'
+            path: 'reviews followedFutsals' // removed matchHistory
         }
     }).populate('organizerProfile')
      .select('-password -refreshToken');
@@ -588,37 +609,6 @@ const getAllUsers = asyncHandler(async (req, res) => {
     return res.json(
         new ApiResponse(200, usersWithDetails, "Users retrieved successfully")
     );
-});
-
-// Get preferredTime for current user
-export const getPreferredTime = asyncHandler(async (req, res) => {
-    const user = await User.findById(req.user._id).select('preferredTime');
-    if (!user) {
-        throw new ApiError(404, 'User not found');
-    }
-    res.status(200).json(new ApiResponse(200, user.preferredTime, 'Preferred time fetched'));
-});
-
-// Update preferredTime for current user (replace all)
-export const updatePreferredTime = asyncHandler(async (req, res) => {
-    const { preferredTime } = req.body;
-    console.log('Received preferredTime update:', preferredTime);
-    if (!Array.isArray(preferredTime)) {
-        console.log('preferredTime is not an array:', preferredTime);
-        throw new ApiError(400, 'preferredTime must be an array');
-    }
-    console.log('User for update:', req.user?._id);
-    const user = await User.findByIdAndUpdate(
-        req.user._id,
-        { $set: { preferredTime } },
-        { new: true }
-    ).select('preferredTime');
-    if (!user) {
-        console.log('User not found for preferredTime update:', req.user?._id);
-        throw new ApiError(404, 'User not found');
-    }
-    console.log('Updated preferredTime in DB:', user.preferredTime);
-    res.status(200).json(new ApiResponse(200, user.preferredTime, 'Preferred time updated'));
 });
 
 export {
