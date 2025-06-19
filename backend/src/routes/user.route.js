@@ -14,7 +14,9 @@ import {
     updateUserLocation,
     moveToHistory,
     searchUsers,
-    getAllUsers
+    getAllUsers,
+    getPreferredTime,
+    updatePreferredTime
 } from '../controllers/user.controller.js'
 import {upload} from '../middlewares/multer.middleware.js'
 import {verifyJWT} from '../middlewares/auth.middleware.js'
@@ -87,6 +89,11 @@ router
 router
 .route('/update-location')
 .post(verifyJWT, updateUserLocation)
+
+router
+.route('/preferred-time')
+.get(verifyJWT, getPreferredTime)
+.put(verifyJWT, updatePreferredTime)
 
 router.get('/search', verifyJWT, searchUsers)
 router.get('/all', verifyJWT, getAllUsers)

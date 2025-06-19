@@ -209,12 +209,12 @@ const HomePage = () => {
       </section>
 
       <section className={styles.social}>
-        <h2>Follow Us</h2>
+         <h2>Follow Us</h2>
         <div className={styles.socialIcons}>
-          <a href="#" className={styles.socialIcon}><FaFacebookF /></a>
-          <a href="#" className={styles.socialIcon}><FaInstagram /></a>
-          <a href="#" className={styles.socialIcon}><FaLinkedinIn /></a>
-          <a href="#" className={styles.socialIcon}><FaTwitter /></a>
+          <a href="https://www.facebook.com/" className={styles.socialIcon}><FaFacebookF /></a>
+          <a href="https://www.instagram.com/" className={styles.socialIcon}><FaInstagram /></a>
+          <a href="https://www.linkedin.com/" className={styles.socialIcon}><FaLinkedinIn /></a>
+          <a href="https://x.com/" className={styles.socialIcon}><FaTwitter /></a>
         </div>
       </section>
 

@@ -590,6 +590,37 @@ const getAllUsers = asyncHandler(async (req, res) => {
     );
 });
 
+// Get preferredTime for current user
+export const getPreferredTime = asyncHandler(async (req, res) => {
+    const user = await User.findById(req.user._id).select('preferredTime');
+    if (!user) {
+        throw new ApiError(404, 'User not found');
+    }
+    res.status(200).json(new ApiResponse(200, user.preferredTime, 'Preferred time fetched'));
+});
+
+// Update preferredTime for current user (replace all)
+export const updatePreferredTime = asyncHandler(async (req, res) => {
+    const { preferredTime } = req.body;
+    console.log('Received preferredTime update:', preferredTime);
+    if (!Array.isArray(preferredTime)) {
+        console.log('preferredTime is not an array:', preferredTime);
+        throw new ApiError(400, 'preferredTime must be an array');
+    }
+    console.log('User for update:', req.user?._id);
+    const user = await User.findByIdAndUpdate(
+        req.user._id,
+        { $set: { preferredTime } },
+        { new: true }
+    ).select('preferredTime');
+    if (!user) {
+        console.log('User not found for preferredTime update:', req.user?._id);
+        throw new ApiError(404, 'User not found');
+    }
+    console.log('Updated preferredTime in DB:', user.preferredTime);
+    res.status(200).json(new ApiResponse(200, user.preferredTime, 'Preferred time updated'));
+});
+
 export {
     registerUser,
     loginUser,

@@ -86,7 +86,24 @@ const UserSchema = new Schema(
             type: Schema.Types.ObjectId,
             ref: 'MyTeam',
             default: null
-        }
+        },
+        // Preferred time availability: array of { dayOfWeek, startTime, endTime }
+        preferredTime: [
+            {
+                dayOfWeek: {
+                    type: String, // e.g., 'Monday', 'Tuesday', etc.
+                    required: true
+                },
+                startTime: {
+                    type: String, // e.g., '18:00'
+                    required: true
+                },
+                endTime: {
+                    type: String, // e.g., '20:00'
+                    required: true
+                }
+            }
+        ]
 
 },{timestamps: true})
 

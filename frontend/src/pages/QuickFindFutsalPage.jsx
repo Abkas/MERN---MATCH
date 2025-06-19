@@ -9,6 +9,17 @@ import { getCurrentLocation, calculateDistance, formatDistance } from '../utils/
 import toast from 'react-hot-toast';
 import FutsalNavbar from '../components/FutsalNavbar'
 
+const daysOfWeek = [
+  'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'
+];
+
+// Helper to generate 24-hour time options in 30-min increments
+const timeOptions = Array.from({ length: 48 }, (_, i) => {
+  const h = String(Math.floor(i / 2)).padStart(2, '0');
+  const m = i % 2 === 0 ? '00' : '30';
+  return `${h}:${m}`;
+});
+
 const QuickFindFutsalPage = () => {
   // State for filter values
   const [distance, setDistance] = useState(25);
@@ -520,6 +531,65 @@ const QuickFindFutsalPage = () => {
       .finally(() => setJoiningTeamId(null));
   };
 
+  const [preferredTimes, setPreferredTimes] = useState([]);
+  const [loadingPreferred, setLoadingPreferred] = useState(true);
+
+  // Fetch preferred times on mount
+  useEffect(() => {
+    setLoadingPreferred(true);
+    console.log('Fetching preferred times from backend...');
+    axiosInstance.get('/users/preferred-time')
+      .then(res => {
+        console.log('Backend response for preferred times:', res);
+        const data = res.data.data;
+        console.log('Extracted preferredTimes:', data);
+        setPreferredTimes(Array.isArray(data) ? data : []);
+      })
+      .catch((err) => {
+        console.error('Error fetching preferred times:', err);
+        setPreferredTimes([]);
+      })
+      .finally(() => {
+        setLoadingPreferred(false);
+        console.log('Finished fetching preferred times.');
+      });
+  }, []);
+
+  const handleAddPreferredTime = () => {
+    if (!newDay || !newStart || !newEnd) return;
+    const updated = [
+      ...preferredTimes,
+      { dayOfWeek: newDay, startTime: newStart, endTime: newEnd }
+    ];
+    setPreferredTimes(updated);
+    axiosInstance.put('/users/preferred-time', { preferredTime: updated })
+      .then(() => {
+        // Optionally show a success toast
+        // toast.success('Preferred time updated');
+      })
+      .catch((err) => {
+        toast.error('Failed to update preferred time');
+        console.error('Preferred time update error:', err);
+      });
+  };
+  const handleDeletePreferredTime = idx => {
+    const updated = preferredTimes.filter((_, i) => i !== idx);
+    setPreferredTimes(updated);
+    axiosInstance.put('/users/preferred-time', { preferredTime: updated })
+      .then(() => {
+        // Optionally show a success toast
+        // toast.success('Preferred time updated');
+      })
+      .catch((err) => {
+        toast.error('Failed to update preferred time');
+        console.error('Preferred time update error:', err);
+      });
+  };
+
+  const [newDay, setNewDay] = useState('Monday');
+  const [newStart, setNewStart] = useState('18:00');
+  const [newEnd, setNewEnd] = useState('20:00');
+
   return (
     <div className={styles.body} style={{ background: '#fff', color: '#111' }}>
       <FutsalNavbar />
@@ -532,9 +602,9 @@ const QuickFindFutsalPage = () => {
             Coming soon: Join a quick match instantly!
           </div>
         </section>
-        {/* Section 2: Find Players */}
+        {/* Section 2: People with Similar Interest */}
         <section style={{ background: '#fff', color: '#111', borderBottom: '1px solid #eee', padding: '32px 0' }}>
-          <h2 style={{ fontWeight: 700, fontSize: '1.5rem', marginBottom: 24, letterSpacing: 0.5 }}>Find Players</h2>
+          <h2 style={{ fontWeight: 700, fontSize: '1.5rem', marginBottom: 24, letterSpacing: 0.5 }}>People with Similar Interest</h2>
           <div style={{ minHeight: 80, background: '#fafafa', borderRadius: 10, padding: 24 }}>
             {findPlayers.length === 0 ? (
               <div style={{ color: '#888', fontSize: 18, textAlign: 'center' }}>No new players to add.</div>
@@ -623,9 +693,9 @@ const QuickFindFutsalPage = () => {
             )}
           </div>
         </section>
-        {/* Section 3: Join Teams */}
+        {/* Section 3: Matches are Fun as a Team */}
         <section style={{ background: '#fff', color: '#111', borderBottom: '1px solid #eee', padding: '32px 0' }}>
-          <h2 style={{ fontWeight: 700, fontSize: '1.5rem', marginBottom: 24, letterSpacing: 0.5 }}>Join Teams</h2>
+          <h2 style={{ fontWeight: 700, fontSize: '1.5rem', marginBottom: 24, letterSpacing: 0.5 }}>Matches are Fun as a Team</h2>
           <div style={{ minHeight: 80, background: '#fafafa', borderRadius: 10, padding: 24 }}>
             {teams.length === 0 ? (
               <div style={{ color: '#888', fontSize: 18, textAlign: 'center' }}>No teams available to join.</div>
@@ -983,68 +1053,38 @@ const QuickFindFutsalPage = () => {
         <section className={styles.registerMatch}>
           <div className={styles.lightBoxContent}>
             <div className={styles.registerHeader}>
-              <h2>Register Match</h2>
+              <h2>Let Us Know When You're Free</h2>
             </div>
-            <div className={`${styles.registerForm} ${styles.disabledSection}`}>
-              <div className={styles.contentToBlur}>
-                <div className={styles.formGroup}>
-                  <label>Selected Venues</label>
-                  <div className={styles.selectedVenues}>
-                    <div className={styles.venueChip}>
-                      <span className={styles.venueName}>Golden Futsal, Lalitpur</span>
-                      <span className={styles.venueDistance}>2.5km away</span>
-                    </div>
-                    <div className={styles.venueChip}>
-                      <span className={styles.venueName}>Elite Futsal, Kathmandu</span>
-                      <span className={styles.venueDistance}>3.8km away</span>
-                    </div>
-                    <div className={styles.venueChip}>
-                      <span className={styles.venueName}>Pro Futsal, Bhaktapur</span>
-                      <span className={styles.venueDistance}>4.2km away</span>
-                    </div>
-                    <button className={styles.addVenueBtn}>
-                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                        <line x1="12" y1="5" x2="12" y2="19"></line>
-                        <line x1="5" y1="12" x2="19" y2="12"></line>
-                      </svg>
-                      Add Venue
-                    </button>
-                  </div>
-                </div>
-                <div className={styles.formGroup}>
-                  <label>Available Time Slots</label>
-                  <div className={styles.selectedDates}>
-                    <div className={styles.dateChip}>
-                      <div className={styles.dateInfo}>
-                        <span className={styles.date}>25th April</span>
-                        <span className={styles.time}>12:00 - 13:00</span>
-                      </div>
-                      <span className={styles.slots}>4 slots left</span>
-                    </div>
-                    <div className={styles.dateChip}>
-                      <div className={styles.dateInfo}>
-                        <span className={styles.date}>25th April</span>
-                        <span className={styles.time}>14:00 - 15:00</span>
-                      </div>
-                      <span className={styles.slots}>6 slots left</span>
-                    </div>
-                    <button className={styles.addDateBtn}>
-                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                        <line x1="12" y1="5" x2="12" y2="19"></line>
-                        <line x1="5" y1="12" x2="19" y2="12"></line>
-                      </svg>
-                      Add Time Slot
-                    </button>
-                  </div>
-                </div>
-                <div className={styles.formActions}>
-                  <button className={styles.registerBtn}>
-                    Register for Match
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                      <line x1="5" y1="12" x2="19" y2="12"></line>
-                      <polyline points="12 5 19 12 12 19"></polyline>
-                    </svg>
+            <div className={styles.registerForm}>
+              <div className={styles.formGroup}>
+                <label>Preferred Availability</label>
+                <div style={{ display: 'flex', gap: 12, alignItems: 'center', marginBottom: 12 }}>
+                  <select value={newDay} onChange={e => setNewDay(e.target.value)}>
+                    {daysOfWeek.map(day => <option key={day} value={day}>{day}</option>)}
+                  </select>
+                  <select value={newStart} onChange={e => setNewStart(e.target.value)}>
+                    {timeOptions.map(t => <option key={t} value={t}>{t}</option>)}
+                  </select>
+                  <span>to</span>
+                  <select value={newEnd} onChange={e => setNewEnd(e.target.value)}>
+                    {timeOptions.map(t => <option key={t} value={t}>{t}</option>)}
+                  </select>
+                  <button type="button" style={{ background: '#10b981', color: '#fff', border: 'none', borderRadius: 6, padding: '6px 16px', fontWeight: 600, cursor: 'pointer' }} onClick={handleAddPreferredTime}>
+                    Add
                   </button>
+                </div>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+                  {loadingPreferred ? <span style={{ color: '#888' }}>Loading...</span> : null}
+                  {!loadingPreferred && preferredTimes.length === 0 && <span style={{ color: '#888' }}>No preferred times added.</span>}
+                  {preferredTimes.map((pt, idx) => (
+                    <div key={idx} style={{ display: 'flex', alignItems: 'center', gap: 12, background: '#f3f4f6', borderRadius: 6, padding: '6px 12px' }}>
+                      <span style={{ fontWeight: 500 }}>{pt.dayOfWeek}</span>
+                      <span>{pt.startTime} - {pt.endTime}</span>
+                      <button type="button" style={{ background: '#ef4444', color: '#fff', border: 'none', borderRadius: 6, padding: '2px 10px', fontWeight: 600, cursor: 'pointer', marginLeft: 8 }} onClick={() => handleDeletePreferredTime(idx)}>
+                        Delete
+                      </button>
+                    </div>
+                  ))}
                 </div>
               </div>
             </div>
