@@ -7,13 +7,16 @@ import { axiosInstance } from '../../lib/axios'
 import toast from 'react-hot-toast'
 import { getSlotTimeStatus } from '../../utils/slotTimeStatus'
 import FutsalNavbar from '../../components/FutsalNavbar'
-import PlayerSidebar from '../../components/PlayerSidebar'
+import OrganizerSidebar from '../../components/OrganizerSidebar';
+import PlayerSidebar from '../../components/PlayerSidebar';
 
 const PUpcomingMatchesPage = () => {
-    const { logOut } = useAuthStore()
+    const { logOut, authUser } = useAuthStore();
     const navigate = useNavigate()
     const [joinedSlots, setJoinedSlots] = useState([])
     const [loading, setLoading] = useState(true)
+
+    const isOrganizer = authUser?.role === 'organizer';
 
     const handleLogout = () => {
         logOut()
@@ -84,9 +87,9 @@ const PUpcomingMatchesPage = () => {
     return (
         <div className={styles.body}>
             <FutsalNavbar />
-            <div className={styles.container}>
-                <PlayerSidebar />
-                <main className={styles.mainContent} style={{ marginTop: '72px', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'flex-start' }}>
+            <div className={styles.container} style={{marginTop: '88px'}}>
+                {isOrganizer ? <OrganizerSidebar /> : <PlayerSidebar />}
+                <main className={styles.mainContent} style={{marginLeft: '250px', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'flex-start'}}>
                     <h1 className={styles.pageTitle}>
                         <span>Upcoming Matches</span>
                         <span className={styles.matchCount}>
@@ -110,8 +113,7 @@ const PUpcomingMatchesPage = () => {
                                 const timeStatus = getSlotTimeStatus(slot, slot.date);
                                 let statusLabel = '';
                                 let statusClass = '';
-                                // Get current user
-                                const authUser = useAuthStore.getState().authUser;
+
                                 let userTeam = null;
                                 if (authUser && slot.teamA && slot.teamA.some(u => (u._id || u) === authUser._id)) userTeam = 'A';
                                 if (authUser && slot.teamB && slot.teamB.some(u => (u._id || u) === authUser._id)) userTeam = 'B';

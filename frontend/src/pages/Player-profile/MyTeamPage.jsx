@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useAuthStore } from '../../store/useAuthStore';
 import { axiosInstance } from '../../lib/axios';
 import PlayerSidebar from '../../components/PlayerSidebar';
+import OrganizerSidebar from '../../components/OrganizerSidebar';
 import FutsalNavbar from '../../components/FutsalNavbar';
 import styles from '../css/MyTeamPage.module.css';
 import toast from 'react-hot-toast';
@@ -154,6 +155,7 @@ const MyTeamPage = () => {
   };
 
   const isOwner = team && team.owner && authUser && team.owner._id === authUser._id;
+  const isOrganizer = authUser?.role === 'organizer';
 
   // Fetch available team challenges (open challenges)
   const fetchAvailableChallenges = async () => {
@@ -275,9 +277,9 @@ const MyTeamPage = () => {
   return (
     <div className={styles.body}>
       <FutsalNavbar />
-      <div className={styles.container}>
-        <PlayerSidebar />
-        <main className={styles.mainContent}>
+      <div className={styles.container} style={{marginTop: '88px'}}>
+        {isOrganizer ? <OrganizerSidebar /> : <PlayerSidebar />}
+        <main className={styles.mainContent} style={{marginLeft: '250px'}}>
           {loading ? <div>Loading...</div> : (
             <>
               {team ? (

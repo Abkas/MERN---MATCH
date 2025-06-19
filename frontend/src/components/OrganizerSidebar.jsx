@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import styles from './OSidebar.module.css';
 import { useAuthStore } from '../store/useAuthStore';
-import { LogOut, User, LayoutDashboard, Clock, History, ChevronLeft, ChevronRight, MapPin, Users, UserPlus } from 'lucide-react';
+import { LogOut, User, LayoutDashboard, Clock, ChevronLeft, ChevronRight, MapPin, Users, UserPlus } from 'lucide-react';
 
 const OrganizerSidebar = () => {
   const { logOut, authUser } = useAuthStore();
@@ -15,7 +15,6 @@ const OrganizerSidebar = () => {
     { label: 'Profile', path: `/organizer-profile${authUser && authUser._id ? `/${authUser._id}` : ''}`, icon: <User size={22} /> },
     { label: 'My Futsals', path: '/organizer-futsals', icon: <MapPin size={22} /> },
     { label: 'Slots', path: '/organizer-slots', icon: <Clock size={22} /> },
-    { label: 'History', path: '/organizer-history', icon: <History size={22} /> },
     { label: 'Add Friends', path: '/player-addfriend', icon: <UserPlus size={22} /> },
     { label: 'My Team', path: '/player-myteam', icon: <Users size={22} /> },
     { label: 'Upcoming Matches', path: '/player-upcomingmatches', icon: <Clock size={22} /> },

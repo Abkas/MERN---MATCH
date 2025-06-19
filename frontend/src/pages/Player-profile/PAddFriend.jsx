@@ -7,6 +7,7 @@ import { axiosInstance } from '../../lib/axios';
 import FutsalNavbar from '../../components/FutsalNavbar';
 import PlayerProfileCard from '../../components/PlayerProfileCard';
 import PlayerSidebar from '../../components/PlayerSidebar';
+import OrganizerSidebar from '../../components/OrganizerSidebar';
 import { toast } from 'react-hot-toast';
 
 const PAddFriend = () => {
@@ -29,6 +30,7 @@ const PAddFriend = () => {
     const [searchActive, setSearchActive] = useState(false);
 
     const currentUserId = authUser?._id;
+    const isOrganizer = authUser?.role === 'organizer';
 
     useEffect(() => {
         checkAuth();
@@ -148,9 +150,9 @@ const PAddFriend = () => {
     return (
         <div className={styles.body} style={{ background: '#f4f6fb', minHeight: '100vh' }}>
             <FutsalNavbar />
-            <div className={styles.container}>
-                <PlayerSidebar />
-                <main style={{ maxWidth: 1100, margin: '30px auto 0 auto', padding: '3rem 0', width: '100%' }}>
+            <div className={styles.container} style={{marginTop: '88px'}}>
+                {isOrganizer ? <OrganizerSidebar /> : <PlayerSidebar />}
+                <main className={styles.mainContent} style={{marginLeft: '250px'}}>
                     <div className={styles.searchBarWrapper}>
                         <input
                             className={styles.searchBar}
