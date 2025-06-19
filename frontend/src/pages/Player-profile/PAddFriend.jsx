@@ -152,149 +152,151 @@ const PAddFriend = () => {
             <FutsalNavbar />
             <div className={styles.container} style={{marginTop: '88px'}}>
                 {isOrganizer ? <OrganizerSidebar /> : <PlayerSidebar />}
-                <main className={styles.mainContent} style={{marginLeft: '250px'}}>
-                    <div className={styles.searchBarWrapper}>
-                        <input
-                            className={styles.searchBar}
-                            type="text"
-                            placeholder="Search by username or real name..."
-                            value={searchInput}
-                            onChange={e => {
-                                setSearchInput(e.target.value);
-                                setSearchActive(false);
-                            }}
-                            onFocus={() => setSearchActive(false)}
-                        />
-                        <button className={styles.searchBtn} onClick={() => setSearchActive(true)}>Search</button>
-                        {searchInput && !searchActive && liveSuggestions.length > 0 && (
-                            <div className={styles.suggestionDropdown}>
-                                {liveSuggestions.map(player => (
-                                    <div
-                                        key={player._id}
-                                        className={styles.suggestionItem}
-                                        onClick={() => {
-                                            setSearchInput(player.username || player.fullName || '');
-                                            setSearchActive(true);
-                                        }}
-                                    >
-                                        <img src={player.avatar || '/avatar.jpg'} alt="avatar" className={styles.suggestionAvatar} />
-                                        <span className={styles.suggestionName}>{player.username}</span>
-                                        {player.fullName && <span className={styles.suggestionFullName}>({player.fullName})</span>}
-                                    </div>
-                                ))}
-                            </div>
+                <main className={styles.mainContent} style={{marginLeft: '250px', display: 'flex', justifyContent: 'center', alignItems: 'flex-start', minHeight: '80vh', marginTop: '24px'}}>
+                    <div style={{width: '100%', maxWidth: '800px'}}>
+                        <div className={styles.searchBarWrapper}>
+                            <input
+                                className={styles.searchBar}
+                                type="text"
+                                placeholder="Search by username or real name..."
+                                value={searchInput}
+                                onChange={e => {
+                                    setSearchInput(e.target.value);
+                                    setSearchActive(false);
+                                }}
+                                onFocus={() => setSearchActive(false)}
+                            />
+                            <button className={styles.searchBtn} onClick={() => setSearchActive(true)}>Search</button>
+                            {searchInput && !searchActive && liveSuggestions.length > 0 && (
+                                <div className={styles.suggestionDropdown}>
+                                    {liveSuggestions.map(player => (
+                                        <div
+                                            key={player._id}
+                                            className={styles.suggestionItem}
+                                            onClick={() => {
+                                                setSearchInput(player.username || player.fullName || '');
+                                                setSearchActive(true);
+                                            }}
+                                        >
+                                            <img src={player.avatar || '/avatar.jpg'} alt="avatar" className={styles.suggestionAvatar} />
+                                            <span className={styles.suggestionName}>{player.username}</span>
+                                            {player.fullName && <span className={styles.suggestionFullName}>({player.fullName})</span>}
+                                        </div>
+                                    ))}
+                                </div>
+                            )}
+                        </div>
+                        <div className={styles.tabs}>
+                            <button 
+                                className={`${styles.tab} ${activeTab === 'search' ? styles.active : ''}`}
+                                onClick={() => setActiveTab('search')}
+                            >
+                                <Search size={16} />
+                                Find Players
+                            </button>
+                            <button 
+                                className={`${styles.tab} ${activeTab === 'requests' ? styles.active : ''}`}
+                                onClick={() => setActiveTab('requests')}
+                            >
+                                <UserPlus size={16} />
+                                Friend Requests
+                            </button>
+                            <button 
+                                className={`${styles.tab} ${activeTab === 'sent' ? styles.active : ''}`}
+                                onClick={() => setActiveTab('sent')}
+                            >
+                                <UserCheck size={16} />
+                                Sent Requests
+                            </button>
+                            <button 
+                                className={`${styles.tab} ${activeTab === 'friends' ? styles.active : ''}`}
+                                onClick={() => setActiveTab('friends')}
+                            >
+                                <Users size={16} />
+                                Friends
+                            </button>
+                        </div>
+                        {activeTab === 'search' && (
+                            <>
+                                <h2 className={styles.sectionTitle}>Find New Players</h2>
+                                <div className={styles.playerGrid}>
+                                    {filteredPlayers.length === 0 ? (
+                                        <div className={styles.emptyMsg}>No new players to add.</div>
+                                    ) : (
+                                        filteredPlayers.map(player => (
+                                            <PlayerProfileCard
+                                                key={player._id}
+                                                player={player}
+                                                onSendRequest={() => handleSendRequest(player._id)}
+                                                sendingRequest={actionLoading.sendRequest}
+                                            />
+                                        ))
+                                    )}
+                                </div>
+                            </>
+                        )}
+                        {activeTab === 'requests' && (
+                            <>
+                                <h2 className={styles.sectionTitle}>Friend Requests</h2>
+                                <div className={styles.playerGrid}>
+                                    {pendingRequests.length === 0 ? (
+                                        <div className={styles.emptyMsg}>No incoming friend requests.</div>
+                                    ) : (
+                                        pendingRequests.map(request => (
+                                            <PlayerProfileCard
+                                                key={request._id}
+                                                player={request.requester}
+                                                onAcceptRequest={() => handleAcceptRequest(request._id)}
+                                                onRejectRequest={() => handleRejectRequest(request._id)}
+                                                requestStatus="pending"
+                                                acceptingRequest={actionLoading.acceptRequest}
+                                                rejectingRequest={actionLoading.rejectRequest}
+                                            />
+                                        ))
+                                    )}
+                                </div>
+                            </>
+                        )}
+                        {activeTab === 'sent' && (
+                            <>
+                                <h2 className={styles.sectionTitle}>Sent Requests</h2>
+                                <div className={styles.playerGrid}>
+                                    {sentRequests.length === 0 ? (
+                                        <div className={styles.emptyMsg}>No sent friend requests.</div>
+                                    ) : (
+                                        sentRequests.map(request => (
+                                            <PlayerProfileCard
+                                                key={request._id}
+                                                player={request.recipient}
+                                                onCancelRequest={() => handleRejectRequest(request._id, true)}
+                                                requestStatus="sent"
+                                                cancellingRequest={actionLoading.rejectRequest}
+                                            />
+                                        ))
+                                    )}
+                                </div>
+                            </>
+                        )}
+                        {activeTab === 'friends' && (
+                            <>
+                                <h2 className={styles.sectionTitle}>Your Friends</h2>
+                                <div className={styles.playerGrid}>
+                                    {friends.length === 0 ? (
+                                        <div className={styles.emptyMsg}>No friends yet.</div>
+                                    ) : (
+                                        friends.map(friend => (
+                                            <PlayerProfileCard
+                                                key={friend._id}
+                                                player={friend}
+                                                showFullProfile
+                                                requestStatus="accepted"
+                                            />
+                                        ))
+                                    )}
+                                </div>
+                            </>
                         )}
                     </div>
-                    <div className={styles.tabs}>
-                        <button 
-                            className={`${styles.tab} ${activeTab === 'search' ? styles.active : ''}`}
-                            onClick={() => setActiveTab('search')}
-                        >
-                            <Search size={16} />
-                            Find Players
-                        </button>
-                        <button 
-                            className={`${styles.tab} ${activeTab === 'requests' ? styles.active : ''}`}
-                            onClick={() => setActiveTab('requests')}
-                        >
-                            <UserPlus size={16} />
-                            Friend Requests
-                        </button>
-                        <button 
-                            className={`${styles.tab} ${activeTab === 'sent' ? styles.active : ''}`}
-                            onClick={() => setActiveTab('sent')}
-                        >
-                            <UserCheck size={16} />
-                            Sent Requests
-                        </button>
-                        <button 
-                            className={`${styles.tab} ${activeTab === 'friends' ? styles.active : ''}`}
-                            onClick={() => setActiveTab('friends')}
-                        >
-                            <Users size={16} />
-                            Friends
-                        </button>
-                    </div>
-                    {activeTab === 'search' && (
-                        <>
-                            <h2 className={styles.sectionTitle}>Find New Players</h2>
-                            <div className={styles.playerGrid}>
-                                {filteredPlayers.length === 0 ? (
-                                    <div className={styles.emptyMsg}>No new players to add.</div>
-                                ) : (
-                                    filteredPlayers.map(player => (
-                                        <PlayerProfileCard
-                                            key={player._id}
-                                            player={player}
-                                            onSendRequest={() => handleSendRequest(player._id)}
-                                            sendingRequest={actionLoading.sendRequest}
-                                        />
-                                    ))
-                                )}
-                            </div>
-                        </>
-                    )}
-                    {activeTab === 'requests' && (
-                        <>
-                            <h2 className={styles.sectionTitle}>Friend Requests</h2>
-                            <div className={styles.playerGrid}>
-                                {pendingRequests.length === 0 ? (
-                                    <div className={styles.emptyMsg}>No incoming friend requests.</div>
-                                ) : (
-                                    pendingRequests.map(request => (
-                                        <PlayerProfileCard
-                                            key={request._id}
-                                            player={request.requester}
-                                            onAcceptRequest={() => handleAcceptRequest(request._id)}
-                                            onRejectRequest={() => handleRejectRequest(request._id)}
-                                            requestStatus="pending"
-                                            acceptingRequest={actionLoading.acceptRequest}
-                                            rejectingRequest={actionLoading.rejectRequest}
-                                        />
-                                    ))
-                                )}
-                            </div>
-                        </>
-                    )}
-                    {activeTab === 'sent' && (
-                        <>
-                            <h2 className={styles.sectionTitle}>Sent Requests</h2>
-                            <div className={styles.playerGrid}>
-                                {sentRequests.length === 0 ? (
-                                    <div className={styles.emptyMsg}>No sent friend requests.</div>
-                                ) : (
-                                    sentRequests.map(request => (
-                                        <PlayerProfileCard
-                                            key={request._id}
-                                            player={request.recipient}
-                                            onCancelRequest={() => handleRejectRequest(request._id, true)}
-                                            requestStatus="sent"
-                                            cancellingRequest={actionLoading.rejectRequest}
-                                        />
-                                    ))
-                                )}
-                            </div>
-                        </>
-                    )}
-                    {activeTab === 'friends' && (
-                        <>
-                            <h2 className={styles.sectionTitle}>Your Friends</h2>
-                            <div className={styles.playerGrid}>
-                                {friends.length === 0 ? (
-                                    <div className={styles.emptyMsg}>No friends yet.</div>
-                                ) : (
-                                    friends.map(friend => (
-                                        <PlayerProfileCard
-                                            key={friend._id}
-                                            player={friend}
-                                            showFullProfile
-                                            requestStatus="accepted"
-                                        />
-                                    ))
-                                )}
-                            </div>
-                        </>
-                    )}
                 </main>
             </div>
         </div>
