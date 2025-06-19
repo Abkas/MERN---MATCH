@@ -77,7 +77,7 @@ const PlayerProfile = () => {
       <FutsalNavbar />
       <div className={styles.container}>
         <PlayerSidebar />
-        <main style={{ maxWidth: 900, margin: '0 auto', padding: '3rem 0' }}>
+        <main className={styles.content} style={{ marginTop: '72px', maxWidth: 900, margin: '0 auto', padding: '3rem 0' }}>
           <div className={styles.profileHeaderRow} style={{ marginBottom: 40 }}>
             <h1 style={{ fontSize: '2.5rem', fontWeight: 800, color: '#232946', letterSpacing: 1 }}>Player Profile</h1>
             <Link to="/player-update-profile">

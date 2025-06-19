@@ -18,7 +18,7 @@ const PDashboardPage = () => {
     <div className={styles.container}>
       <FutsalNavbar />
       <PlayerSidebar />
-      <main className={styles.content}>
+      <main className={styles.content} style={{ marginTop: '72px' }}>
         <h1 className={styles.greeting}>Hello ,{authUser.username}</h1>
         <div className={styles.profileCard}>
           <div className={styles.profileImage}>

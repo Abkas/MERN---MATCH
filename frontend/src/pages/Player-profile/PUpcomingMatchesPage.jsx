@@ -86,7 +86,7 @@ const PUpcomingMatchesPage = () => {
             <FutsalNavbar />
             <div className={styles.container}>
                 <PlayerSidebar />
-                <main className={styles.mainContent}>
+                <main className={styles.mainContent} style={{ marginTop: '72px', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'flex-start' }}>
                     <h1 className={styles.pageTitle}>
                         <span>Upcoming Matches</span>
                         <span className={styles.matchCount}>
