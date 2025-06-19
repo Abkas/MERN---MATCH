@@ -4,6 +4,7 @@ import { Link, useNavigate } from 'react-router-dom'
 import { LogOut, User } from 'lucide-react'
 import { useAuthStore } from '../../store/useAuthStore'
 import FutsalNavbar from '../../components/FutsalNavbar'
+import OrganizerSidebar from '../../components/OrganizerSidebar'
 
 const OHistory = () => {
   const { logOut } = useAuthStore()
@@ -16,22 +17,10 @@ const OHistory = () => {
 
   return (
     <div className={styles.body}>
-              <FutsalNavbar />
-
-      <div className={styles.container}>
-        <aside className={styles.sidebar}>          <ul className={styles.sidebarMenu}>            <li><Link to="/organizer-dashboard">Dashboard</Link></li>
-            <li><Link to="/profile">Profile</Link></li>
-            <li><Link to="/organizer-addfriend" style={{ color: '#9ca3af' }}>Add Friends</Link></li>
-            <li><Link to="/organizer-futsals" >My Futsal</Link></li>
-            <li><Link to="/organizer-history" className={styles.active} style={{ color: '#9ca3af' }}>History</Link></li>
-            <li><Link to="/organizer-slots" >Manage Slots</Link></li>
-            <li>
-              <button className={styles.logoutBtn} onClick={handleLogout}>
-                Logout
-              </button>
-            </li>
-          </ul>
-        </aside>        <main>
+      <FutsalNavbar />
+      <div className={styles.container} style={{marginTop: '88px'}}>
+        <OrganizerSidebar />
+        <main className={styles.mainContent} style={{marginLeft: '250px'}}>
           <div style={{
             display: 'flex',
             flexDirection: 'column',

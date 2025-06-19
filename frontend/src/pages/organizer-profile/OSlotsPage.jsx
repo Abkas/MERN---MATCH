@@ -7,6 +7,7 @@ import axios from 'axios'
 import toast from 'react-hot-toast'
 import { axiosInstance } from '../../lib/axios'
 import FutsalNavbar from '../../components/FutsalNavbar'
+import OrganizerSidebar from '../../components/OrganizerSidebar'
 
 // Helper function to check if a slot is within opening hours
 const isSlotWithinOpeningHours = (slot, futsal) => {
@@ -378,21 +379,10 @@ const OSlotsPage = () => {
   // UI rendering
   return (
     <div className={styles.body}>
-             <FutsalNavbar />
-
-      <div className={styles.container}>
-        <aside className={styles.sidebar}>          <ul className={styles.sidebarMenu}>            <li><Link to="/organizer-dashboard">Dashboard</Link></li>
-            <li><Link to="/profile">Profile</Link></li>
-            <li><Link to="/organizer-addfriend" style={{ color: '#9ca3af' }}>Add Friends</Link></li>
-            <li><Link to="/organizer-futsals">My Futsal</Link></li>
-            <li><Link to="/organizer-history" style={{ color: '#9ca3af' }}>History</Link></li>
-            <li><Link to="/organizer-slots" className={styles.active}>Manage Slots</Link></li>
-            <li>
-              <button className={styles.logoutBtn} onClick={logOut}>Logout</button>
-            </li>
-          </ul>
-        </aside>
-        <main className={styles.mainContent}>
+      <FutsalNavbar />
+      <div className={styles.container} style={{marginTop: '88px'}}>
+        <OrganizerSidebar />
+        <main className={styles.mainContent} style={{marginLeft: '250px'}}>
           {loading ? (
             <div className={styles.loading}>Loading...</div>
           ) : !authUser ? (

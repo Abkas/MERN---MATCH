@@ -1,0 +1,130 @@
+/* Organizer Sidebar Styles (copied and adapted from PProfile.module.css) */
+:root {
+  --sidebar-width: 250px;
+}
+
+.sidebar {
+  width: var(--sidebar-width);
+  background-color: var(--bg-white, #fff);
+  box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1), 0 2px 4px -1px rgba(0,0,0,0.06);
+  padding: 1.5rem 0;
+  height: calc(100vh - 88px); /* Organizer header height */
+  position: fixed;
+  top: 88px; /* Organizer header height */
+  left: 0;
+  overflow-y: auto;
+  z-index: 100;
+  transition: width 0.3s, left 0.3s;
+}
+
+.sidebar.collapsed {
+  width: 64px;
+  min-width: 64px;
+  padding-left: 0.5rem;
+  padding-right: 0.5rem;
+}
+
+.collapseBtn {
+  background: none;
+  border: none;
+  outline: none;
+  cursor: pointer;
+  margin: 0 0 1.5rem 0.5rem;
+  padding: 0.25rem;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+}
+
+.sidebarMenu {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.sidebarMenu li {
+  display: flex;
+  align-items: center;
+  width: 100%;
+}
+
+.sidebarMenu li:last-child {
+  margin-top: auto;
+}
+
+.sidebarMenu li a, .sidebarMenu li button {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.75rem 1.5rem;
+  color: var(--text-secondary, #4b5563);
+  font-weight: 500;
+  border-left: 4px solid transparent;
+  transition: all 0.2s ease;
+  text-decoration: none;
+  width: 100%;
+}
+
+.sidebar.collapsed .sidebarMenu li a, .sidebar.collapsed .sidebarMenu li button {
+  justify-content: center;
+  gap: 0;
+  padding: 0.75rem 0.5rem;
+}
+
+.sidebar.collapsed .label {
+  display: none;
+}
+
+.icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 24px;
+}
+
+.sidebarMenu li a:hover {
+  background-color: rgba(16, 185, 129, 0.1);
+  color: var(--primary, #10b981);
+  border-left-color: var(--primary, #10b981);
+}
+
+.sidebarMenu li a.active {
+  background-color: rgba(16, 185, 129, 0.15);
+  color: var(--primary, #10b981);
+  border-left-color: var(--primary, #10b981);
+  font-weight: 600;
+  position: relative;
+}
+
+.logoutBtn {
+  color: #ef4444 !important;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  justify-content: flex-start;
+  background: none;
+  border: none;
+  font: inherit;
+  cursor: pointer;
+  padding: 0.75rem 1.5rem;
+  border-left: 4px solid transparent;
+  transition: all 0.2s ease;
+}
+
+.sidebarMenu li button:hover {
+  background-color: rgba(16, 185, 129, 0.1);
+  color: var(--primary, #10b981);
+  border-left-color: var(--primary, #10b981);
+}
+
+.sidebarMenu li button.active {
+  background-color: rgba(16, 185, 129, 0.15);
+  color: var(--primary, #10b981);
+  border-left-color: var(--primary, #10b981);
+  font-weight: 600;
+  position: relative;
+}

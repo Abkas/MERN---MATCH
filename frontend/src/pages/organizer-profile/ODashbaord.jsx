@@ -6,6 +6,7 @@ import { useAuthStore } from '../../store/useAuthStore'
 import { axiosInstance } from '../../lib/axios'
 import toast from 'react-hot-toast'
 import FutsalNavbar from '../../components/FutsalNavbar'
+import OrganizerSidebar from '../../components/OrganizerSidebar'
 
 const ODashboard = () => {  const { logOut, authUser } = useAuthStore()
   const navigate = useNavigate()
@@ -73,20 +74,9 @@ const ODashboard = () => {  const { logOut, authUser } = useAuthStore()
       </style>
               <FutsalNavbar />
 
-      <div className={styles.container}>
-        <aside className={styles.sidebar}>          <ul className={styles.sidebarMenu}>            <li><Link to="/organizer-dashboard" className={styles.active}>Dashboard</Link></li>
-            <li><Link to="/profile">Profile</Link></li>
-            <li><Link to="/organizer-addfriend" style={{ color: '#9ca3af' }}>Add Friends</Link></li>
-            <li><Link to="/organizer-futsals" >My Futsal</Link></li>
-            <li><Link to="/organizer-history" style={{ color: '#9ca3af' }}>History</Link></li>
-            <li><Link to="/organizer-slots" >Manage Slots</Link></li>
-            <li>
-              <button className={styles.logoutBtn} onClick={handleLogout}>
-                Logout
-              </button>
-            </li>
-          </ul>
-        </aside>        <main className={styles.mainContent} style={{ padding: '30px' }}>
+      <div className={styles.container} style={{marginTop: '88px'}}>
+        <OrganizerSidebar />
+        <main className={styles.mainContent} style={{ padding: '30px', marginLeft: '250px' }}>
           <h1 className={styles.dashboardTitle} style={{ fontSize: '2.2rem', fontWeight: 800, color: '#232946', marginBottom: '30px' }}>
             Futsal Organizer Dashboard
           </h1>
@@ -187,82 +177,89 @@ const ODashboard = () => {  const { logOut, authUser } = useAuthStore()
               </h2>
               
               {futsals?.length > 0 ? (
-                <div className={styles.futsalsGrid} style={{ 
-                  display: 'grid', 
-                  gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))', 
+                <div style={{
+                  display: 'flex',
+                  flexDirection: 'row',
                   gap: '24px',
-                  marginBottom: '30px'
+                  marginBottom: '30px',
+                  flexWrap: 'wrap',
+                  alignItems: 'stretch',
                 }}>
                   {futsals.map(futsal => (
-                    <div key={futsal._id} className={styles.futsalCard} style={{ 
-                      background: 'white', 
-                      borderRadius: '12px', 
+                    <div key={futsal._id} className={styles.futsalCard} style={{
+                      background: 'white',
+                      borderRadius: '12px',
                       padding: '20px',
                       boxShadow: '0 4px 6px rgba(0, 0, 0, 0.05)',
-                      border: '1px solid #e5e7eb'
+                      border: '1px solid #e5e7eb',
+                      minWidth: '320px',
+                      flex: '1 1 320px',
+                      display: 'flex',
+                      flexDirection: 'column',
+                      justifyContent: 'space-between',
                     }}>
-                      <div className={styles.futsalHeader} style={{ 
-                        display: 'flex', 
+                      <div className={styles.futsalHeader} style={{
+                        display: 'flex',
                         justifyContent: 'space-between',
-                        marginBottom: '16px'
+                        marginBottom: '16px',
                       }}>
                         <h3 style={{ fontSize: '1.25rem', fontWeight: '700' }}>{futsal.name}</h3>
-                        <div className={styles.rating} style={{ 
-                          display: 'flex', 
+                        <div className={styles.rating} style={{
+                          display: 'flex',
                           alignItems: 'center',
                           color: '#f59e0b',
                           fontWeight: '600',
                           fontSize: '0.875rem',
-                          gap: '4px'
+                          gap: '4px',
                         }}>
                           <Star size={16} />
                           <span>{futsal.rating?.toFixed(1) || "New"}</span>
                         </div>
                       </div>
-                      
-                      <div className={styles.futsalDetails} style={{ 
-                        display: 'grid', 
-                        gridTemplateColumns: '1fr 1fr', 
+                      <div className={styles.futsalDetails} style={{
+                        display: 'grid',
+                        gridTemplateColumns: '1fr 1fr',
                         gap: '12px',
-                        marginBottom: '16px'
+                        marginBottom: '16px',
                       }}>
-                        <div className={styles.detail} style={{ 
+                        <div className={styles.detail} style={{
                           display: 'flex',
                           alignItems: 'center',
                           gap: '8px',
                           fontSize: '0.875rem',
-                          color: '#4b5563'
+                          color: '#4b5563',
                         }}>
                           <MapPin size={16} />
                           <span>{futsal.location}</span>
                         </div>
-                        <div className={styles.detail} style={{ 
+                        <div className={styles.detail} style={{
                           display: 'flex',
                           alignItems: 'center',
                           gap: '8px',
                           fontSize: '0.875rem',
-                          color: '#4b5563'
+                          color: '#4b5563',
                         }}>
                           <Clock size={16} />
                           <span>{futsal.openingHours || "Not specified"}</span>
-                        </div>                        <div className={styles.detail} style={{ 
+                        </div>
+                        <div className={styles.detail} style={{
                           display: 'flex',
                           alignItems: 'center',
                           gap: '8px',
                           fontSize: '0.875rem',
-                          color: '#4b5563'
+                          color: '#4b5563',
                         }}>
                           <DollarSign size={16} />
                           <span>₹{futsal.price || "Not set"}</span>
                         </div>
                       </div>
-                      
-                      <div className={styles.futsalActions} style={{ 
-                        display: 'flex', 
-                        gap: '12px'
-                      }}>                        <button 
+                      <div className={styles.futsalActions} style={{
+                        display: 'flex',
+                        gap: '12px',
+                      }}>
+                        <button
                           onClick={() => navigate('/organizer-futsals')}
-                          style={{ 
+                          style={{
                             flex: 1,
                             background: '#2563eb',
                             color: 'white',
@@ -271,14 +268,14 @@ const ODashboard = () => {  const { logOut, authUser } = useAuthStore()
                             padding: '8px 16px',
                             fontSize: '0.875rem',
                             fontWeight: '600',
-                            cursor: 'pointer'
+                            cursor: 'pointer',
                           }}
                         >
                           My Futsals
                         </button>
-                        <button 
+                        <button
                           onClick={() => navigate('/organizer-slots')}
-                          style={{ 
+                          style={{
                             flex: 1,
                             background: '#f3f4f6',
                             color: '#374151',
@@ -287,7 +284,7 @@ const ODashboard = () => {  const { logOut, authUser } = useAuthStore()
                             padding: '8px 16px',
                             fontSize: '0.875rem',
                             fontWeight: '600',
-                            cursor: 'pointer'
+                            cursor: 'pointer',
                           }}
                         >
                           Manage Slots
@@ -374,12 +371,15 @@ const ODashboard = () => {  const { logOut, authUser } = useAuthStore()
                 <h3 style={{ fontSize: '1.5rem', fontWeight: '700', marginBottom: '16px', color: '#374151' }}>
                   Analytics & Metrics
                 </h3>
-                <div style={{ 
-                  display: 'grid', 
-                  gridTemplateColumns: 'repeat(auto-fill, minmax(250px, 1fr))', 
+                <div style={{
+                  display: 'flex',
+                  flexDirection: 'row',
                   gap: '20px',
-                  marginBottom: '30px'
-                }}>                  {/* Reviews Box */}
+                  marginBottom: '30px',
+                  flexWrap: 'wrap',
+                  alignItems: 'stretch',
+                }}>
+                  {/* Reviews Box */}
                   <div style={{ 
                     background: '#f3f4f6', 
                     borderRadius: '12px', 
@@ -388,7 +388,11 @@ const ODashboard = () => {  const { logOut, authUser } = useAuthStore()
                     opacity: '0.6',
                     cursor: 'not-allowed',
                     position: 'relative',
-                    overflow: 'hidden'
+                    overflow: 'hidden',
+                    flex: '1 1 250px',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    justifyContent: 'space-between',
                   }}
                   onMouseEnter={(e) => e.currentTarget.querySelector('.overlay').style.opacity = '1'}
                   onMouseLeave={(e) => e.currentTarget.querySelector('.overlay').style.opacity = '0'}
@@ -430,7 +434,11 @@ const ODashboard = () => {  const { logOut, authUser } = useAuthStore()
                     opacity: '0.6',
                     cursor: 'not-allowed',
                     position: 'relative',
-                    overflow: 'hidden'
+                    overflow: 'hidden',
+                    flex: '1 1 250px',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    justifyContent: 'space-between',
                   }}
                   onMouseEnter={(e) => e.currentTarget.querySelector('.overlay').style.opacity = '1'}
                   onMouseLeave={(e) => e.currentTarget.querySelector('.overlay').style.opacity = '0'}
@@ -472,7 +480,11 @@ const ODashboard = () => {  const { logOut, authUser } = useAuthStore()
                     opacity: '0.6',
                     cursor: 'not-allowed',
                     position: 'relative',
-                    overflow: 'hidden'
+                    overflow: 'hidden',
+                    flex: '1 1 250px',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    justifyContent: 'space-between',
                   }}
                   onMouseEnter={(e) => e.currentTarget.querySelector('.overlay').style.opacity = '1'}
                   onMouseLeave={(e) => e.currentTarget.querySelector('.overlay').style.opacity = '0'}
@@ -514,7 +526,11 @@ const ODashboard = () => {  const { logOut, authUser } = useAuthStore()
                     opacity: '0.6',
                     cursor: 'not-allowed',
                     position: 'relative',
-                    overflow: 'hidden'
+                    overflow: 'hidden',
+                    flex: '1 1 250px',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    justifyContent: 'space-between',
                   }}
                   onMouseEnter={(e) => e.currentTarget.querySelector('.overlay').style.opacity = '1'}
                   onMouseLeave={(e) => e.currentTarget.querySelector('.overlay').style.opacity = '0'}
