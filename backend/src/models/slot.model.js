@@ -56,6 +56,19 @@ const SlotSchema = new Schema({
     currentPlayers: {
         type: Number,
         default: 0
+    },
+    // Add challenge field for team challenges
+    challenge: {
+        status: { type: String, enum: ['pending', 'accepted', 'rejected', null], default: null },
+        challenger: { type: Schema.Types.ObjectId, ref: 'MyTeam', default: null },
+        opponent: { type: Schema.Types.ObjectId, ref: 'MyTeam', default: null },
+        acceptedAt: { type: Date, default: null },
+        createdAt: { type: Date, default: Date.now },
+        paymentStatus: {
+            challengerPaid: { type: Boolean, default: false },
+            opponentPaid: { type: Boolean, default: false },
+            refunded: { type: Boolean, default: false }
+        }
     }
 }, { timestamps: true });
 
@@ -167,6 +180,65 @@ SlotSchema.methods.isAvailable = function () {
 SlotSchema.methods.isFull = function () {
     return this.players.length >= this.maxPlayers;
 }
+
+// Mark slot as team challenge (pending)
+SlotSchema.methods.markAsTeamChallengePending = function (challengerTeamId) {
+    this.challenge = {
+        status: 'pending', // 'pending', 'accepted', 'rejected'
+        challenger: challengerTeamId,
+        opponent: null,
+        acceptedAt: null
+    };
+    return this.save();
+}
+
+// Accept team challenge (remove individuals if <60% filled)
+SlotSchema.methods.acceptTeamChallenge = async function (opponentTeamId) {
+    const fillPercent = this.players.length / this.maxPlayers;
+    if (fillPercent >= 0.6) {
+        throw new ApiError(400, 'Slot is more than 60% filled and cannot be used for team challenge.');
+    }
+    // Remove all individual players
+    this.players = [];
+    this.teamA = [];
+    this.teamB = [];
+    this.currentPlayers = 0;
+    this.challenge.status = 'accepted';
+    this.challenge.opponent = opponentTeamId;
+    this.challenge.acceptedAt = new Date();
+    await this.save();
+    return this;
+}
+
+// Static method to list open challenges
+SlotSchema.statics.listOpenChallenges = async function() {
+    return this.find({
+        'challenge.status': 'pending',
+        status: 'available',
+        bookedOffline: false
+    }).populate('futsal').populate('challenge.challenger');
+};
+
+// Instance method to mark payment
+SlotSchema.methods.markChallengePayment = async function(teamType) {
+    if (teamType === 'challenger') this.challenge.paymentStatus.challengerPaid = true;
+    if (teamType === 'opponent') this.challenge.paymentStatus.opponentPaid = true;
+    await this.save();
+};
+
+// Instance method to refund if no one joins
+SlotSchema.methods.refundIfNoOpponent = async function() {
+    const now = new Date();
+    const created = this.challenge.createdAt || this.createdAt;
+    // 24 hour window for example
+    if (this.challenge.status === 'pending' && !this.challenge.opponent && !this.challenge.paymentStatus.refunded && (now - created) > 24*60*60*1000) {
+        this.challenge.paymentStatus.refunded = true;
+        // TODO: Integrate with payment gateway to actually refund
+        await this.save();
+        return true;
+    }
+    return false;
+};
 
 SlotSchema.statics.findByFutsalAndDate = function (futsalId, date) {
     return this.find(

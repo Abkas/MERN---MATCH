@@ -4,6 +4,7 @@ import { axiosInstance } from '../../lib/axios';
 import PlayerSidebar from '../../components/PlayerSidebar';
 import FutsalNavbar from '../../components/FutsalNavbar';
 import styles from '../css/MyTeamPage.module.css';
+import toast from 'react-hot-toast';
 
 const SLOT_COUNT = 8;
 
@@ -27,6 +28,28 @@ const MyTeamPage = () => {
   const [joinRequests, setJoinRequests] = useState([]);
   const [showAvailableTeams, setShowAvailableTeams] = useState(false);
   const [removeModal, setRemoveModal] = useState({ open: false, slotIndex: null, user: null });
+  // Find Match: Show available team challenges and open slots
+  const [showFindMatchModal, setShowFindMatchModal] = useState(false);
+  const [availableChallenges, setAvailableChallenges] = useState([]);
+  const [availableSlots, setAvailableSlots] = useState([]);
+  const [showCreateChallengeModal, setShowCreateChallengeModal] = useState(false);
+  const [selectedSlot, setSelectedSlot] = useState(null);
+  // For challenge creation: futsal and slot selection
+  const [challengeFutsals, setChallengeFutsals] = useState([]);
+  const [selectedFutsal, setSelectedFutsal] = useState(null);
+  const [challengeSlots, setChallengeSlots] = useState([]);
+  // Add state for selected date in the challenge modal
+  const [challengeDate, setChallengeDate] = useState(new Date().toISOString().split('T')[0]);
+  // --- Challenge Creation Modal: Step 1 (Futsal Selection) ---
+  const [futsalSearch, setFutsalSearch] = useState('');
+  const filteredFutsals = challengeFutsals.filter(f =>
+    f.name.toLowerCase().includes(futsalSearch.toLowerCase()) ||
+    f.location.toLowerCase().includes(futsalSearch.toLowerCase())
+  );
+
+  // Payment modal state
+  const [showPaymentModal, setShowPaymentModal] = useState(false);
+  const [pendingPaymentAction, setPendingPaymentAction] = useState(null); // { type: 'create'|'join', slotId }
 
   useEffect(() => {
     fetchTeam();
@@ -42,6 +65,11 @@ const MyTeamPage = () => {
     };
     fetchPendingTeamInvites();
   }, [authUser]);
+
+  // Always fetch open challenges on page load and when team changes
+  useEffect(() => {
+    fetchAvailableChallenges();
+  }, [team]);
 
   const myInvite = team && team.pendingInvites && team.pendingInvites.find(i => i.user._id === authUser._id && i.status === 'pending');
   // Show team invite actions if user has a pending invite and is not already in a team
@@ -126,6 +154,123 @@ const MyTeamPage = () => {
   };
 
   const isOwner = team && team.owner && authUser && team.owner._id === authUser._id;
+
+  // Fetch available team challenges (open challenges)
+  const fetchAvailableChallenges = async () => {
+    const res = await axiosInstance.get('/challenge/open');
+    console.log('Fetched open challenges:', res.data);
+    // Use .message instead of .data
+    const challenges = (res.data.message || []).map(slot => ({
+      _id: slot._id,
+      slotId: slot._id,
+      challengerTeamId: slot.challenge?.challenger?._id || slot.challenge?.challenger,
+      challengerTeamName: slot.challenge?.challenger?.name || 'Unknown',
+      challengerTeamAvatar: slot.challenge?.challenger?.avatar || '/avatar.jpg',
+      futsalName: slot.futsal?.name || 'Unknown',
+      date: slot.date,
+      time: slot.time
+    }));
+    setAvailableChallenges(challenges);
+  };
+
+  // Fetch available slots for creating a challenge
+  const fetchAvailableSlots = async (futsalId) => {
+    const res = await axiosInstance.get(`/challenge/eligible-slots/${futsalId}`);
+    setAvailableSlots(res.data.message || []);
+  };
+
+  // Request a team challenge (with payment step)
+  const handleRequestChallenge = async (slotId) => {
+    setPendingPaymentAction({ type: 'create', slotId });
+    setShowPaymentModal(true);
+  };
+
+  // Join a challenge (with payment step)
+  const handleAcceptChallenge = async (slotId, opponentTeamId) => {
+    setPendingPaymentAction({ type: 'join', slotId, opponentTeamId });
+    setShowPaymentModal(true);
+  };
+
+  // Payment modal logic
+  const handleConfirmPayment = async () => {
+    if (!pendingPaymentAction) return;
+    setShowPaymentModal(false);
+    if (pendingPaymentAction.type === 'create') {
+      try {
+        await axiosInstance.post(`/challenge/request/${pendingPaymentAction.slotId}`, { challengerTeamId: team._id });
+        fetchAvailableChallenges();
+        fetchUpcomingMatches(); // Refresh upcoming matches after creating challenge
+        toast.success('Challenge created and payment successful!');
+      } catch (e) {
+        toast.error('Failed to create challenge: ' + (e.response?.data?.message || e.message));
+      }
+    } else if (pendingPaymentAction.type === 'join') {
+      try {
+        await axiosInstance.post(`/challenge/join/${pendingPaymentAction.slotId}`, { opponentTeamId: pendingPaymentAction.opponentTeamId });
+        fetchAvailableChallenges();
+        fetchUpcomingMatches(); // Refresh upcoming matches after joining challenge
+        toast.success('Challenge joined and payment successful!');
+      } catch (e) {
+        toast.error('Failed to join challenge: ' + (e.response?.data?.message || e.message));
+      }
+    }
+    setPendingPaymentAction(null);
+  };
+  const handleCancelPayment = () => {
+    setShowPaymentModal(false);
+    setPendingPaymentAction(null);
+  };
+
+  // Fetch futsals for challenge creation
+  const fetchChallengeFutsals = async () => {
+    const res = await axiosInstance.get('/challenge/futsals');
+    console.log('Fetched futsals for challenge creation:', res.data.message); // Debug log
+    setChallengeFutsals(res.data.message || []);
+  };
+
+  // Fetch eligible slots for selected futsal
+  const fetchChallengeSlots = async (futsalId, date = challengeDate) => {
+    if (!futsalId) return; // Prevent API call if futsalId is undefined/null
+    setSelectedFutsal(futsalId);
+    const res = await axiosInstance.get(`/challenge/eligible-slots/${futsalId}?date=${date}`);
+    console.log('Fetched eligible slots for futsal', futsalId, 'on', date, ':', res.data.message); // Debug log
+    setChallengeSlots(res.data.message || []);
+  };
+
+  // Filter out own challenges from open challenges
+  const filteredChallenges = availableChallenges.filter(
+    challenge => challenge.challengerTeamId !== team._id
+  );
+
+  // Fetch upcoming matches (slots where team is A or B and slot is booked)
+  const [upcomingMatches, setUpcomingMatches] = useState([]);
+  const [showUpcomingMatches, setShowUpcomingMatches] = useState(false);
+
+  const fetchUpcomingMatches = async () => {
+    const res = await axiosInstance.get('/myteam/get-by-user');
+    const teamData = res.data.team;
+    // Log all slots for debugging
+    console.log('DEBUG: teamData.slots', teamData.slots);
+    // Show all slots with a challenge involving this team, regardless of status
+    const matches = (teamData.slots || []).filter(slot => {
+      if (!slot.challenge) return false;
+      const challengerId = typeof slot.challenge.challenger === 'object' ? slot.challenge.challenger._id : slot.challenge.challenger;
+      const opponentId = typeof slot.challenge.opponent === 'object' ? slot.challenge.opponent._id : slot.challenge.opponent;
+      // Accept any slot with a challenge involving this team
+      return (challengerId === team._id || opponentId === team._id);
+    });
+    setUpcomingMatches(matches);
+  };
+
+  useEffect(() => {
+    fetchUpcomingMatches();
+  }, [team]);
+
+  // Debug: log availableChallenges and team
+  useEffect(() => {
+    console.log('DEBUG: availableChallenges', availableChallenges);
+    console.log('DEBUG: team', team);
+  }, [availableChallenges, team]);
 
   return (
     <div className={styles.body}>
@@ -225,12 +370,168 @@ const MyTeamPage = () => {
                   </div>
                   <div style={{display:'flex',justifyContent:'center',gap:16,marginTop:32}}>
                     {isOwner ? (
-                      <button className={styles.actionBtn}>Book Match</button>
+                      <>
+                        <button className={styles.actionBtn} onClick={() => { setShowCreateChallengeModal(true); fetchChallengeFutsals(); }}>Create Challenge</button>
+                        <button className={styles.actionBtn} onClick={() => setShowUpcomingMatches(v => !v)}>
+                          {showUpcomingMatches ? 'Hide Upcoming Matches' : 'Upcoming Matches'}
+                        </button>
+                      </>
                     ) : (
-                      <button className={styles.actionBtn}>Upcoming Matches</button>
+                      <button className={styles.actionBtn} onClick={() => setShowUpcomingMatches(v => !v)}>
+                        {showUpcomingMatches ? 'Hide Upcoming Matches' : 'Upcoming Matches'}
+                      </button>
                     )}
-                    <button className={styles.actionBtn}>Team Challenge</button>
                   </div>
+
+                  {/* Render open challenges in the main content area instead of a modal */}
+                  <div style={{margin:'32px 0'}}>
+                    <h2 style={{fontWeight:700,marginBottom:12,fontSize:'1.3rem',color:'#2563eb'}}>Open Team Challenges</h2>
+                    <div style={{display:'flex',flexDirection:'column',gap:12}}>
+                      {filteredChallenges.length === 0 ? (
+                        <div style={{color:'#999',fontSize:15}}>No open challenges found. Create one to get started!</div>
+                      ) : (
+                        filteredChallenges.map(challenge => (
+                          <div key={challenge._id} style={{display:'flex',alignItems:'center',justifyContent:'space-between',padding:'14px 18px',borderRadius:10,background:'#f9f9f9',boxShadow:'0 1px 4px rgba(0,0,0,0.07)',cursor:'pointer'}}>
+                            <div style={{display:'flex',alignItems:'center',gap:14}}>
+                              <img src={challenge.challengerTeamAvatar} alt="team" style={{width:40,height:40,borderRadius:8,objectFit:'cover'}} />
+                              <div style={{fontWeight:600,fontSize:16}}>{challenge.challengerTeamName}</div>
+                              <div style={{color:'#666',fontSize:15,marginLeft:14}}>{challenge.futsalName}</div>
+                              <div style={{color:'#666',fontSize:15,marginLeft:14}}>{challenge.date} {challenge.time}</div>
+                            </div>
+                            <button className={styles.actionBtn} style={{fontSize:15,padding:'8px 22px'}} disabled={loading} onClick={() => handleAcceptChallenge(challenge.slotId, team._id)}>
+                              {loading ? 'Joining...' : 'Join & Pay Half'}
+                            </button>
+                          </div>
+                        ))
+                      )}
+                    </div>
+                  </div>
+
+                  {/* Upcoming Matches Modal */}
+                  {showUpcomingMatches && (
+                    <div className={styles.inviteModalOverlay}>
+                      <div className={styles.inviteModal} style={{minWidth:340,maxWidth:600}}>
+                        <h2 style={{fontWeight:700,marginBottom:12,fontSize:'1.3rem',color:'#16a34a'}}>Upcoming Matches</h2>
+                        <button className={styles.closeBtn} onClick={() => setShowUpcomingMatches(false)}>×</button>
+                        <button className={styles.actionBtn} style={{marginBottom:12}} onClick={fetchUpcomingMatches}>Refresh</button>
+                        <div style={{display:'flex',flexDirection:'column',gap:12}}>
+                          {upcomingMatches.length === 0 ? (
+                            <div style={{color:'#999',fontSize:15}}>No upcoming matches yet.</div>
+                          ) : (
+                            upcomingMatches.map(match => (
+                              <div key={match._id} style={{display:'flex',alignItems:'center',justifyContent:'space-between',padding:'14px 18px',borderRadius:10,background:'#f0fdf4',boxShadow:'0 1px 4px rgba(0,0,0,0.07)',cursor:'pointer'}}>
+                                <div style={{display:'flex',alignItems:'center',gap:14}}>
+                                  <div style={{fontWeight:600,fontSize:16}}>Team A: {match.challenge?.challenger?.name || 'TBD'}</div>
+                                  <div style={{fontWeight:600,fontSize:16,marginLeft:14}}>Team B: {match.challenge?.opponent?.name || 'TBD'}</div>
+                                  <div style={{color:'#666',fontSize:15,marginLeft:14}}>{match.date} {match.time}</div>
+                                  <div style={{color:'#666',fontSize:15,marginLeft:14}}>{match.futsal?.name || 'Unknown Futsal'}</div>
+                                </div>
+                              </div>
+                            ))
+                          )}
+                        </div>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Create Challenge Modal: Step 1 - Futsal Selection */}
+                  {showCreateChallengeModal && !selectedFutsal && (
+                    <div className={styles.modalOverlay}>
+                      <div className={styles.modalContent}>
+                        <h2>Select Futsal for Challenge</h2>
+                        <input
+                          type="text"
+                          placeholder="Search futsal..."
+                          value={futsalSearch}
+                          onChange={e => setFutsalSearch(e.target.value)}
+                          style={{ width: '100%', padding: 10, marginBottom: 16, borderRadius: 8, border: '1px solid #ddd' }}
+                        />
+                        <div style={{ maxHeight: 300, overflowY: 'auto', display: 'flex', flexWrap: 'wrap', gap: 16 }}>
+                          {filteredFutsals.map(futsal => (
+                            <div
+                              key={futsal._id}
+                              onClick={() => { setSelectedFutsal(futsal._id); fetchChallengeSlots(futsal._id); }}
+                              style={{
+                                border: '1.5px solid #eee',
+                                borderRadius: 12,
+                                padding: 16,
+                                minWidth: 220,
+                                cursor: 'pointer',
+                                background: '#fafbfc',
+                                display: 'flex',
+                                alignItems: 'center',
+                                gap: 12
+                              }}
+                            >
+                              <img src={futsal.futsalPhoto || '/default-futsal.jpg'} alt="icon" style={{ width: 40, height: 40, borderRadius: 8, objectFit: 'cover' }} />
+                              <div>
+                                <div style={{ fontWeight: 700, fontSize: 16 }}>{futsal.name}</div>
+                                <div style={{ color: '#888', fontSize: 13 }}>{futsal.location}</div>
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                        <button onClick={() => setShowCreateChallengeModal(false)} className={styles.actionBtn} style={{ marginTop: 16 }}>Close</button>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Create Challenge Modal */}
+                  {showCreateChallengeModal && selectedFutsal && (
+                    <div className={styles.modalOverlay}>
+                      <div className={styles.modalContent}>
+                        <h2>Select Slot for Challenge</h2>
+                        <div style={{ marginBottom: 16 }}>
+                          <label htmlFor="challenge-date" style={{ fontWeight: 600, marginRight: 8 }}>Date:</label>
+                          <input
+                            id="challenge-date"
+                            type="date"
+                            value={challengeDate}
+                            min={new Date().toISOString().split('T')[0]}
+                            onChange={e => {
+                              setChallengeDate(e.target.value);
+                              fetchChallengeSlots(selectedFutsal, e.target.value);
+                            }}
+                            style={{ padding: 8, borderRadius: 6, border: '1px solid #ddd' }}
+                          />
+                        </div>
+                        {challengeSlots.length === 0 ? (
+                          <div>No available slots found.</div>
+                        ) : (
+                          <table style={{ width: '100%', borderCollapse: 'collapse', marginTop: 16 }}>
+                            <thead>
+                              <tr style={{ background: '#f3f4f6' }}>
+                                <th style={{ padding: 8 }}>Date</th>
+                                <th style={{ padding: 8 }}>Time</th>
+                                <th style={{ padding: 8 }}>Players</th>
+                                <th style={{ padding: 8 }}>Action</th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              {challengeSlots.map((slot, idx) => (
+                                <tr key={slot._id} style={{ borderBottom: '1px solid #eee' }}>
+                                  <td style={{ padding: 8 }}>{slot.date}</td>
+                                  <td style={{ padding: 8 }}>{slot.time}</td>
+                                  <td style={{ padding: 8 }}>{slot.players?.length || 0} / {slot.maxPlayers}</td>
+                                  <td style={{ padding: 8 }}>
+                                    <button
+                                      onClick={async () => {
+                                        // Call backend to create challenge and trigger payment
+                                        await handleRequestChallenge(slot._id);
+                                      }}
+                                      className={styles.actionBtn}
+                                      style={{marginTop:0}}
+                                    >Create Challenge</button>
+                                  </td>
+                                </tr>
+                              ))}
+                            </tbody>
+                          </table>
+                        )}
+                        <button onClick={() => setShowCreateChallengeModal(false)} className={styles.actionBtn} style={{marginTop:16}}>Close</button>
+                      </div>
+                    </div>
+                  )}
                 </>
               ) : (
                 <div className={styles.createTeamBox} style={{
@@ -415,6 +716,22 @@ const MyTeamPage = () => {
           </div>
         </div>
       )}
+      {/* Payment Modal */}
+      {showPaymentModal && (
+        <div className={styles.inviteModalOverlay}>
+          <div className={styles.inviteModal} style={{minWidth:340,maxWidth:400}}>
+            <h3 style={{marginBottom:18}}>Confirm Payment</h3>
+            <div style={{marginBottom:18}}>
+              You need to pay half the futsal price to {pendingPaymentAction?.type === 'create' ? 'create' : 'join'} this challenge.<br/>
+              Proceed with payment?
+            </div>
+            <div style={{display:'flex',gap:12,justifyContent:'flex-end'}}>
+              <button className={styles.rejectBtn} onClick={handleCancelPayment}>Cancel</button>
+              <button className={styles.acceptBtn} onClick={handleConfirmPayment}>Pay & Continue</button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
@@ -527,7 +844,9 @@ function AvailableTeamsModal({ open, onClose }) {
                   await axiosInstance.post('/myteam/request-join', { teamId: team._id });
                   setRequestedTeams(prev => [...prev, team._id]); // Update state so button changes
                   setJoining(null);
-                }}>Request to Join</button>
+                }}>
+                  Request to Join
+                </button>
               )}
             </div>
           ))}
