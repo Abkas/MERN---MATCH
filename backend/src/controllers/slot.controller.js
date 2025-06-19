@@ -161,13 +161,15 @@ const joinSlot = asyncHandler(async (req, res) => {
     try {
         const futsal = await Futsal.findById(futsalId);
         const slotDate = new Date(updatedSlot.date).toLocaleDateString();
-        await createNotification(
+        const notif = await createNotification(
             playerId,
             'match_joined',
             'Slot Booked Successfully',
             `You've booked ${seats} seat(s) at ${futsal.name} on ${slotDate} at ${updatedSlot.time}.`,
-            `/player-upcomingmatches`
+            `/player-upcomingmatches`,
+            playerId // recipientId
         );
+        console.log('Notification created for slot booking:', notif);
     } catch (err) {
         console.log("Error sending join slot notification:", err);
     }
@@ -379,6 +381,22 @@ const cancelSlotBooking = asyncHandler(async (req, res) => {
         if (game) {
             game.players = game.players.filter(id => id.toString() !== playerId.toString());
             await game.save();
+        }
+
+        // Send notification to player for cancellation
+        try {
+            const futsal = await Futsal.findById(slot.futsal);
+            const slotDate = new Date(slot.date).toLocaleDateString();
+            await createNotification(
+                playerId,
+                'match_cancelled',
+                'Slot Booking Cancelled',
+                `You cancelled your booking at ${futsal?.name || 'Futsal'} on ${slotDate} at ${slot.time}.`,
+                '/player-upcomingmatches',
+                playerId
+            );
+        } catch (err) {
+            console.log('Error sending cancellation notification:', err);
         }
 
         return res.status(200).json(

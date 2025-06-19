@@ -14,7 +14,7 @@ const notificationSchema = new mongoose.Schema({
   },
   type: {
     type: String,
-    enum: ['match_joined', 'slot_full', 'payment_ready', 'reminder', 'custom', 'FRIEND_REQUEST', 'FRIEND_REQUEST_ACCEPTED'],
+    enum: ['match_joined', 'match_cancelled', 'slot_full', 'payment_ready', 'reminder', 'custom', 'FRIEND_REQUEST', 'FRIEND_REQUEST_ACCEPTED'],
     required: true
   },
   title: {

@@ -3,6 +3,7 @@ import { ApiError } from "../utils/ApiError.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
 import { User } from "../models/user.model.js";
 import { Friendship } from "../models/friendship.model.js";
+import { Notification } from "../models/notification.model.js";
 
 // Send friend request
 const sendFriendRequest = asyncHandler(async (req, res) => {
@@ -43,6 +44,16 @@ const sendFriendRequest = asyncHandler(async (req, res) => {
         User.findByIdAndUpdate(recipientId, { $push: { friendships: friendship._id } })
     ]);
 
+    // Send notification to recipient
+    await Notification.create({
+        user: recipientId,
+        recipient: recipientId,
+        type: 'FRIEND_REQUEST',
+        title: 'New Friend Request',
+        message: `${req.user.username || 'A user'} sent you a friend request!`,
+        link: `/friends` // Adjust link as needed
+    });
+
     return res.status(200).json(
         new ApiResponse(200, friendship, "Friend request sent successfully")
     );
@@ -70,6 +81,16 @@ const acceptFriendRequest = asyncHandler(async (req, res) => {
     friendship.status = "accepted";
     friendship.updatedAt = Date.now();
     await friendship.save();
+
+    // Send notification to requester
+    await Notification.create({
+        user: friendship.requester,
+        recipient: friendship.requester,
+        type: 'FRIEND_REQUEST_ACCEPTED',
+        title: 'Friend Request Accepted',
+        message: `${req.user.username || 'A user'} accepted your friend request!`,
+        link: `/friends` // Adjust link as needed
+    });
 
     return res.status(200).json(
         new ApiResponse(200, friendship, "Friend request accepted successfully")

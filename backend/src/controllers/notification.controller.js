@@ -5,10 +5,10 @@ const getUserNotifications = async (req, res) => {
     // Delete notifications older than 3 hours
     const threeHoursAgo = new Date(Date.now() - 3 * 60 * 60 * 1000);
     await Notification.deleteMany({ user: req.user._id, createdAt: { $lt: threeHoursAgo } });
-    // Get 5 most recent notifications
+    // Get 20 most recent notifications
     const notifications = await Notification.find({ user: req.user._id })
       .sort({ createdAt: -1 })
-      .limit(5);
+      .limit(20);
     res.json({ notifications });
   } catch (err) {
     res.status(500).json({ error: 'Failed to fetch notifications' });
@@ -31,10 +31,11 @@ const markAsRead = async (req, res) => {
 };
 
 // Create a notification (for use in your business logic)
-const createNotification = async (userId, type, title, message, link = '') => {
+const createNotification = async (userId, type, title, message, link = '', recipientId = null) => {
   try {
     const notif = new Notification({
       user: userId,
+      recipient: recipientId || userId,
       type,
       title,
       message,
@@ -44,6 +45,7 @@ const createNotification = async (userId, type, title, message, link = '') => {
     return notif;
   } catch (err) {
     // Optionally log error
+    console.error('Error creating notification:', err);
     return null;
   }
 };
