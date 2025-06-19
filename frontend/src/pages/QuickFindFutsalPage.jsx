@@ -459,11 +459,243 @@ const QuickFindFutsalPage = () => {
     }
   }, [priceActive, seatsActive, futsals]);
 
-  return (
-    <div className={styles.body}>
-              <FutsalNavbar />
+  // --- FIND PLAYERS SECTION LOGIC ---
+  const [findPlayers, setFindPlayers] = useState([]);
+  const [findPlayersShowCount, setFindPlayersShowCount] = useState(4);
+  const [addingFriendId, setAddingFriendId] = useState(null);
+  const [findPlayersExpanded, setFindPlayersExpanded] = useState(false);
+  useEffect(() => {
+    // Fetch all users and friends, then filter to only non-friends
+    Promise.all([
+      axiosInstance.get('/users/all'),
+      axiosInstance.get('/friendships/list'),
+      axiosInstance.get('/friendships/pending')
+    ]).then(([usersRes, friendsRes, pendingRes]) => {
+      const allUsers = usersRes.data.message || [];
+      const friends = friendsRes.data.message || [];
+      const pending = pendingRes.data.message || { sent: [], received: [] };
+      const friendIds = new Set(friends.map(f => f._id));
+      const sentIds = new Set((pending.sent || []).map(r => r.recipient));
+      const receivedIds = new Set((pending.received || []).map(r => r.requester));
+      // Only show users who are not friends, not pending, and not self
+      setFindPlayers(allUsers.filter(u =>
+        !friendIds.has(u._id) &&
+        !sentIds.has(u._id) &&
+        !receivedIds.has(u._id) &&
+        u._id !== (window.localStorage.getItem('userId') || '')
+      ));
+    });
+  }, []);
+  const handleShowMoreFindPlayers = () => setFindPlayersExpanded(v => !v);
+  const handleAddFriend = (userId) => {
+    setAddingFriendId(userId);
+    axiosInstance.post('/friendships/send-request', { recipientId: userId })
+      .then(() => {
+        setFindPlayers(prev => prev.filter(u => u._id !== userId));
+        toast.success('Friend request sent');
+      })
+      .catch(() => toast.error('Failed to send friend request'))
+      .finally(() => setAddingFriendId(null));
+  };
 
-      <main>
+  // --- JOIN TEAMS SECTION LOGIC ---
+  const [teams, setTeams] = useState([]);
+  const [joiningTeamId, setJoiningTeamId] = useState(null);
+  const [teamsShowCount, setTeamsShowCount] = useState(4);
+  const [teamsExpanded, setTeamsExpanded] = useState(false);
+  useEffect(() => {
+    axiosInstance.get('/myteam/all')
+      .then(res => setTeams(res.data.teams || []))
+      .catch(() => setTeams([]));
+  }, []);
+  const handleShowMoreTeams = () => setTeamsExpanded(v => !v);
+  const handleJoinTeam = (teamId) => {
+    setJoiningTeamId(teamId);
+    axiosInstance.post('/myteam/request-join', { teamId })
+      .then(() => {
+        toast.success('Join request sent to team owner');
+        setTeams(prev => prev.filter(t => t._id !== teamId));
+      })
+      .catch(() => toast.error('Failed to send join request'))
+      .finally(() => setJoiningTeamId(null));
+  };
+
+  return (
+    <div className={styles.body} style={{ background: '#fff', color: '#111' }}>
+      <FutsalNavbar />
+      <main style={{ width: '100%' }}>
+        {/* Section 1: Join Quick Matches */}
+        <section style={{ background: '#fff', color: '#111', borderBottom: '1px solid #eee', padding: '32px 0' }}>
+          <h2 style={{ fontWeight: 700, fontSize: '1.5rem', marginBottom: 24, letterSpacing: 0.5 }}>Join Quick Matches</h2>
+          <div style={{ minHeight: 80, border: '1px dashed #bbb', borderRadius: 10, background: '#fafafa', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#888', fontSize: 18 }}>
+            {/* Placeholder for quick match join UI */}
+            Coming soon: Join a quick match instantly!
+          </div>
+        </section>
+        {/* Section 2: Find Players */}
+        <section style={{ background: '#fff', color: '#111', borderBottom: '1px solid #eee', padding: '32px 0' }}>
+          <h2 style={{ fontWeight: 700, fontSize: '1.5rem', marginBottom: 24, letterSpacing: 0.5 }}>Find Players</h2>
+          <div style={{ minHeight: 80, background: '#fafafa', borderRadius: 10, padding: 24 }}>
+            {findPlayers.length === 0 ? (
+              <div style={{ color: '#888', fontSize: 18, textAlign: 'center' }}>No new players to add.</div>
+            ) : (
+              <>
+                <div style={{
+                  display: 'grid',
+                  gridTemplateColumns: 'repeat(4, 1fr)',
+                  gap: 24,
+                  marginBottom: 24
+                }}>
+                  { (findPlayersExpanded ? findPlayers : findPlayers.slice(0, 4)).map(player => {
+                    const isOrganizer = player.role === 'organizer';
+                    return (
+                      <div key={player._id} style={{
+                        background: isOrganizer ? '#e0f2fe' : '#fff',
+                        border: isOrganizer ? '2px solid #38bdf8' : '1px solid #eee',
+                        borderRadius: 12,
+                        padding: 18,
+                        display: 'flex',
+                        flexDirection: 'column',
+                        alignItems: 'center',
+                        boxShadow: isOrganizer ? '0 2px 12px #38bdf822' : '0 2px 8px #0001',
+                        minHeight: 220,
+                        transition: 'box-shadow 0.2s',
+                        position: 'relative',
+                      }}>
+                        {isOrganizer && (
+                          <div style={{
+                            position: 'absolute',
+                            top: 10,
+                            right: 10,
+                            background: '#38bdf8',
+                            color: '#fff',
+                            fontWeight: 700,
+                            fontSize: 12,
+                            borderRadius: 6,
+                            padding: '2px 10px',
+                            letterSpacing: 0.5
+                          }}>Organizer</div>
+                        )}
+                        <img src={player.avatar || '/avatar.jpg'} alt={player.username} style={{ width: 64, height: 64, borderRadius: '50%', objectFit: 'cover', marginBottom: 12 }} />
+                        <div style={{ fontWeight: 700, fontSize: 17, marginBottom: 4 }}>{player.username}</div>
+                        <div style={{ color: '#888', fontSize: 14, marginBottom: 4 }}>{player.fullName}</div>
+                        {player.playerProfile?.bio && (
+                          <div style={{ color: '#444', fontSize: 13, marginBottom: 4, textAlign: 'center', minHeight: 32, maxHeight: 48, overflow: 'hidden' }}>{player.playerProfile.bio}</div>
+                        )}
+                        {player.playerProfile?.preferredGame && (
+                          <div style={{ color: '#2563eb', fontSize: 13, marginBottom: 4 }}>Preferred: {player.playerProfile.preferredGame}</div>
+                        )}
+                        {player.playerProfile?.location && (
+                          <div style={{ color: '#888', fontSize: 13, marginBottom: 4 }}>Location: {player.playerProfile.location}</div>
+                        )}
+                        <button onClick={() => handleAddFriend(player._id)} disabled={addingFriendId === player._id} style={{
+                          marginTop: 10,
+                          background: addingFriendId === player._id ? '#bbb' : '#10b981', // greenish
+                          color: '#fff',
+                          border: 'none',
+                          borderRadius: 8,
+                          padding: '6px 18px',
+                          fontWeight: 600,
+                          fontSize: 15,
+                          cursor: addingFriendId === player._id ? 'not-allowed' : 'pointer',
+                          boxShadow: '0 1px 4px #0001'
+                        }}>{addingFriendId === player._id ? 'Sending...' : 'Add Friend'}</button>
+                      </div>
+                    );
+                  })}
+                </div>
+                {findPlayers.length > 4 && (
+                  <div style={{ textAlign: 'center' }}>
+                    <button onClick={handleShowMoreFindPlayers} style={{
+                      background: findPlayersExpanded ? '#2563eb' : '#3b82f6', // blueish
+                      color: '#fff',
+                      border: 'none',
+                      borderRadius: 8,
+                      padding: '8px 24px',
+                      fontWeight: 600,
+                      fontSize: 15,
+                      cursor: 'pointer',
+                      boxShadow: '0 1px 4px #0001'
+                    }}>{findPlayersExpanded ? 'Show Less' : 'Show More'}</button>
+                  </div>
+                )}
+              </>
+            )}
+          </div>
+        </section>
+        {/* Section 3: Join Teams */}
+        <section style={{ background: '#fff', color: '#111', borderBottom: '1px solid #eee', padding: '32px 0' }}>
+          <h2 style={{ fontWeight: 700, fontSize: '1.5rem', marginBottom: 24, letterSpacing: 0.5 }}>Join Teams</h2>
+          <div style={{ minHeight: 80, background: '#fafafa', borderRadius: 10, padding: 24 }}>
+            {teams.length === 0 ? (
+              <div style={{ color: '#888', fontSize: 18, textAlign: 'center' }}>No teams available to join.</div>
+            ) : (
+              <>
+                <div style={{
+                  display: 'flex',
+                  flexDirection: 'column',
+                  gap: 24,
+                  marginBottom: 24
+                }}>
+                  {(teamsExpanded ? teams : teams.slice(0, 4)).map(team => (
+                    <div key={team._id} style={{
+                      background: '#fff',
+                      border: '1px solid #eee',
+                      borderRadius: 12,
+                      padding: 18,
+                      display: 'flex',
+                      flexDirection: 'row',
+                      alignItems: 'center',
+                      boxShadow: '0 2px 8px #0001',
+                      minHeight: 120,
+                      transition: 'box-shadow 0.2s',
+                      position: 'relative',
+                      gap: 24
+                    }}>
+                      <img src={team.avatar || '/avatar.jpg'} alt={team.name} style={{ width: 72, height: 72, borderRadius: '50%', objectFit: 'cover', marginRight: 24 }} />
+                      <div style={{ flex: 1 }}>
+                        <div style={{ fontWeight: 700, fontSize: 18, marginBottom: 4 }}>{team.name}</div>
+                        <div style={{ color: '#888', fontSize: 15, marginBottom: 4 }}>{team.location || 'No location'}</div>
+                        {team.description && (
+                          <div style={{ color: '#444', fontSize: 14, marginBottom: 4, textAlign: 'left', minHeight: 24, maxHeight: 40, overflow: 'hidden' }}>{team.description}</div>
+                        )}
+                        <div style={{ color: '#2563eb', fontSize: 14, marginBottom: 4 }}>Owner: {team.owner?.username || 'N/A'}</div>
+                      </div>
+                      <button onClick={() => handleJoinTeam(team._id)} disabled={joiningTeamId === team._id} style={{
+                        background: joiningTeamId === team._id ? '#bbb' : '#2563eb',
+                        color: '#fff',
+                        border: 'none',
+                        borderRadius: 8,
+                        padding: '10px 28px',
+                        fontWeight: 600,
+                        fontSize: 16,
+                        cursor: joiningTeamId === team._id ? 'not-allowed' : 'pointer',
+                        boxShadow: '0 1px 4px #0001',
+                        minWidth: 120
+                      }}>{joiningTeamId === team._id ? 'Requesting...' : 'Join Now'}</button>
+                    </div>
+                  ))}
+                </div>
+                {teams.length > 4 && (
+                  <div style={{ textAlign: 'center' }}>
+                    <button onClick={handleShowMoreTeams} style={{
+                      background: teamsExpanded ? '#2563eb' : '#3b82f6',
+                      color: '#fff',
+                      border: 'none',
+                      borderRadius: 8,
+                      padding: '8px 24px',
+                      fontWeight: 600,
+                      fontSize: 15,
+                      cursor: 'pointer',
+                      boxShadow: '0 1px 4px #0001'
+                    }}>{teamsExpanded ? 'Show Less' : 'Show More'}</button>
+                  </div>
+                )}
+              </>
+            )}
+          </div>
+        </section>
+        {/* Original content below */}
         <section className={styles.searchSection}>
           <div className={styles.searchBar} style={{ position: 'relative' }}>
             <div className={styles.searchInput}>
