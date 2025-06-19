@@ -535,7 +535,7 @@ const QuickFindFutsalPage = () => {
   const [loadingPreferred, setLoadingPreferred] = useState(true);
 
   // Fetch preferred times on mount
-  useEffect(() => {
+  const fetchPreferredTimes = () => {
     setLoadingPreferred(true);
     console.log('Fetching preferred times from backend...');
     axiosInstance.get('/users/preferred-time')
@@ -543,16 +543,24 @@ const QuickFindFutsalPage = () => {
         console.log('Backend response for preferred times:', res);
         const data = res.data.data;
         console.log('Extracted preferredTimes:', data);
-        setPreferredTimes(Array.isArray(data) ? data : []);
+        // Ensure we always get an array, even if data is null/undefined
+        const safeData = Array.isArray(data) ? data : [];
+        console.log('Safe preferredTimes to set:', safeData);
+        setPreferredTimes(safeData);
       })
       .catch((err) => {
         console.error('Error fetching preferred times:', err);
+        toast.error('Failed to load your preferred times');
         setPreferredTimes([]);
       })
       .finally(() => {
         setLoadingPreferred(false);
         console.log('Finished fetching preferred times.');
       });
+  };
+
+  useEffect(() => {
+    fetchPreferredTimes();
   }, []);
 
   const handleAddPreferredTime = () => {
@@ -1073,6 +1081,59 @@ const QuickFindFutsalPage = () => {
                     Add
                   </button>
                 </div>
+                
+                {/* Display current preferred times */}
+                <div style={{ marginBottom: 16 }}>
+                  <h3 style={{ fontSize: 16, fontWeight: 600, marginBottom: 8 }}>Your Current Availability:</h3>
+                  {loadingPreferred ? (
+                    <div style={{ color: '#888', padding: '8px 0' }}>Loading your available times...</div>
+                  ) : preferredTimes.length === 0 ? (
+                    <div style={{ color: '#888', padding: '8px 0' }}>You haven't added any available times yet.</div>
+                  ) : (
+                    <div style={{ 
+                      background: '#f0f9ff', 
+                      border: '1px solid #93c5fd', 
+                      borderRadius: 8, 
+                      padding: 16,
+                      marginBottom: 16
+                    }}>
+                      <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+                        <thead>
+                          <tr style={{ borderBottom: '1px solid #bfdbfe' }}>
+                            <th style={{ textAlign: 'left', padding: '8px 16px', color: '#1e40af' }}>Day</th>
+                            <th style={{ textAlign: 'left', padding: '8px 16px', color: '#1e40af' }}>Time</th>
+                            <th style={{ textAlign: 'right', padding: '8px 16px', color: '#1e40af' }}>Action</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {preferredTimes.map((pt, idx) => (
+                            <tr key={idx} style={{ borderBottom: idx < preferredTimes.length - 1 ? '1px solid #e5e7eb' : 'none' }}>
+                              <td style={{ padding: '8px 16px', fontWeight: 500 }}>{pt.dayOfWeek}</td>
+                              <td style={{ padding: '8px 16px' }}>{pt.startTime} - {pt.endTime}</td>
+                              <td style={{ padding: '8px 16px', textAlign: 'right' }}>
+                                <button 
+                                  onClick={() => handleDeletePreferredTime(idx)} 
+                                  style={{ 
+                                    background: '#ef4444',
+                                    color: '#fff', 
+                                    border: 'none', 
+                                    borderRadius: 6, 
+                                    padding: '4px 12px', 
+                                    fontWeight: 600, 
+                                    cursor: 'pointer' 
+                                  }}
+                                >
+                                  Delete
+                                </button>
+                              </td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+                  )}
+                </div>
+                
                 <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
                   {loadingPreferred ? <span style={{ color: '#888' }}>Loading...</span> : null}
                   {!loadingPreferred && preferredTimes.length === 0 && <span style={{ color: '#888' }}>No preferred times added.</span>}
