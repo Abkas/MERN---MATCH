@@ -75,6 +75,7 @@ const FutsalNavbar = () => {
           <li><Link to="/bookfutsal" className={isActive('/bookfutsal') ? styles.active : ''} onClick={closeMenu}>Book Futsal</Link></li>
           <li><Link to="/tournaments" className={isActive('/tournaments') ? styles.active : ''} onClick={closeMenu}>Tournaments</Link></li>
           <li><Link to="/quickmatch" className={isActive('/quickmatch') ? styles.active : ''} onClick={closeMenu}>Quick Match</Link></li>
+          <li><Link to="/map-search" className={isActive('/map-search') ? styles.active : ''} onClick={closeMenu}>Map Search</Link></li>
         </ul>
         <div className={styles.navIcons}>
           <div className={styles.notification} onClick={() => setNotifOpen((v) => !v)} ref={notifRef}>

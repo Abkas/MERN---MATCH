@@ -41,6 +41,8 @@ import { useEffect } from "react"
 import {Loader} from "lucide-react"
 
 import { Toaster } from "react-hot-toast"
+import MapSearchPage from './pages/MapSearchPage';
+import './pages/MapSearchPage.css';
 
 const App = () => {
   const {authUser, checkAuth, isCheckingAuth} = useAuthStore()
@@ -99,6 +101,7 @@ const App = () => {
         <Route path="/organizer-profile/:id" element={authUser ? <OrganizerProfile /> : <Navigate to="/login" />} />
         <Route path="/organizer-update-profile" element={authUser ? <OrganizerUpdateProfile /> : <Navigate to="/login" />} />
         <Route path="/profile" element={authUser ? <Linkprofile /> : <Navigate to="/login" />} />
+        <Route path="/map-search" element= {authUser?<MapSearchPage />: <Navigate to='/login'/>} />
       </Routes>
 
       <Toaster />

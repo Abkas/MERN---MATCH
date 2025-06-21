@@ -890,7 +890,6 @@ const QuickFindFutsalPage = () => {
         </section>
         {/* Original content below */}
         <section className={styles.searchSection}>
-          <h2 style={{ fontWeight: 700, fontSize: '2rem', margin: '0 0 18px 0', letterSpacing: 0.5, textAlign: 'center' }}>Book Futsal</h2>
           <div className={styles.searchBar} style={{ position: 'relative' }}>
             <div className={styles.searchInput}>
               <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -1209,33 +1208,6 @@ const QuickFindFutsalPage = () => {
                   ))}
                 </React.Fragment>
               )}
-            </div>
-          </section>
-        )}
-        {/* Book Futsal Heading above search */}
-        <h2 style={{ fontWeight: 700, fontSize: '2rem', margin: '32px 0 12px 0', letterSpacing: 0.5, textAlign: 'center' }}>Book Futsal</h2>
-
-        {/* Section: Slots with Bookings by Others (Today) */}
-        {loadingBookedOpenSlots ? (
-          <section style={{ background: '#fff', color: '#111', borderBottom: '1px solid #eee', padding: '32px 0' }}>
-            <h2 style={{ fontWeight: 700, fontSize: '1.5rem', marginBottom: 24, letterSpacing: 0.5 }}>Today's Slots with Bookings by Others</h2>
-            <div style={{ minHeight: 80, border: '1px dashed #bbb', borderRadius: 10, background: '#fafafa', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#888', fontSize: 18 }}>
-              Loading slots with bookings...
-            </div>
-          </section>
-        ) : bookedOpenSlotsByFutsal.length > 0 && (
-          <section style={{ background: '#fff', color: '#111', borderBottom: '1px solid #eee', padding: '32px 0' }}>
-            <h2 style={{ fontWeight: 700, fontSize: '1.5rem', marginBottom: 24, letterSpacing: 0.5 }}>Today's Slots with Bookings by Others</h2>
-            <div className={styles.venueList}>
-              {bookedOpenSlotsByFutsal.map(futsal => (
-                <QuickJoinSection
-                  key={futsal._id}
-                  futsal={futsal}
-                  slots={futsal.slots}
-                  minPrice={0}
-                  availableOnly={true}
-                />
-              ))}
             </div>
           </section>
         )}
