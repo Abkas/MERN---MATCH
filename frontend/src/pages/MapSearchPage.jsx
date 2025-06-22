@@ -5,6 +5,7 @@ import FutsalCard from '../components/FutsalCard';
 import styles from '../pages/css/QuickFind.module.css';
 import axios from 'axios';
 import { toast } from 'react-hot-toast';
+import { getSlotTimeStatus, isSlotWithinOpeningHours } from '../utils/slotTimeStatus';
 
 const GOOGLE_MAPS_API_KEY = import.meta.env.VITE_GOOGLE_MAPS_API_KEY;
 
@@ -231,7 +232,12 @@ export default function MapSearchPage() {
           const res = await axios.get(`/api/v1/slots/${futsal._id}/slots/date?date=${selectedDate}`);
           // Use res.data.message as the slots array
           if (Array.isArray(res.data?.message)) {
-            slotsByFutsal[futsal._id] = res.data.message.filter(slot => slot.status === 'available');
+            slotsByFutsal[futsal._id] = res.data.message.filter(slot => {
+              // Only show slots that are available, upcoming, and within opening hours
+              const timeStatus = getSlotTimeStatus(slot, selectedDate);
+              const withinHours = isSlotWithinOpeningHours(slot, futsal);
+              return slot.status === 'available' && timeStatus === 'upcoming' && withinHours;
+            });
           } else {
             slotsByFutsal[futsal._id] = [];
           }
@@ -262,12 +268,19 @@ export default function MapSearchPage() {
         }
       }));
       setAllSlots(slotsByFutsal);
-      // Add a console at the end to show all slots of that day
-      const allSlotsFlat = Object.values(slotsByFutsal).flat();
-      console.log('All slots for selected date', selectedDate, ':', allSlotsFlat);
-      // Filter and console only available slots for the selected date
-      const availableSlots = allSlotsFlat.filter(slot => slot.status === 'available');
-      console.log('Available slots for selected date', selectedDate, ':', availableSlots);
+      // Console: all futsals' slots for the day (no filters)
+      const allSlotsFlat = Object.entries(slotsByFutsal).map(([futsalId, slots]) => ({ futsalId, slots })).filter(f => f.slots.length > 0);
+      console.log('All futsals and their slots for selected date', selectedDate, ':', allSlotsFlat);
+      // Console: only futsals with available slots to join (filtered)
+      const availableFutsals = allSlotsFlat.map(f => ({
+        futsalId: f.futsalId,
+        slots: f.slots.filter(slot => {
+          const timeStatus = getSlotTimeStatus(slot, selectedDate);
+          const withinHours = isSlotWithinOpeningHours(slot, futsals.find(ft => ft._id === f.futsalId));
+          return slot.status === 'available' && timeStatus === 'upcoming' && withinHours;
+        })
+      })).filter(f => f.slots.length > 0);
+      console.log('Futsals with available slots to join for selected date', selectedDate, ':', availableFutsals);
     }
     if (futsals.length && selectedDate) fetchAllSlots();
     else setAllSlots({});
