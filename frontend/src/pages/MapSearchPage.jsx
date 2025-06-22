@@ -6,6 +6,8 @@ import styles from '../pages/css/QuickFind.module.css';
 import axios from 'axios';
 import { toast } from 'react-hot-toast';
 import { getSlotTimeStatus, isSlotWithinOpeningHours } from '../utils/slotTimeStatus';
+import { useNavigate } from 'react-router-dom';
+import SeatSelectionModal from '../components/SeatSelectionModal';
 
 const GOOGLE_MAPS_API_KEY = import.meta.env.VITE_GOOGLE_MAPS_API_KEY;
 
@@ -45,6 +47,14 @@ export default function MapSearchPage() {
   const [availableSlots, setAvailableSlots] = useState({}); // {futsalId: [slots]}
   const [allSlots, setAllSlots] = useState({}); // {futsalId: [slots]}
   const [showFilteredSlots, setShowFilteredSlots] = useState(false);
+  const [selectedFutsalForSlots, setSelectedFutsalForSlots] = useState(null);
+  const [joinSlotLoading, setJoinSlotLoading] = useState(false);
+  const [joinSlotError, setJoinSlotError] = useState(null);
+  const [expandedFutsalIds, setExpandedFutsalIds] = useState([]);
+  const [seatModalOpen, setSeatModalOpen] = useState(false);
+  const [seatModalSlot, setSeatModalSlot] = useState(null);
+  const [seatModalFutsal, setSeatModalFutsal] = useState(null);
+  const navigate = useNavigate();
 
   // Load Google Maps script
   useEffect(() => {
@@ -113,8 +123,10 @@ export default function MapSearchPage() {
     const futsalDistances = futsals.map(f => {
       let lat = f.latitude ?? f.lat;
       let lng = f.longitude ?? f.lng;
+      let extracted = false;
       if ((typeof lat !== 'number' || typeof lng !== 'number') && f.mapLink) {
         [lat, lng] = extractLatLngFromMapLink(f.mapLink);
+        extracted = true;
       }
       const dist = (typeof lat === 'number' && typeof lng === 'number')
         ? haversineDistance(userLocation.lat, userLocation.lng, lat, lng)
@@ -124,17 +136,32 @@ export default function MapSearchPage() {
         lat, lng,
         dist,
         userLat: userLocation.lat,
-        userLng: userLocation.lng
+        userLng: userLocation.lng,
+        extracted,
+        mapLink: f.mapLink
       };
     });
-    console.log('Futsals with coordinates and distance from user:', futsalDistances);
-    // Only filter by distance/location
+    console.log('DEBUG: All futsals with coordinates and distance from user:', futsalDistances);
+    // Only filter by distance/location, with detailed debug
     const filtered = futsals.filter((f) => {
-      const lat = f.latitude ?? f.lat;
-      const lng = f.longitude ?? f.lng;
-      if (typeof lat !== 'number' || typeof lng !== 'number') return false;
+      let lat = f.latitude ?? f.lat;
+      let lng = f.longitude ?? f.lng;
+      let extracted = false;
+      if ((typeof lat !== 'number' || typeof lng !== 'number') && f.mapLink) {
+        [lat, lng] = extractLatLngFromMapLink(f.mapLink);
+        extracted = true;
+      }
+      if (typeof lat !== 'number' || typeof lng !== 'number') {
+        console.log(`[FILTER] Exclude '${f.name}': Invalid coordinates (lat:`, lat, ', lng:', lng, ', extracted:', extracted, ', mapLink:', f.mapLink, ')');
+        return false;
+      }
       const dist = haversineDistance(userLocation.lat, userLocation.lng, lat, lng);
-      return dist <= filters.distance;
+      if (dist > filters.distance) {
+        console.log(`[FILTER] Exclude '${f.name}': Distance ${dist.toFixed(2)}km > filter ${filters.distance}km`);
+        return false;
+      }
+      console.log(`[FILTER] Include '${f.name}': Distance ${dist.toFixed(2)}km <= filter ${filters.distance}km`);
+      return true;
     });
     setFilteredFutsals(filtered);
   }, [futsals, filters.distance, userLocation]);
@@ -321,6 +348,43 @@ export default function MapSearchPage() {
     toast.success(`Date changed to ${new Date(date).toLocaleDateString()}`);
   };
 
+  // Helper to refresh all slots for all futsals
+  async function refreshAllSlots() {
+    const slotsByFutsal = {};
+    await Promise.all(futsals.map(async (futsal) => {
+      try {
+        const res = await axios.get(`/api/v1/slots/${futsal._id}/slots/date?date=${selectedDate}`);
+        if (Array.isArray(res.data?.message)) {
+          slotsByFutsal[futsal._id] = res.data.message;
+        } else {
+          slotsByFutsal[futsal._id] = [];
+        }
+      } catch (err) {
+        slotsByFutsal[futsal._id] = [];
+      }
+    }));
+    setAllSlots(slotsByFutsal);
+  }
+
+  // Handler to join a slot (with seats/team)
+  async function handleJoinSlot(futsalId, slotId, seats = 1, teamChoice = 'A') {
+    setJoinSlotLoading(true);
+    setJoinSlotError(null);
+    try {
+      const res = await axios.post(`/api/v1/slots/${futsalId}/slots/${slotId}/join`, { seats, teamChoice });
+      if (res.data.success) {
+        toast.success('Successfully joined the slot!');
+        await refreshAllSlots();
+      } else {
+        setJoinSlotError(res.data.message || 'Failed to join slot');
+      }
+    } catch (err) {
+      setJoinSlotError(err.response?.data?.message || 'Failed to join slot');
+    } finally {
+      setJoinSlotLoading(false);
+    }
+  }
+
   // Slot, distance, and price labels for sliders
   const slotLabels = ['1', '2', '3', '4', '5', '6', '7', '8+'];
   const distanceLabels = ['1', '2', '3', '4', '5', '6', '7', '8+'];
@@ -353,6 +417,17 @@ export default function MapSearchPage() {
     // On click, filter slots for futsals in filteredFutsals for the selected date
     // (already handled by useEffect for availableSlots)
   };
+
+  // Helper to get distance for a futsal
+  function getFutsalDistance(futsal) {
+    let lat = futsal.latitude ?? futsal.lat;
+    let lng = futsal.longitude ?? futsal.lng;
+    if ((typeof lat !== 'number' || typeof lng !== 'number') && futsal.mapLink) {
+      [lat, lng] = extractLatLngFromMapLink(futsal.mapLink);
+    }
+    if (typeof lat !== 'number' || typeof lng !== 'number') return null;
+    return haversineDistance(userLocation.lat, userLocation.lng, lat, lng);
+  }
 
   useEffect(() => {
     console.log('Current filter:', filters, 'Selected date:', selectedDate);
@@ -500,6 +575,178 @@ export default function MapSearchPage() {
           ))}
         </div>
       )}
+      {/* Floating box for futsals in location range */}
+      <div style={{
+        position: 'fixed',
+        left: 24,
+        bottom: 24,
+        zIndex: 1000,
+        background: '#fff',
+        border: '1px solid #ddd',
+        borderRadius: 12,
+        boxShadow: '0 4px 16px rgba(0,0,0,0.10)',
+        padding: 20,
+        minWidth: 260,
+        maxWidth: 350,
+        maxHeight: 420,
+        overflowY: 'auto',
+        transition: 'box-shadow 0.2s',
+        display: filteredFutsals.length > 0 ? 'block' : 'none'
+      }}>
+        <div style={{ fontWeight: 700, fontSize: 20, marginBottom: 16, color: '#1976d2', letterSpacing: 0.5 }}>Futsals Available</div>
+        <ul style={{ listStyle: 'none', padding: 0, margin: 0 }}>
+          {filteredFutsals.map(futsal => {
+            const distance = getFutsalDistance(futsal);
+            const availableSlots = (allSlots[futsal._id] || []).filter(slot => {
+              const timeStatus = getSlotTimeStatus(slot, selectedDate);
+              const withinHours = isSlotWithinOpeningHours(slot, futsal);
+              return slot.status === 'available' && timeStatus === 'upcoming' && withinHours;
+            });
+            const isExpanded = expandedFutsalIds.includes(futsal._id);
+            return (
+              <li key={futsal._id} style={{ marginBottom: 16, borderBottom: '1px solid #eee', paddingBottom: 10 }}>
+                <div
+                  style={{ display: 'flex', alignItems: 'center', cursor: 'pointer', gap: 12 }}
+                  onClick={() => {
+                    setExpandedFutsalIds(ids =>
+                      ids.includes(futsal._id)
+                        ? ids.filter(id => id !== futsal._id)
+                        : [...ids, futsal._id]
+                    );
+                  }}
+                >
+                  <img
+                    src={futsal.futsalPhoto || '/default-futsal.jpg'}
+                    alt={futsal.name}
+                    style={{ width: 44, height: 44, borderRadius: '50%', objectFit: 'cover', border: '1px solid #ccc', background: '#f5f5f5', cursor: 'pointer' }}
+                    onClick={e => {
+                      e.stopPropagation();
+                      navigate(`/futsal/${futsal._id}`);
+                    }}
+                  />
+                  <div style={{ flex: 1 }}>
+                    <div style={{ fontWeight: 600, fontSize: 16, color: '#222' }}>{futsal.name}</div>
+                    <div style={{ fontSize: 13, color: '#666', marginTop: 2 }}>{futsal.location || 'Location not specified'}</div>
+                  </div>
+                  <div style={{ textAlign: 'right', minWidth: 70 }}>
+                    <div style={{ fontSize: 13, color: '#1976d2', fontWeight: 500 }}>{distance !== null ? `${distance.toFixed(2)} km` : 'N/A'}</div>
+                    <div style={{ fontSize: 13, color: '#333', fontWeight: 600, marginTop: 2 }}>{availableSlots.length} slot{availableSlots.length !== 1 ? 's' : ''}</div>
+                  </div>
+                </div>
+                {isExpanded && (
+                  <div style={{margin: '12px 0 0 0'}}>
+                    <button
+                      onClick={e => {
+                        e.stopPropagation();
+                        navigate(`/futsal/${futsal._id}`);
+                      }}
+                      style={{
+                        display: 'block',
+                        width: '100%',
+                        marginBottom: 8,
+                        padding: '8px 0',
+                        background: '#1976d2',
+                        color: '#fff',
+                        border: 'none',
+                        borderRadius: 6,
+                        fontWeight: 700,
+                        fontSize: 15,
+                        cursor: 'pointer',
+                        letterSpacing: 0.5
+                      }}
+                    >
+                      Open Futsal
+                    </button>
+                    <ul style={{ listStyle: 'none', padding: 0, margin: 0, background: '#f8fafc', borderRadius: 8, boxShadow: '0 2px 8px #0001', border: '1px solid #e3e3e3' }}>
+                      {availableSlots.length === 0 && (
+                        <li style={{ padding: 12, color: '#888', textAlign: 'center' }}>No joinable slots</li>
+                      )}
+                      {availableSlots.map(slot => (
+                        <li key={slot._id} style={{ display: 'flex', flexDirection: 'column', gap: 4, padding: '10px 16px', borderBottom: '1px solid #eee' }}>
+                          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                            <span style={{ fontWeight: 500 }}>{slot.time}</span>
+                            <button
+                              onClick={e => {
+                                e.stopPropagation();
+                                setSeatModalSlot(slot);
+                                setSeatModalFutsal(futsal);
+                                setSeatModalOpen(true);
+                              }}
+                              disabled={joinSlotLoading}
+                              style={{ padding: '5px 14px', background: '#1976d2', color: '#fff', border: 'none', borderRadius: 4, cursor: 'pointer', fontWeight: 600, fontSize: 14 }}
+                            >
+                              Join
+                            </button>
+                          </div>
+                          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', fontSize: 13, color: '#444', marginTop: 2 }}>
+                            <span>
+                              Players: {Array.isArray(slot.players) ? slot.players.length : (slot.currentPlayers || 0)} / {slot.maxPlayers}
+                            </span>
+                            <span style={{ color: '#1976d2', fontWeight: 500 }}>
+                              Price: {slot.price ? `Rs. ${slot.price}` : 'N/A'}
+                            </span>
+                          </div>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+              </li>
+            );
+          })}
+        </ul>
+      </div>
+      <div style={{ margin: '32px 0' }}>
+        <h2>Futsals in Location Range</h2>
+        <ul style={{ listStyle: 'none', padding: 0 }}>
+          {filteredFutsals.map(futsal => (
+            <li key={futsal._id} style={{ marginBottom: 12 }}>
+              <button
+                style={{ background: 'none', border: 'none', color: '#1976d2', fontWeight: 600, fontSize: 18, cursor: 'pointer', textDecoration: 'underline' }}
+                onClick={() => setSelectedFutsalForSlots(futsal._id)}
+              >
+                {futsal.name}
+              </button>
+            </li>
+          ))}
+        </ul>
+        {selectedFutsalForSlots && (
+          <div style={{ marginTop: 24, padding: 16, border: '1px solid #eee', borderRadius: 8, background: '#fafbfc' }}>
+            <h3>Available Slots for {filteredFutsals.find(f => f._id === selectedFutsalForSlots)?.name}</h3>
+            <ul style={{ listStyle: 'none', padding: 0 }}>
+              {(allSlots[selectedFutsalForSlots] || [])
+                .filter(slot => {
+                  const timeStatus = getSlotTimeStatus(slot, selectedDate);
+                  const withinHours = isSlotWithinOpeningHours(slot, filteredFutsals.find(f => f._id === selectedFutsalForSlots));
+                  return slot.status === 'available' && timeStatus === 'upcoming' && withinHours;
+                })
+                .map(slot => (
+                  <li key={slot._id} style={{ marginBottom: 10, display: 'flex', alignItems: 'center', gap: 16 }}>
+                    <span style={{ fontWeight: 500 }}>{slot.time}</span>
+                    <button
+                      onClick={() => handleJoinSlot(selectedFutsalForSlots, slot._id)}
+                      disabled={joinSlotLoading}
+                      style={{ padding: '6px 16px', background: '#1976d2', color: '#fff', border: 'none', borderRadius: 4, cursor: 'pointer', fontWeight: 600 }}
+                    >
+                      Join
+                    </button>
+                  </li>
+                ))}
+            </ul>
+            {joinSlotError && <div style={{ color: 'red', marginTop: 8 }}>{joinSlotError}</div>}
+          </div>
+        )}
+      </div>
+      <SeatSelectionModal
+        isOpen={seatModalOpen}
+        onClose={() => setSeatModalOpen(false)}
+        slot={seatModalSlot}
+        onConfirm={(seats, teamChoice) => {
+          if (seatModalSlot && seatModalFutsal) {
+            handleJoinSlot(seatModalFutsal._id, seatModalSlot._id, seats, teamChoice);
+          }
+        }}
+      />
     </div>
   );
 }

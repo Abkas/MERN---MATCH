@@ -226,7 +226,10 @@ const getSlotsByDate = asyncHandler(async (req, res) => {
     const slots = await Slot.find({
         futsal: futsalId,
         date: date
-    }).populate('players', 'username fullName avatar')
+    })
+    .populate('players', 'username fullName avatar')
+    .populate('teamA', 'username fullName avatar')
+    .populate('teamB', 'username fullName avatar')
 
     return res.status(200).json(
         new ApiResponse(200, slots, "Slots fetched successfully")
