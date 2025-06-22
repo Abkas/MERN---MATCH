@@ -27,7 +27,7 @@ function haversineDistance(lat1, lon1, lat2, lon2) {
 
 const defaultFilters = {
   distance: 1, // km (initial value)
-  price: [100, 1000], // min price 100
+  price: [0, 1000], // min price 0 (changed from 100)
   slot: 1, // min slot 1
 };
 
@@ -392,6 +392,7 @@ export default function MapSearchPage() {
 
   // Helper to get label for slider value
   const getSliderLabel = (labels, value, max) => {
+    if (value === 1) return '100'; // Always show 100 for the first/default value
     const idx = Math.min(Math.floor(((value - 1) / (max - 1)) * (labels.length - 1)), labels.length - 1);
     return labels[idx];
   };
@@ -409,13 +410,6 @@ export default function MapSearchPage() {
       });
     }
     return days;
-  };
-
-  // Handler for Find Game button
-  const handleFindGame = () => {
-    setShowFilteredSlots(true);
-    // On click, filter slots for futsals in filteredFutsals for the selected date
-    // (already handled by useEffect for availableSlots)
   };
 
   // Helper to get distance for a futsal
@@ -465,14 +459,21 @@ export default function MapSearchPage() {
                     height: 38,
                     borderRadius: 10,
                     border: 'none',
-                    background: selectedDate === day.value ? '#e53935' : '#f2f2f2',
-                    color: selectedDate === day.value ? '#fff' : '#333',
+                    background: selectedDate === day.value ? '#2563eb' : '#e3eefe', // bluish theme
+                    color: selectedDate === day.value ? '#fff' : '#2563eb',
                     fontWeight: 700,
                     fontSize: 16,
                     cursor: 'pointer',
-                    boxShadow: selectedDate === day.value ? '0 2px 8px rgba(229,57,53,0.12)' : 'none',
+                    boxShadow: selectedDate === day.value ? '0 2px 8px #2563eb33' : 'none',
                     transition: 'background 0.18s, color 0.18s',
-                    display: 'flex', alignItems: 'center', justifyContent: 'center',
+                    outline: selectedDate === day.value ? '2px solid #2563eb' : 'none',
+                    borderBottom: selectedDate === day.value ? '3px solid #2563eb' : '2px solid #b6d0fa',
+                    marginBottom: 0,
+                    marginTop: 0,
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    letterSpacing: 0.5,
                   }}
                 >
                   {d.getDate()}
@@ -538,12 +539,6 @@ export default function MapSearchPage() {
             </div>
           </div>
         </div>
-        <button
-          style={{marginTop:18, background:'#e53935', color:'#fff', border:'none', borderRadius:8, padding:'10px 0', fontWeight:700, fontSize:17, cursor:'pointer', boxShadow:'0 2px 8px rgba(229,57,53,0.12)'}}
-          onClick={handleFindGame}
-        >
-          Find Game
-        </button>
       </div>
       {selectedFutsal && (
         <div className="futsal-card-modal" onClick={() => setSelectedFutsal(null)}>
