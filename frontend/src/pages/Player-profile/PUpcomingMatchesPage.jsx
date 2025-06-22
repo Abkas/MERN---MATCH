@@ -5,7 +5,7 @@ import { LogOut, User, Clock, Users, DollarSign, MapPin } from 'lucide-react'
 import { useAuthStore } from '../../store/useAuthStore'
 import { axiosInstance } from '../../lib/axios'
 import toast from 'react-hot-toast'
-import { getSlotTimeStatus } from '../../utils/slotTimeStatus'
+import { getSlotTimeStatusAndSync } from '../../utils/slotTimeStatus'
 import FutsalNavbar from '../../components/FutsalNavbar'
 import OrganizerSidebar from '../../components/OrganizerSidebar';
 import PlayerSidebar from '../../components/PlayerSidebar';
@@ -41,7 +41,7 @@ const PUpcomingMatchesPage = () => {
                 
                 // Filter out ended matches to show only active joined slots
                 const activeJoinedSlots = slots.filter(slot => {
-                    const timeStatus = getSlotTimeStatus(slot, slot.date);
+                    const timeStatus = getSlotTimeStatusAndSync(slot, slot.date);
                     return timeStatus !== 'ended';
                 });
                 
@@ -139,7 +139,7 @@ const PUpcomingMatchesPage = () => {
                     ) : (
                         <div className={styles.matchesGrid}>
                             {joinedSlots.map((slot) => {
-                                const timeStatus = getSlotTimeStatus(slot, slot.date);
+                                const timeStatus = getSlotTimeStatusAndSync(slot, slot.date);
                                 let statusLabel = '';
                                 let statusClass = '';
 

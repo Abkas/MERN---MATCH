@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { X, Plus, Minus } from 'lucide-react';
-import { getSlotTimeStatus } from '../utils/slotTimeStatus';
+import { getSlotTimeStatusAndSync } from '../utils/slotTimeStatus';
 import styles from '../pages/css/BookFutsal.module.css';
 
 // Helper to count how many times a userId appears in an array
@@ -42,7 +42,7 @@ const SeatSelectionModal = ({ isOpen, onClose, slot, onConfirm }) => {
   const maxPlayers = slot?.maxPlayers || 10;
   const availableSlots = maxPlayers - currentPlayers;
   const slotDate = slot?.date;
-  const timeStatus = getSlotTimeStatus(slot, slotDate);
+  const timeStatus = getSlotTimeStatusAndSync(slot, slotDate);
   const canBook = timeStatus === 'upcoming';
 
   return (

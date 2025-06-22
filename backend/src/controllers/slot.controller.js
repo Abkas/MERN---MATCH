@@ -81,10 +81,19 @@ const getSlotsByFutsal = asyncHandler(async (req, res) => {
             .sort({ date: 1, time: 1 })
             .populate('players', 'username fullName avatar')
             .populate('teamA', 'username fullName avatar')
-            .populate('teamB', 'username fullName avatar');
+            .populate('teamB', 'username fullName avatar')
+            .populate('futsal') // populate all futsal fields
+            .lean();
+
+        // Add futsalId as a separate property (string)
+        const slotsWithFutsalId = slots.map(slot => ({
+            ...slot,
+            futsalId: (typeof slot.futsal === 'object' && slot.futsal?._id) ? slot.futsal._id.toString() : slot.futsal?.toString?.() || futsalId
+        }));
+        console.log('Slots with futsalId:', slotsWithFutsalId); // Debug log
 
         return res.status(200).json(
-            new ApiResponse(200, slots, 'Slots fetched successfully')
+            new ApiResponse(200, slotsWithFutsalId, 'Slots fetched successfully')
         );
     } catch (error) {
         console.error('Error fetching slots:', error);
@@ -540,6 +549,33 @@ const checkAndGenerateNextDaySlots = asyncHandler(async (req, res, next) => {
     }
 });
 
+// Update only the status of a slot (for frontend sync)
+const updateSlotStatus = asyncHandler(async (req, res) => {
+    const { futsalId, slotId } = req.params;
+    const { status } = req.body;
+
+    // Validate status
+    if (!status) {
+        throw new ApiError(400, 'Status is required');
+    }
+    if (!Object.values(SLOT_STATUS).includes(status)) {
+        throw new ApiError(400, `Invalid status value: ${status}`);
+    }
+
+    const slot = await Slot.findOne({ _id: slotId, futsal: futsalId });
+    if (!slot) {
+        throw new ApiError(404, 'Slot not found');
+    }
+
+    slot.status = status;
+    await slot.save();
+
+    // Optional: Add logging here
+    console.log(`[Slot PATCH] Updated slot ${slotId} (futsal ${futsalId}) to status: ${status}`);
+
+    return res.status(200).json(new ApiResponse(200, 'Slot status updated', slot));
+});
+
 export {
     createSlot,
     updateSlot,
@@ -552,5 +588,6 @@ export {
     getPlayerJoinedSlots,
     cancelSlotBooking,
     updateSlotsPrice,
-    checkAndGenerateNextDaySlots
+    checkAndGenerateNextDaySlots,
+    updateSlotStatus
 }

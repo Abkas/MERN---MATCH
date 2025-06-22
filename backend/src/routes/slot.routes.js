@@ -12,7 +12,8 @@ import {
     getPlayerJoinedSlots,
     cancelSlotBooking,
     updateSlotsPrice,
-    checkAndGenerateNextDaySlots
+    checkAndGenerateNextDaySlots,
+    updateSlotStatus
 } from '../controllers/slot.controller.js';
 import { getBookedButOpenSlots } from '../controllers/slot.special.controller.js';
 
@@ -35,6 +36,7 @@ router.get('/:futsalId/slots/date', checkAndGenerateNextDaySlots, getSlotsByDate
 router.post('/:futsalId/slots/add', addSlot);
 router.post('/:futsalId/slots/reset', resetSlots);
 router.patch('/:futsalId/update-slots-price', updateSlotsPrice);
+router.patch('/:futsalId/slots/:slotId/status', updateSlotStatus);
 
 // Special: slots with bookings but still open
 router.get('/:futsalId/slots/booked-open', getBookedButOpenSlots);

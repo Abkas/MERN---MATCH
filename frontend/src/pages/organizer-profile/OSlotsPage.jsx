@@ -8,6 +8,7 @@ import toast from 'react-hot-toast'
 import { axiosInstance } from '../../lib/axios'
 import FutsalNavbar from '../../components/FutsalNavbar'
 import OrganizerSidebar from '../../components/OrganizerSidebar'
+import { getSlotTimeStatusAndSync } from '../../utils/slotTimeStatus'
 
 // Helper function to check if a slot is within opening hours
 const isSlotWithinOpeningHours = (slot, futsal) => {
@@ -331,26 +332,9 @@ const OSlotsPage = () => {
     setEditingSlot(prev => ({ ...prev, [field]: value }));
   };
 
-  // Helper to get slot status based on time
-  const getSlotTimeStatus = (slot) => {
-    if (!slot || !slot.time) return null;
-    const [start, end] = slot.time.split('-');
-    const slotDate = selectedDate;
-    const now = new Date();
-    const startDate = new Date(`${slotDate}T${start}`);
-    const endDate = new Date(`${slotDate}T${end}`);
-    // If slot ended
-    if (now > endDate) return 'ended';
-    // If slot is ongoing
-    if (now >= startDate && now <= endDate) return 'playing';
-    // If within 10 minutes before start
-    if (startDate - now <= 10 * 60 * 1000 && startDate > now) return 'soon';
-    return 'upcoming';
-  };
-
   // Update the slot display logic
   const getSlotStatus = (slot) => {
-    const timeStatus = getSlotTimeStatus(slot);
+    const timeStatus = getSlotTimeStatusAndSync(slot);
     const isWithinHours = isSlotWithinOpeningHours(slot, futsal);
 
     if (!isWithinHours) {
@@ -774,7 +758,7 @@ const OSlotsPage = () => {
                           <option 
                             key={slot.time} 
                             value={slot.time}
-                            disabled={!newSlot.startTime || slot.time <= newSlot.startTime}
+                            disabled={!newSlot.startTime || slot.time <= newSlot.endTime}
                           >
                             {slot.label}
                           </option>
