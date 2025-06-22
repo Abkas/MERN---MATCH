@@ -4,21 +4,8 @@ import styles from '../pages/css/BookFutsal.module.css';
 import { axiosInstance } from '../lib/axios';
 import toast from 'react-hot-toast';
 import SeatSelectionModal from './SeatSelectionModal';
-import { getSlotTimeStatusAndSync } from '../utils/slotTimeStatus';
+import { getSlotTimeStatusAndSync, isSlotWithinOpeningHours } from '../utils/slotTimeStatus';
 import { useAuthStore } from '../store/useAuthStore';
-
-// Helper function to check if a slot is within opening hours
-const isSlotWithinOpeningHours = (slot, futsal) => {
-  if (!futsal?.openingHours) return true; // If no opening hours set, consider all slots available
-
-  const [openingTime, closingTime] = futsal.openingHours.split(' - ').map(time => {
-    const [hours, minutes] = time.split(':').map(Number);
-    return hours;
-  });
-
-  const [slotStartTime] = slot.time.split('-')[0].split(':').map(Number);
-  return slotStartTime >= openingTime && slotStartTime < closingTime;
-};
 
 // Accept maxPrice as prop
 const QuickJoinSection = ({ futsal, maxPrice, onHasSlots, requiredSeats }) => {
@@ -90,7 +77,7 @@ const QuickJoinSection = ({ futsal, maxPrice, onHasSlots, requiredSeats }) => {
   // Memoize filtered slots for performance and to use for hiding futsal if empty
   const filteredSlots = useMemo(() =>
     slots.filter(slot => {
-      const timeStatus = getSlotTimeStatusAndSync(slot, selectedDate);
+      const timeStatus = getSlotTimeStatusAndSync(slot, selectedDate, futsal);
       const currentPlayersCount = Array.isArray(slot.players) ? slot.players.length : (slot.currentPlayers || 0);
       const availableSeats = slot.maxPlayers - currentPlayersCount;
       const hasEnoughSeats = requiredSeats ? availableSeats >= requiredSeats : availableSeats > 0;

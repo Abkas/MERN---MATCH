@@ -7,21 +7,8 @@ import homeStyles from './css/HomePage.module.css'
 import { axiosInstance } from '../lib/axios'
 import { Calendar, ChevronDown, ChevronUp, Clock, Users, DollarSign } from 'lucide-react'
 import SeatSelectionModal from '../components/SeatSelectionModal'
-import { getSlotTimeStatusAndSync } from '../utils/slotTimeStatus'
+import { getSlotTimeStatusAndSync, isSlotWithinOpeningHours } from '../utils/slotTimeStatus'
 import FutsalNavbar from '../components/FutsalNavbar'
-
-// Helper function to check if a slot is within opening hours
-const isSlotWithinOpeningHours = (slot, futsal) => {
-  if (!futsal?.openingHours) return true; // If no opening hours set, consider all slots available
-
-  const [openingTime, closingTime] = futsal.openingHours.split(' - ').map(time => {
-    const [hours, minutes] = time.split(':').map(Number);
-    return hours;
-  });
-
-  const [slotStartTime] = slot.time.split('-')[0].split(':').map(Number);
-  return slotStartTime >= openingTime && slotStartTime < closingTime;
-};
 
 const FutsalDetails = () => {
   const { id } = useParams();
@@ -512,7 +499,7 @@ const FutsalDetails = () => {
                       </thead>
                       <tbody>
                         {slots.map((slot) => {
-                          const timeStatus = getSlotTimeStatusAndSync(slot, selectedDate);
+                          const timeStatus = getSlotTimeStatusAndSync(slot, selectedDate, futsalData);
                           const isWithinHours = isSlotWithinOpeningHours(slot, futsalData);
                           let statusLabel = '';
                           let statusClass = '';

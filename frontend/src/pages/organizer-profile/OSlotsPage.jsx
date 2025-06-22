@@ -8,20 +8,7 @@ import toast from 'react-hot-toast'
 import { axiosInstance } from '../../lib/axios'
 import FutsalNavbar from '../../components/FutsalNavbar'
 import OrganizerSidebar from '../../components/OrganizerSidebar'
-import { getSlotTimeStatusAndSync } from '../../utils/slotTimeStatus'
-
-// Helper function to check if a slot is within opening hours
-const isSlotWithinOpeningHours = (slot, futsal) => {
-  if (!futsal?.openingHours) return true; // If no opening hours set, consider all slots available
-
-  const [openingTime, closingTime] = futsal.openingHours.split(' - ').map(time => {
-    const [hours, minutes] = time.split(':').map(Number);
-    return hours;
-  });
-
-  const [slotStartTime] = slot.time.split('-')[0].split(':').map(Number);
-  return slotStartTime >= openingTime && slotStartTime < closingTime;
-};
+import { getSlotTimeStatusAndSync, isSlotWithinOpeningHours } from '../../utils/slotTimeStatus'
 
 const OSlotsPage = () => {
   const navigate = useNavigate();
@@ -334,7 +321,7 @@ const OSlotsPage = () => {
 
   // Update the slot display logic
   const getSlotStatus = (slot) => {
-    const timeStatus = getSlotTimeStatusAndSync(slot);
+    const timeStatus = getSlotTimeStatusAndSync(slot, undefined, futsal);
     const isWithinHours = isSlotWithinOpeningHours(slot, futsal);
 
     if (!isWithinHours) {

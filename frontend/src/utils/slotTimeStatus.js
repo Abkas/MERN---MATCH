@@ -50,7 +50,7 @@ async function syncSlotStatusWithBackend(slot, selectedDate) {
     return;
   }
   // Only sync if computedStatus is a valid backend status
-  if (!BACKEND_SLOT_STATUSES.includes(computedStatus)) {
+  if (!BACKEND_SLOT_STATUSES.includes(computedStatus) && computedStatus !== 'unavailable') {
     console.log('[SlotSync] Computed status not a backend status, skipping sync:', computedStatus);
     return;
   }
@@ -62,20 +62,39 @@ async function syncSlotStatusWithBackend(slot, selectedDate) {
   }
 }
 
+// Helper function to check if a slot is within opening hours
+export function isSlotWithinOpeningHours(slot, futsal) {
+  if (!futsal?.openingHours) return true; // If no opening hours set, consider all slots available
+  const [openingTime, closingTime] = futsal.openingHours.split(' - ').map(time => {
+    const [hours, minutes] = time.split(':').map(Number);
+    return hours;
+  });
+  const [slotStartTime] = slot.time.split('-')[0].split(':').map(Number);
+  return slotStartTime >= openingTime && slotStartTime < closingTime;
+}
+
 /**
  * Checks slot time status and also updates backend status if needed.
  * @param {Object} slot - Slot object (must include _id, futsal, date, time, status)
  * @param {string} [selectedDate] - Optional date override
  * @returns {string|null} - The computed status
  */
-export function getSlotTimeStatusAndSync(slot, selectedDate) {
+export function getSlotTimeStatusAndSync(slot, selectedDate, futsal) {
   const status = getSlotTimeStatus(slot, selectedDate);
+  let isWithinHours = true;
+  if (slot && futsal) {
+    isWithinHours = isSlotWithinOpeningHours(slot, futsal);
+  }
+  let syncStatus = status;
+  if (!isWithinHours) {
+    syncStatus = 'unavailable';
+  }
   if (slot && slot._id && (slot.futsal || slot.futsal?._id)) {
     const futsalId = typeof slot.futsal === 'object' ? slot.futsal._id : slot.futsal;
-    console.log('[SlotSync] getSlotTimeStatusAndSync called', { slotId: slot._id, futsal: futsalId, status, slot });
-    syncSlotStatusWithBackend({ ...slot, futsal: futsalId }, selectedDate);
+    console.log('[SlotSync] getSlotTimeStatusAndSync called', { slotId: slot._id, futsal: futsalId, status: syncStatus, slot });
+    syncSlotStatusWithBackend({ ...slot, futsal: futsalId, status: syncStatus }, selectedDate);
   } else {
     console.warn('[SlotSync] Missing futsal or _id for slot, cannot sync', slot);
   }
-  return status;
+  return syncStatus;
 }
