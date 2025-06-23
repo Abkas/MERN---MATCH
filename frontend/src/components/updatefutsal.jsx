@@ -17,7 +17,6 @@ import {
   Map,
   Info,
   AlertCircle,
-  DollarSign,
 } from "lucide-react";
 import styles from "../pages/css/UpdateFutsalProfile.module.css";
 import { useAuthStore } from "../store/useAuthStore";
@@ -316,7 +315,6 @@ const UpdateFutsal = () => {
               <div className={styles.formGroup}>
                 <label htmlFor="price">Default Price per Person</label>
                 <div className={styles.iconInput}>
-                  <DollarSign size={16} />
                   <input 
                     type="number" 
                     id="price" 

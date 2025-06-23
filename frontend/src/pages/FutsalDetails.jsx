@@ -5,7 +5,7 @@ import styles from './css/FutsalDetails.module.css'
 import bookFutsalStyles from './css/BookFutsal.module.css'
 import homeStyles from './css/HomePage.module.css'
 import { axiosInstance } from '../lib/axios'
-import { Calendar, ChevronDown, ChevronUp, Clock, Users, DollarSign } from 'lucide-react'
+import { Calendar, ChevronDown, ChevronUp, Clock, Users } from 'lucide-react'
 import SeatSelectionModal from '../components/SeatSelectionModal'
 import { getSlotTimeStatusAndSync, isSlotWithinOpeningHours } from '../utils/slotTimeStatus'
 import FutsalNavbar from '../components/FutsalNavbar'
@@ -475,7 +475,7 @@ const FutsalDetails = () => {
                             background: '#f8fafc',
                             textAlign: 'left',
                             borderBottom: '2px solid #000'
-                          }}>₹ Price</th>
+                          }}>रु Price</th>
                           <th style={{
                             padding: '16px',
                             fontWeight: 700,
@@ -552,7 +552,7 @@ const FutsalDetails = () => {
                                 fontWeight: 600,
                                 color: '#000',
                                 borderBottom: '1px solid #e2e8f0'
-                              }}>₹{slot.price}</td>
+                              }}>रु{slot.price}</td>
                               <td style={{
                                 padding: '16px',
                                 borderBottom: '1px solid #e2e8f0'

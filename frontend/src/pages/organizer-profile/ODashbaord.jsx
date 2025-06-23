@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import styles from '../css/ODashboard.module.css'
 import { Link, useNavigate } from 'react-router-dom'
-import { LogOut, User, Calendar, MapPin, Clock, Users, DollarSign, Star, Plus } from 'lucide-react'
+import { LogOut, User, Calendar, MapPin, Clock, Users, Star, Plus } from 'lucide-react'
 import { useAuthStore } from '../../store/useAuthStore'
 import { axiosInstance } from '../../lib/axios'
 import toast from 'react-hot-toast'
@@ -242,16 +242,7 @@ const ODashboard = () => {  const { logOut, authUser } = useAuthStore()
                           <Clock size={16} />
                           <span>{futsal.openingHours || "Not specified"}</span>
                         </div>
-                        <div className={styles.detail} style={{
-                          display: 'flex',
-                          alignItems: 'center',
-                          gap: '8px',
-                          fontSize: '0.875rem',
-                          color: '#4b5563',
-                        }}>
-                          <DollarSign size={16} />
-                          <span>₹{futsal.price || "Not set"}</span>
-                        </div>
+                        {/* Removed <DollarSign size={16} /> */}
                       </div>
                       <div className={styles.futsalActions} style={{
                         display: 'flex',
@@ -515,7 +506,7 @@ const ODashboard = () => {  const { logOut, authUser } = useAuthStore()
                       Revenue
                     </h4>
                     <div style={{ height: '120px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                      <DollarSign size={48} color="#9ca3af" />
+                      {/* Removed <DollarSign size={48} color="#9ca3af" /> */}
                     </div>
                   </div>                  {/* Customer Stats Box */}
                   <div style={{ 

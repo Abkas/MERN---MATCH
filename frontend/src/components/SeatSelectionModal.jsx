@@ -96,7 +96,7 @@ const SeatSelectionModal = ({ isOpen, onClose, slot, onConfirm }) => {
           </div>
           <div className={styles.slotInfo}>
             <p className={styles.timeSlot}>{slot?.time}</p>
-            <p className={styles.pricePerSeat}>₹{slot?.price} per player</p>
+            <p className={styles.pricePerSeat}>रु{slot?.price} per player</p>
             <p className={styles.availableSlots}>
               Available slots: {availableSlots} (Current: {currentPlayers}/{maxPlayers})
             </p>
@@ -127,7 +127,7 @@ const SeatSelectionModal = ({ isOpen, onClose, slot, onConfirm }) => {
           </button>
           <div className={styles.totalPrice}>
             <span>Total Price:</span>
-            <span className={styles.price}>₹{totalPrice}</span>
+            <span className={styles.price}>रु{totalPrice}</span>
           </div>
           <button className={styles.confirmButton} onClick={handleConfirm} disabled={!canBook}>
             Confirm Booking

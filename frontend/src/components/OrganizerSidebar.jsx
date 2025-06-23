@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import styles from './OSidebar.module.css';
+import styles from '../pages/css/OSidebar.module.css';
 import { useAuthStore } from '../store/useAuthStore';
 import { LogOut, User, LayoutDashboard, Clock, ChevronLeft, ChevronRight, MapPin, Users, UserPlus } from 'lucide-react';
 

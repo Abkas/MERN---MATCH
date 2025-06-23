@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useMemo } from 'react';
-import { ChevronDown, ChevronUp, Clock, Users, DollarSign, Activity } from 'lucide-react';
+import { ChevronDown, ChevronUp, Clock, Users, Activity } from 'lucide-react';
 import styles from '../pages/css/BookFutsal.module.css';
 import { axiosInstance } from '../lib/axios';
 import toast from 'react-hot-toast';
@@ -122,7 +122,7 @@ const QuickJoinSection = ({ futsal, maxPrice, onHasSlots, requiredSeats }) => {
             {futsal.location}
           </span>
           <span className={styles.infoTag}>
-            ₹{futsal.price || '2000'} per court
+            रु{futsal.price || '2000'} per court
           </span>
         </div>
       </div>
@@ -155,7 +155,7 @@ const QuickJoinSection = ({ futsal, maxPrice, onHasSlots, requiredSeats }) => {
                   <tr>
                     <th style={{ padding: '16px', fontWeight: 700, fontSize: 16, color: '#000', background: '#f8fafc', borderRadius: '8px 0 0 8px', textAlign: 'left', borderBottom: '2px solid #000' }}><Clock size={18} style={{ marginRight: 8 }} /> Time</th>
                     <th style={{ padding: '16px', fontWeight: 700, fontSize: 16, color: '#000', background: '#f8fafc', textAlign: 'left', borderBottom: '2px solid #000' }}><Users size={18} style={{ marginRight: 8 }} /> Players</th>
-                    <th style={{ padding: '16px', fontWeight: 700, fontSize: 16, color: '#000', background: '#f8fafc', textAlign: 'left', borderBottom: '2px solid #000' }}>₹ Price</th>
+                    <th style={{ padding: '16px', fontWeight: 700, fontSize: 16, color: '#000', background: '#f8fafc', textAlign: 'left', borderBottom: '2px solid #000' }}>रु Price</th>
                     <th style={{ padding: '16px', fontWeight: 700, fontSize: 16, color: '#000', background: '#f8fafc', textAlign: 'left', borderBottom: '2px solid #000' }}><Activity size={18} style={{ marginRight: 8 }} /> Status</th>
                     <th style={{ padding: '16px', fontWeight: 700, fontSize: 16, color: '#000', background: '#f8fafc', textAlign: 'left', borderBottom: '2px solid #000' }}>Action</th>
                   </tr>
@@ -212,7 +212,7 @@ const QuickJoinSection = ({ futsal, maxPrice, onHasSlots, requiredSeats }) => {
                           fontWeight: 600, 
                           color: '#000',
                           borderBottom: '1px solid #e2e8f0'
-                        }}>₹{slot.price}</td>
+                        }}>रु{slot.price}</td>
                         <td style={{ 
                           padding: '16px',
                           borderBottom: '1px solid #e2e8f0'

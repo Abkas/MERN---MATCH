@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import styles from '../css/OSlots.module.css'
 import { Link, useNavigate } from 'react-router-dom'
-import { LogOut, User, Plus, Clock, Users, DollarSign, Calendar, Activity, Settings, ChevronLeft, ChevronRight } from 'lucide-react'
+import { LogOut, User, Plus, Clock, Users, Calendar, Activity, Settings, ChevronLeft, ChevronRight } from 'lucide-react'
 import { useAuthStore } from '../../store/useAuthStore'
 import axios from 'axios'
 import toast from 'react-hot-toast'
@@ -493,7 +493,7 @@ const OSlotsPage = () => {
                           borderRadius: '4px',
                           border: '1px solid #000'
                         }}>
-                          <span style={{ color: '#666' }}>₹</span>
+                          <span style={{ color: '#666' }}>रु</span>
                           <input
                             type="number"
                             value={currentPrice}
@@ -566,8 +566,7 @@ const OSlotsPage = () => {
                             gap: '8px'
                           }}
                         >
-                          <DollarSign size={16} />
-                          Price: ₹{slots[0]?.price || '0'}
+                          Price: रु{slots[0]?.price || '0'}
                         </button>
                       )}
                     </div>
@@ -594,7 +593,7 @@ const OSlotsPage = () => {
                       <tr>
                         <th style={{ padding: '16px', fontWeight: 700, fontSize: 16, color: '#000', background: '#f8fafc', borderRadius: '8px 0 0 8px', textAlign: 'left', borderBottom: '2px solid #000' }}><Clock size={18} style={{ marginRight: 8 }} /> Time</th>
                         <th style={{ padding: '16px', fontWeight: 700, fontSize: 16, color: '#000', background: '#f8fafc', textAlign: 'left', borderBottom: '2px solid #000' }}><Users size={18} style={{ marginRight: 8 }} /> Max Players</th>
-                        <th style={{ padding: '16px', fontWeight: 700, fontSize: 16, color: '#000', background: '#f8fafc', textAlign: 'left', borderBottom: '2px solid #000' }}>₹ Price</th>
+                        <th style={{ padding: '16px', fontWeight: 700, fontSize: 16, color: '#000', background: '#f8fafc', textAlign: 'left', borderBottom: '2px solid #000' }}>रु Price</th>
                         <th style={{ padding: '16px', fontWeight: 700, fontSize: 16, color: '#000', background: '#f8fafc', textAlign: 'left', borderBottom: '2px solid #000' }}><Activity size={18} style={{ marginRight: 8 }} /> Status</th>
                         <th style={{ padding: '16px', fontWeight: 700, fontSize: 16, color: '#000', background: '#f8fafc', textAlign: 'left', borderBottom: '2px solid #000' }}><Settings size={18} style={{ marginRight: 8 }} /> Actions</th>
                       </tr>
@@ -628,7 +627,7 @@ const OSlotsPage = () => {
                             <td style={{ padding: '16px', fontWeight: 600, color: '#000', borderBottom: '1px solid #e2e8f0' }}>
                               {editingSlot?._id === slot._id ? (
                                 <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                                  <span style={{ color: '#666' }}>₹</span>
+                                  <span style={{ color: '#666' }}>रु</span>
                                   <input
                                     type="number"
                                     min="0"
@@ -657,7 +656,7 @@ const OSlotsPage = () => {
                                     border: '1px solid #e2e8f0'
                                   }}
                                 >
-                                  <span style={{ color: '#666' }}>₹</span>
+                                  <span style={{ color: '#666' }}>रु</span>
                                   <span>{slot.price}</span>
                                 </div>
                               )}

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import styles from '../css/PUpcomingMatch.module.css'
 import { Link, useNavigate } from 'react-router-dom'
-import { LogOut, User, Clock, Users, DollarSign, MapPin } from 'lucide-react'
+import { LogOut, User, Clock, Users, MapPin } from 'lucide-react'
 import { useAuthStore } from '../../store/useAuthStore'
 import { axiosInstance } from '../../lib/axios'
 import toast from 'react-hot-toast'
@@ -180,8 +180,7 @@ const PUpcomingMatchesPage = () => {
                                                 <span>{slot.currentPlayers || 0}/{slot.maxPlayers || 10} Players</span>
                                             </div>
                                             <div className={styles.detailItem}>
-                                                <DollarSign size={18} />
-                                                <span>₹{slot.price || 0} per player</span>
+                                                <span style={{ color: '#000' }}>रु{slot.price || 0} per player</span>
                                             </div>
                                             <div className={styles.detailItem}>
                                                 <MapPin size={18} />
