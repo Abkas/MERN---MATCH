@@ -266,12 +266,13 @@ export default function MapSearchPage() {
         try {
           const res = await axios.get(`/api/v1/slots/${futsal._id}/slots/date?date=${selectedDate}`);
           // Use res.data.message as the slots array
-          if (Array.isArray(res.data?.message)) {
-            slotsByFutsal[futsal._id] = res.data.message.filter(slot => {              // Only show slots that are available, upcoming, within opening hours, and match price filter
+          if (Array.isArray(res.data?.message)) {            slotsByFutsal[futsal._id] = res.data.message.filter(slot => {
+              // Only show slots that are available, upcoming, within opening hours, match price filter, and have enough seats
               const timeStatus = getSlotTimeStatus(slot, selectedDate);
               const withinHours = isSlotWithinOpeningHours(slot, futsal);
               const matchesPrice = !slot.price || (slot.price <= filters.price);
-              return slot.status === 'available' && timeStatus === 'upcoming' && withinHours && matchesPrice;
+              const enoughSeats = hasEnoughSeats(slot);
+              return slot.status === 'available' && timeStatus === 'upcoming' && withinHours && matchesPrice && enoughSeats;
             });
           } else {
             slotsByFutsal[futsal._id] = [];
@@ -284,7 +285,7 @@ export default function MapSearchPage() {
     }
     if (filteredFutsals.length && selectedDate) fetchSlots();
     else setAvailableSlots({});
-  }, [filteredFutsals, selectedDate, filters.price]);
+  }, [filteredFutsals, selectedDate, filters.price, filters.slot]);
 
   // Fetch all slots for all futsals for the selected date on page load or date change
   useEffect(() => {
@@ -308,18 +309,19 @@ export default function MapSearchPage() {
       console.log('All futsals and their slots for selected date', selectedDate, ':', allSlotsFlat);
       // Console: only futsals with available slots to join (filtered)
       const availableFutsals = allSlotsFlat.map(f => ({
-        futsalId: f.futsalId,
-        slots: f.slots.filter(slot => {          const timeStatus = getSlotTimeStatus(slot, selectedDate);
+        futsalId: f.futsalId,        slots: f.slots.filter(slot => {
+          const timeStatus = getSlotTimeStatus(slot, selectedDate);
           const withinHours = isSlotWithinOpeningHours(slot, futsals.find(ft => ft._id === f.futsalId));
           const matchesPrice = !slot.price || (slot.price <= filters.price);
-          return slot.status === 'available' && timeStatus === 'upcoming' && withinHours && matchesPrice;
+          const enoughSeats = hasEnoughSeats(slot);
+          return slot.status === 'available' && timeStatus === 'upcoming' && withinHours && matchesPrice && enoughSeats;
         })
       })).filter(f => f.slots.length > 0);
       console.log('Futsals with available slots to join for selected date', selectedDate, ':', availableFutsals);
     }
     if (futsals.length && selectedDate) fetchAllSlots();
     else setAllSlots({});
-  }, [futsals, selectedDate, filters.price]);
+  }, [futsals, selectedDate, filters.price, filters.slot]);
 
   useEffect(() => {
     console.log('Filtered futsals after location filter:', filteredFutsals);
@@ -333,7 +335,7 @@ export default function MapSearchPage() {
       }));
       console.log('Slots rendered at end:', rendered);
     }
-  }, [showFilteredSlots, filteredFutsals, allSlots]);  // Helper to update slider progress
+  }, [showFilteredSlots, filteredFutsals, allSlots, filters.slot]);  // Helper to update slider progress
   const updateSliderProgress = (e) => {
     const slider = e.target;
     const min = parseFloat(slider.min) || 0;
@@ -533,6 +535,12 @@ export default function MapSearchPage() {
     return () => initSliders();
   }, [filters]);
 
+  // Helper to check if a slot has enough available seats
+  const hasEnoughSeats = (slot) => {
+    const availableSeats = slot.maxPlayers - (Array.isArray(slot.players) ? slot.players.length : (slot.currentPlayers || 0));
+    return availableSeats >= filters.slot;
+  };
+
   return (
     <div className="map-search-page">
       <FutsalNavbar />
@@ -657,15 +665,22 @@ export default function MapSearchPage() {
           {filteredFutsals.map(futsal => (
             <div key={futsal._id} style={{marginBottom:18}}>
               <div style={{fontWeight:600,fontSize:17,marginBottom:4}}>{futsal.name}</div>
-              <div style={{fontSize:14,color:'#888',marginBottom:6}}>{futsal.location}</div>
-              {allSlots[futsal._id]?.length ? (
+              <div style={{fontSize:14,color:'#888',marginBottom:6}}>{futsal.location}</div>              {allSlots[futsal._id]?.length ? (
                 <ul style={{margin:0,padding:0,listStyle:'none'}}>
-                  {allSlots[futsal._id].map(slot => (
-                    <li key={slot._id} style={{marginBottom:6,padding:'7px 12px',background:'#f5f5f5',borderRadius:8,display:'flex',justifyContent:'space-between',alignItems:'center'}}>
-                      <span>{slot.time} | Rs {slot.price} | {slot.maxPlayers} players</span>
-                      <span style={{color:'#43a047',fontWeight:600}}>{slot.status}</span>
-                    </li>
-                  ))}
+                  {allSlots[futsal._id]
+                    .filter(slot => {
+                      const timeStatus = getSlotTimeStatus(slot, selectedDate);
+                      const withinHours = isSlotWithinOpeningHours(slot, futsal);
+                      const matchesPrice = !slot.price || (slot.price <= filters.price);
+                      const enoughSeats = hasEnoughSeats(slot);
+                      return slot.status === 'available' && timeStatus === 'upcoming' && withinHours && matchesPrice && enoughSeats;
+                    })
+                    .map(slot => (
+                      <li key={slot._id} style={{marginBottom:6,padding:'7px 12px',background:'#f5f5f5',borderRadius:8,display:'flex',justifyContent:'space-between',alignItems:'center'}}>
+                        <span>{slot.time} | Rs {slot.price} | {slot.maxPlayers} players</span>
+                        <span style={{color:'#43a047',fontWeight:600}}>{slot.status}</span>
+                      </li>
+                    ))}
                 </ul>
               ) : (
                 <div style={{color:'#e53935',fontSize:14}}>No slots</div>
@@ -698,7 +713,8 @@ export default function MapSearchPage() {
               const timeStatus = getSlotTimeStatus(slot, selectedDate);
               const withinHours = isSlotWithinOpeningHours(slot, futsal);
               const matchesPrice = !slot.price || (slot.price <= filters.price);
-              return slot.status === 'available' && timeStatus === 'upcoming' && withinHours && matchesPrice;
+              const enoughSeats = hasEnoughSeats(slot);
+              return slot.status === 'available' && timeStatus === 'upcoming' && withinHours && matchesPrice && enoughSeats;
             });
             const isExpanded = expandedFutsalIds.includes(futsal._id);
             return (
@@ -811,11 +827,12 @@ export default function MapSearchPage() {
         {selectedFutsalForSlots && (
           <div style={{ marginTop: 24, padding: 16, border: '1px solid #eee', borderRadius: 8, background: '#fafbfc' }}>
             <h3>Available Slots for {filteredFutsals.find(f => f._id === selectedFutsalForSlots)?.name}</h3>
-            <ul style={{ listStyle: 'none', padding: 0 }}>              {(allSlots[selectedFutsalForSlots] || [])
-                .filter(slot => {                  const timeStatus = getSlotTimeStatus(slot, selectedDate);
+            <ul style={{ listStyle: 'none', padding: 0 }}>              {(allSlots[selectedFutsalForSlots] || [])                .filter(slot => {
+                  const timeStatus = getSlotTimeStatus(slot, selectedDate);
                   const withinHours = isSlotWithinOpeningHours(slot, filteredFutsals.find(f => f._id === selectedFutsalForSlots));
                   const matchesPrice = !slot.price || (slot.price <= filters.price);
-                  return slot.status === 'available' && timeStatus === 'upcoming' && withinHours && matchesPrice;
+                  const enoughSeats = hasEnoughSeats(slot);
+                  return slot.status === 'available' && timeStatus === 'upcoming' && withinHours && matchesPrice && enoughSeats;
                 })
                 .map(slot => (
                   <li key={slot._id} style={{ marginBottom: 10, display: 'flex', alignItems: 'center', gap: 16 }}>
