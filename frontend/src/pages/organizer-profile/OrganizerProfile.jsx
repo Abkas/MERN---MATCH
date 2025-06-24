@@ -56,18 +56,28 @@ const OrganizerProfile = () => {
 
   // Debug: log what is being rendered
   console.log('Rendering OrganizerProfile:', { profile, orgProfile });
-
   return (
-    <div className={styles.body}>
+    <div className={styles.body} style={{ width: '100vw', margin: 0, padding: 0 }}>
+      <style>
+        {`
+          @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+          }
+        `}
+      </style>
       <FutsalNavbar />
-      <div className={styles.container} style={{marginTop: '88px'}}>
-        <OrganizerSidebar />
-        <main className={styles.mainContent} style={{marginLeft: '250px'}}>
-          <div style={{
-            background: '#fff',
-            border: '1px solid #111',
-            borderRadius: 18,
-            padding: '2.5rem 2.5rem 2rem 2.5rem',
+      <div className={styles.container} style={{ width: '100vw', margin: 0, padding: 0, display: 'flex', alignItems: 'stretch', minHeight: '100vh' }}>
+        <div style={{ height: '100vh', minHeight: '100%', position: 'sticky', top: 0, left: 0, zIndex: 100 }}>
+          <OrganizerSidebar style={{ marginTop: 0, height: '100%', minHeight: '100vh' }} />
+        </div>
+        <div style={{ width: '100%', display: 'flex', justifyContent: 'center' }}>
+          <main className={styles.mainContent} style={{ width: '100%', maxWidth: '1200px', padding: '0 20px', margin: '0 auto', display: 'flex', flexDirection: 'column', alignItems: 'center', minHeight: 'calc(100vh - 65px)', marginTop: '88px' }}>
+            <div style={{
+              background: '#fff',
+              border: '1px solid #111',
+              borderRadius: 18,
+              padding: '2.5rem 2.5rem 2rem 2.5rem',
             marginBottom: 48,
             width: '100%',
             maxWidth: 540,
@@ -147,10 +157,10 @@ const OrganizerProfile = () => {
               transition: 'background 0.2s',
             }}
             onClick={() => navigate('/organizer-update-profile', { state: { user, organizerProfile } })}
-          >
-            Update Profile
+          >            Update Profile
           </button>
         </main>
+        </div>
       </div>
     </div>
   );

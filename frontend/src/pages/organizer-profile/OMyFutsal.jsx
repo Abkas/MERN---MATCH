@@ -359,19 +359,29 @@ const OMyFutsal = () => {
       ))}
     </div>
   )
-
   return (
-    <div className={styles.body}>
+    <div className={styles.body} style={{ width: '100vw', margin: 0, padding: 0 }}>
+      <style>
+        {`
+          @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+          }
+        `}
+      </style>
       <FutsalNavbar />
-      <div className={styles.container} style={{marginTop: '88px'}}>
-        <OrganizerSidebar />
-        <main className={styles.mainContent} style={{marginLeft: '250px'}}>
-          <div className={styles.mainHeader}>
-            <h1>My Futsal</h1>
-            <button className={styles.createFutsalBtn} onClick={handleCreateFutsal}>
-              <Plus size={16} /> Create New Futsal
-            </button>
-          </div>
+      <div className={styles.container} style={{ width: '100vw', margin: 0, padding: 0, display: 'flex', alignItems: 'stretch', minHeight: '100vh' }}>
+        <div style={{ height: '100vh', minHeight: '100%', position: 'sticky', top: 0, left: 0, zIndex: 100 }}>
+          <OrganizerSidebar style={{ marginTop: 0, height: '100%', minHeight: '100vh' }} />
+        </div>
+        <div style={{ width: '100%', display: 'flex', justifyContent: 'center' }}>
+          <main className={styles.mainContent} style={{ width: '100%', maxWidth: '1200px', padding: '0 20px', margin: '0 auto', display: 'flex', flexDirection: 'column', alignItems: 'center', minHeight: 'calc(100vh - 65px)', marginTop: '88px' }}>
+            <div className={styles.mainHeader} style={{ width: '100%', display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2vw' }}>
+              <h1 style={{ fontSize: 'clamp(1.2rem, 3vw, 2.2rem)', fontWeight: 800, color: '#232946' }}>My Futsal</h1>
+              <button className={styles.createFutsalBtn} onClick={handleCreateFutsal}>
+                <Plus size={16} /> Create New Futsal
+              </button>
+            </div>
           {loading ? (
             <div className={styles.loading}>Loading futsal data...</div>          ) : error ? (
             <div className={styles.error}>{error}</div>
@@ -384,10 +394,10 @@ const OMyFutsal = () => {
               {renderFutsalCard({})}
             </div>
           ) : (            <div style={{ width: '100%', padding: '16px 0' }}>
-              {renderFutsalGrid()}
-            </div>
+              {renderFutsalGrid()}            </div>
           )}
         </main>
+        </div>
       </div>
     </div>
   )

@@ -47,12 +47,19 @@ const OrganizerUpdateProfile = () => {
     });
     await updateOrganizerProfile(data);
   };
-
   return (
-    <div className={styles.body_upload}>
-      <div className={styles.container_upload}>
+    <div className={styles.body_upload} style={{ width: '100vw', margin: 0, padding: 0 }}>
+      <style>
+        {`
+          @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+          }
+        `}
+      </style>
+      <div className={styles.container_upload} style={{ width: '100%', maxWidth: '1200px', padding: '0 20px', margin: '0 auto', display: 'flex', flexDirection: 'column', alignItems: 'center', minHeight: 'calc(100vh - 65px)' }}>
         <div className={styles.profileCard}>
-          <h1>Update Organizer Profile</h1>
+          <h1 style={{ fontSize: 'clamp(1.2rem, 3vw, 2.2rem)', fontWeight: 800, color: '#232946', marginBottom: '2vw', textAlign: 'center' }}>Update Organizer Profile</h1>
           {/* Avatar preview with overlay */}
           <div className={styles.avatarSection}>
             <div className={styles.avatarContainer} onClick={() => document.getElementById('avatarInput').click()}>
