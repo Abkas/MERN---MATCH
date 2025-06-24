@@ -184,10 +184,9 @@ const AboutUsPage = () => {
                 <img src="/aboutus/Snapchat-790029509.jpg" alt="Team member" />
               </div>
               <h3>Shreya Tiwari</h3>
-              <p>Frontend Developer</p>
-              <div className={styles.socialLinks}>
-                <a href="https://www.linkedin.com/in/shreyatiwari10/"><FaLinkedinIn /></a>
-                <a href="https://www.linkedin.com/in/shreyatiwari10/"><FaInstagram /></a>
+              <p>Frontend Developer</p>              <div className={styles.socialLinks}>
+                <a href="https://www.linkedin.com/in/shreyatiwari10/" data-social="linkedin"><FaLinkedinIn /></a>
+                <a href="https://www.instagram.com/" data-social="instagram"><FaInstagram /></a>
               </div>
             </div>
             <div className={styles.teamCard}>
@@ -195,10 +194,9 @@ const AboutUsPage = () => {
                 <img src="/aboutus/sc.jpeg" alt="Team member" />
               </div>
               <h3>Samir Chand</h3>
-              <p>Backend Developer & Researcher</p>
-              <div className={styles.socialLinks}>
-                <a href="https://www.linkedin.com/in/samirchand/"><FaLinkedinIn /></a>
-                <a href="https://www.linkedin.com/in/samirchand/"><FaInstagram /></a>
+              <p>Backend Developer & Researcher</p>              <div className={styles.socialLinks}>
+                <a href="https://www.linkedin.com/in/samirchand/" data-social="linkedin"><FaLinkedinIn /></a>
+                <a href="https://www.instagram.com/" data-social="instagram"><FaInstagram /></a>
               </div>
             </div>
             <div className={styles.teamCard}>
@@ -206,10 +204,9 @@ const AboutUsPage = () => {
                 <img src="/aboutus/k.k.jpeg" alt="Team member" />
               </div>
               <h3>Kashmita Koirala</h3>
-              <p>Frontend Developer</p>
-              <div className={styles.socialLinks}>
-                <a href="https://www.linkedin.com/in/kassmita-koirala/"><FaLinkedinIn /></a>
-                <a href="https://www.linkedin.com/in/kassmita-koirala/"><FaInstagram /></a>
+              <p>Frontend Developer</p>              <div className={styles.socialLinks}>
+                <a href="https://www.linkedin.com/in/kassmita-koirala/" data-social="linkedin"><FaLinkedinIn /></a>
+                <a href="https://www.instagram.com/" data-social="instagram"><FaInstagram /></a>
               </div>
             </div>
             <div className={styles.teamCard}>
@@ -217,10 +214,9 @@ const AboutUsPage = () => {
                 <img src="/aboutus/am.jpeg" alt="Team member" />
               </div>
               <h3>Abhishek Magar</h3>
-              <p>Backend Developer & UI Designer</p>
-              <div className={styles.socialLinks}>
-                <a href="https://www.linkedin.com/in/abhishekmagar-np/"><FaLinkedinIn /></a>
-                <a href="https://www.linkedin.com/in/abhishekmagar-np/"><FaInstagram /></a>
+              <p>Backend Developer & UI Designer</p>              <div className={styles.socialLinks}>
+                <a href="https://www.linkedin.com/in/abhishekmagar-np/" data-social="linkedin"><FaLinkedinIn /></a>
+                <a href="https://www.instagram.com/" data-social="instagram"><FaInstagram /></a>
               </div>
             </div>
           </div>
