@@ -27,7 +27,7 @@ function haversineDistance(lat1, lon1, lat2, lon2) {
 
 const defaultFilters = {
   distance: 1, // km (initial value)
-  price: [0, 1000], // min price 0 (changed from 100)
+  price: 9999, // max price (default no limit)
   slot: 1, // min slot 1
 };
 
@@ -259,11 +259,11 @@ export default function MapSearchPage() {
           const res = await axios.get(`/api/v1/slots/${futsal._id}/slots/date?date=${selectedDate}`);
           // Use res.data.message as the slots array
           if (Array.isArray(res.data?.message)) {
-            slotsByFutsal[futsal._id] = res.data.message.filter(slot => {
-              // Only show slots that are available, upcoming, and within opening hours
+            slotsByFutsal[futsal._id] = res.data.message.filter(slot => {              // Only show slots that are available, upcoming, within opening hours, and match price filter
               const timeStatus = getSlotTimeStatus(slot, selectedDate);
               const withinHours = isSlotWithinOpeningHours(slot, futsal);
-              return slot.status === 'available' && timeStatus === 'upcoming' && withinHours;
+              const matchesPrice = !slot.price || (slot.price <= filters.price);
+              return slot.status === 'available' && timeStatus === 'upcoming' && withinHours && matchesPrice;
             });
           } else {
             slotsByFutsal[futsal._id] = [];
@@ -276,7 +276,7 @@ export default function MapSearchPage() {
     }
     if (filteredFutsals.length && selectedDate) fetchSlots();
     else setAvailableSlots({});
-  }, [filteredFutsals, selectedDate]);
+  }, [filteredFutsals, selectedDate, filters.price]);
 
   // Fetch all slots for all futsals for the selected date on page load or date change
   useEffect(() => {
@@ -301,17 +301,17 @@ export default function MapSearchPage() {
       // Console: only futsals with available slots to join (filtered)
       const availableFutsals = allSlotsFlat.map(f => ({
         futsalId: f.futsalId,
-        slots: f.slots.filter(slot => {
-          const timeStatus = getSlotTimeStatus(slot, selectedDate);
+        slots: f.slots.filter(slot => {          const timeStatus = getSlotTimeStatus(slot, selectedDate);
           const withinHours = isSlotWithinOpeningHours(slot, futsals.find(ft => ft._id === f.futsalId));
-          return slot.status === 'available' && timeStatus === 'upcoming' && withinHours;
+          const matchesPrice = !slot.price || (slot.price <= filters.price);
+          return slot.status === 'available' && timeStatus === 'upcoming' && withinHours && matchesPrice;
         })
       })).filter(f => f.slots.length > 0);
       console.log('Futsals with available slots to join for selected date', selectedDate, ':', availableFutsals);
     }
     if (futsals.length && selectedDate) fetchAllSlots();
     else setAllSlots({});
-  }, [futsals, selectedDate]);
+  }, [futsals, selectedDate, filters.price]);
 
   useEffect(() => {
     console.log('Filtered futsals after location filter:', filteredFutsals);
@@ -330,11 +330,21 @@ export default function MapSearchPage() {
   const handleDistance = (e) => {
     const distance = parseInt(e.target.value, 10);
     setFilters((prev) => ({ ...prev, distance }));
-  };
-
-  const handlePrice = (e) => {
-    const price = parseInt(e.target.value, 10);
-    setFilters((prev) => ({ ...prev, price: [0, price] }));
+  };  const handlePrice = (e) => {
+    const value = parseInt(e.target.value, 10);
+    // Convert slider value (1-7) to actual price
+    let price;
+    switch(value) {
+      case 1: price = 100; break;
+      case 2: price = 150; break;
+      case 3: price = 200; break;
+      case 4: price = 250; break;
+      case 5: price = 300; break;
+      case 6: price = 350; break;
+      case 7: price = 9999; break; // Effectively no limit (400+)
+      default: price = 9999;
+    }
+    setFilters((prev) => ({ ...prev, price }));
   };
 
   const handleSlot = (e) => {
@@ -422,6 +432,27 @@ export default function MapSearchPage() {
     if (typeof lat !== 'number' || typeof lng !== 'number') return null;
     return haversineDistance(userLocation.lat, userLocation.lng, lat, lng);
   }
+  // Helper to get slider value from price
+  const getSliderValueFromPrice = (price) => {
+    switch(price) {
+      case 100: return 1;
+      case 150: return 2;
+      case 200: return 3;
+      case 250: return 4;
+      case 300: return 5;
+      case 350: return 6;
+      case 9999: return 7; // For "400+"
+      default: 
+        // For values not exactly matching our predefined steps
+        if (price > 350) return 7;
+        if (price > 300) return 6;
+        if (price > 250) return 5;
+        if (price > 200) return 4;
+        if (price > 150) return 3;
+        if (price > 100) return 2;
+        return 1;
+    }
+  };
 
   useEffect(() => {
     console.log('Current filter:', filters, 'Selected date:', selectedDate);
@@ -519,16 +550,15 @@ export default function MapSearchPage() {
               ))}
             </div>
           </div>
-        </div>
-        {/* Price Slider */}
+        </div>        {/* Price Slider */}
         <div className="slider-group">
-          <label>Price: <span style={{color:'#e53935'}}>Rs {getSliderLabel(priceLabels, filters.price[1], 7)}</span></label>
+          <label>Price: <span style={{color:'#e53935'}}>Rs {filters.price === 9999 ? '400+' : filters.price}</span></label>
           <div className="slider-container">
             <input
               type="range"
               min="1"
               max="7"
-              value={filters.price[1]}
+              value={getSliderValueFromPrice(filters.price)}
               onChange={handlePrice}
               className="modern-slider"
             />
@@ -589,13 +619,12 @@ export default function MapSearchPage() {
         display: filteredFutsals.length > 0 ? 'block' : 'none'
       }}>
         <div style={{ fontWeight: 700, fontSize: 20, marginBottom: 16, color: '#1976d2', letterSpacing: 0.5 }}>Futsals Available</div>
-        <ul style={{ listStyle: 'none', padding: 0, margin: 0 }}>
-          {filteredFutsals.map(futsal => {
-            const distance = getFutsalDistance(futsal);
-            const availableSlots = (allSlots[futsal._id] || []).filter(slot => {
+        <ul style={{ listStyle: 'none', padding: 0, margin: 0 }}>          {filteredFutsals.map(futsal => {
+            const distance = getFutsalDistance(futsal);            const availableSlots = (allSlots[futsal._id] || []).filter(slot => {
               const timeStatus = getSlotTimeStatus(slot, selectedDate);
               const withinHours = isSlotWithinOpeningHours(slot, futsal);
-              return slot.status === 'available' && timeStatus === 'upcoming' && withinHours;
+              const matchesPrice = !slot.price || (slot.price <= filters.price);
+              return slot.status === 'available' && timeStatus === 'upcoming' && withinHours && matchesPrice;
             });
             const isExpanded = expandedFutsalIds.includes(futsal._id);
             return (
@@ -708,12 +737,11 @@ export default function MapSearchPage() {
         {selectedFutsalForSlots && (
           <div style={{ marginTop: 24, padding: 16, border: '1px solid #eee', borderRadius: 8, background: '#fafbfc' }}>
             <h3>Available Slots for {filteredFutsals.find(f => f._id === selectedFutsalForSlots)?.name}</h3>
-            <ul style={{ listStyle: 'none', padding: 0 }}>
-              {(allSlots[selectedFutsalForSlots] || [])
-                .filter(slot => {
-                  const timeStatus = getSlotTimeStatus(slot, selectedDate);
+            <ul style={{ listStyle: 'none', padding: 0 }}>              {(allSlots[selectedFutsalForSlots] || [])
+                .filter(slot => {                  const timeStatus = getSlotTimeStatus(slot, selectedDate);
                   const withinHours = isSlotWithinOpeningHours(slot, filteredFutsals.find(f => f._id === selectedFutsalForSlots));
-                  return slot.status === 'available' && timeStatus === 'upcoming' && withinHours;
+                  const matchesPrice = !slot.price || (slot.price <= filters.price);
+                  return slot.status === 'available' && timeStatus === 'upcoming' && withinHours && matchesPrice;
                 })
                 .map(slot => (
                   <li key={slot._id} style={{ marginBottom: 10, display: 'flex', alignItems: 'center', gap: 16 }}>
