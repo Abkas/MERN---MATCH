@@ -8,9 +8,9 @@
   background-color: var(--bg-white, #fff);
   box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1), 0 2px 4px -1px rgba(0,0,0,0.06);
   padding: 1.5rem 0;
-  height: calc(100vh - 88px); /* Organizer header height */
-  position: fixed;
-  top: 88px; /* Organizer header height */
+  height: calc(100vh - 65px); /* Stretch to bottom, below navbar */
+  position: relative;
+  top: 65px; /* Margin top below navbar */
   left: 0;
   overflow-y: auto;
   z-index: 100;
@@ -24,16 +24,12 @@
   padding-right: 0.5rem;
 }
 
-.collapseBtn {
-  background: none;
-  border: none;
-  outline: none;
-  cursor: pointer;
-  margin: 0 0 1.5rem 0.5rem;
-  padding: 0.25rem;
-  display: flex;
-  align-items: center;
-  justify-content: flex-end;
+.mainContent {
+  transition: margin-left 0.3s;
+}
+
+.mainContent--collapsed {
+  transition: margin-left 0.3s;
 }
 
 .sidebarMenu {
@@ -127,4 +123,22 @@
   border-left-color: var(--primary, #10b981);
   font-weight: 600;
   position: relative;
+}
+
+@media (max-width: 900px) {
+  :root {
+    --sidebar-width: 180px;
+  }
+  .sidebar {
+    width: var(--sidebar-width);
+    height: calc(100vh - 65px);
+  }
+}
+
+@media (max-width: 640px) {
+  .sidebar {
+    width: 100vw;
+    min-width: 0;
+    height: calc(100vh - 65px);
+  }
 }

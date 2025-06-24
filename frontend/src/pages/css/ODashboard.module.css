@@ -232,15 +232,15 @@
 /* Main Content - Always on the right of sidebar */
 .container main {
   flex: 1;
-  padding: 2rem;
-  margin-left: var(--sidebar-width);
-  width: calc(100% - var(--sidebar-width));
+  margin-left: 0;
+  padding: 0;
+  width: 100%;
 }
 
 /* Responsive Design - Keeping sidebar fixed */
 @media (max-width: 1024px) {
   .container main {
-    padding: 1.5rem;
+    padding: 0;
   }
 }
 
