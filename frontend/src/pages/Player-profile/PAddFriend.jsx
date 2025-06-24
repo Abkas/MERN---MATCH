@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import styles from '../css/PAddFriend.module.css';
+import sidebarStyles from '../css/OSidebar.module.css';
 import { Link, useNavigate } from 'react-router-dom';
 import { LogOut, User, Search, UserCheck, UserPlus, Users } from 'lucide-react';
 import { useAuthStore } from '../../store/useAuthStore';
@@ -148,13 +149,15 @@ const PAddFriend = () => {
       : [];
 
     return (
-        <div className={styles.body} style={{ background: '#f4f6fb', minHeight: '100vh' }}>
+        <div className={styles.body} style={{ width: '100vw', margin: 0, padding: 0 }}>
             <FutsalNavbar />
-            <div className={styles.container} style={{marginTop: '88px'}}>
-                {isOrganizer ? <OrganizerSidebar /> : <PlayerSidebar />}
-                <main className={styles.mainContent} style={{marginLeft: '250px', display: 'flex', justifyContent: 'center', alignItems: 'flex-start', minHeight: '80vh', marginTop: '24px'}}>
-                    <div style={{width: '100%', maxWidth: '800px'}}>
-                        <div className={styles.searchBarWrapper}>
+            <div className={styles.container} style={{ width: '100vw', margin: 0, padding: 0, display: 'flex', alignItems: 'stretch', minHeight: '100vh' }}>
+                <div style={{ height: '100vh', minHeight: '100%', position: 'sticky', top: 0, left: 0, zIndex: 100 }}>
+                    <PlayerSidebar style={{ marginTop: 0, height: '100%', minHeight: '100vh' }} />
+                </div>
+                <div style={{ width: '100%', display: 'flex', justifyContent: 'center' }}>
+                    <main className={styles.content} style={{ width: '100%', maxWidth: '1200px', padding: '0 20px', margin: '0 auto', display: 'flex', flexDirection: 'column', alignItems: 'center', minHeight: 'calc(100vh - 65px)', marginTop: '88px' }}>
+                        <h1 className={styles.pageTitle}>Add Friends</h1>                        <div className={styles.searchBarWrapper}>
                             <input
                                 className={styles.searchBar}
                                 type="text"
@@ -166,7 +169,10 @@ const PAddFriend = () => {
                                 }}
                                 onFocus={() => setSearchActive(false)}
                             />
-                            <button className={styles.searchBtn} onClick={() => setSearchActive(true)}>Search</button>
+                            <button className={styles.searchBtn} onClick={() => setSearchActive(true)}>
+                                <Search size={20} />
+                                Search
+                            </button>
                             {searchInput && !searchActive && liveSuggestions.length > 0 && (
                                 <div className={styles.suggestionDropdown}>
                                     {liveSuggestions.map(player => (
@@ -296,8 +302,8 @@ const PAddFriend = () => {
                                 </div>
                             </>
                         )}
-                    </div>
-                </main>
+                    </main>
+                </div>
             </div>
         </div>
     );

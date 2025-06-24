@@ -5,6 +5,7 @@ import PlayerSidebar from '../../components/PlayerSidebar';
 import OrganizerSidebar from '../../components/OrganizerSidebar';
 import FutsalNavbar from '../../components/FutsalNavbar';
 import styles from '../css/MyTeamPage.module.css';
+import sidebarStyles from '../css/OSidebar.module.css';
 import toast from 'react-hot-toast';
 
 const SLOT_COUNT = 8;
@@ -279,320 +280,327 @@ const MyTeamPage = () => {
   }, [availableChallenges, team]);
 
   return (
-    <div className={styles.body}>
+    <div className={styles.body} style={{ width: '100vw', margin: 0, padding: 0 }}>
       <FutsalNavbar />
-      <div className={styles.container} style={{marginTop: '88px'}}>
-        {isOrganizer ? <OrganizerSidebar /> : <PlayerSidebar />}
-        <main className={styles.mainContent} style={{marginLeft: '250px'}}>
-          {loading ? <div>Loading...</div> : (
-            <>
-              {team ? (
-                <>
-                  <div className={styles.teamDescCard}>
-                    <div className={styles.teamDescLeft}>
-                      <img src={team.avatar || '/avatar.jpg'} alt="team" className={styles.teamDescAvatar} />
+      <div className={styles.container} style={{ width: '100vw', margin: 0, padding: 0, display: 'flex', alignItems: 'stretch', minHeight: '100vh' }}>
+        <div style={{ height: '100vh', minHeight: '100%', position: 'sticky', top: 0, left: 0, zIndex: 100 }}>
+          <PlayerSidebar style={{ marginTop: 0, height: '100%', minHeight: '100vh' }} />
+        </div>
+        <div style={{ width: '100%', display: 'flex', justifyContent: 'center' }}>
+          <main className={styles.mainContent} style={{ width: '100%', maxWidth: '1200px', padding: '0 20px', margin: '0 auto', display: 'flex', flexDirection: 'column', alignItems: 'center', minHeight: 'calc(100vh - 65px)', marginTop: '88px' }}>
+            <h1 className={styles.pageTitle}>My Team</h1>
+            
+            {loading ? <div>Loading...</div> : (
+              <>
+                {team ? (
+                  <>
+                    <div className={styles.teamDescCard}>
+                      <div className={styles.teamDescLeft}>
+                        <img src={team.avatar || '/avatar.jpg'} alt="team" className={styles.teamDescAvatar} />
+                      </div>
+                      <div className={styles.teamDescRight}>
+                        <div className={styles.teamDescName}>{team.name}</div>
+                        {team.tag && <span className={styles.teamDescTag}>{team.tag}</span>}
+                        <div className={styles.teamDescDesc}>{team.description || 'No description set.'}</div>
+                        <div className={styles.teamDescLoc}>{team.location || 'No location set.'}</div>
+                      </div>
+                      {isOwner && (
+                        <button className={styles.updateBtn} style={{position:'absolute',top:24,right:24}} onClick={() => {
+                          setUpdateName(team.name);
+                          setUpdateAvatar(team.avatar || '');
+                          setUpdateLocation(team.location || '');
+                          setUpdateDescription(team.description || '');
+                          setShowUpdateModal(true);
+                        }}>Update</button>
+                      )}
                     </div>
-                    <div className={styles.teamDescRight}>
-                      <div className={styles.teamDescName}>{team.name}</div>
-                      {team.tag && <span className={styles.teamDescTag}>{team.tag}</span>}
-                      <div className={styles.teamDescDesc}>{team.description || 'No description set.'}</div>
-                      <div className={styles.teamDescLoc}>{team.location || 'No location set.'}</div>
-                    </div>
+                    {/* Join Requests Button above slots (only for owner) */}
                     {isOwner && (
-                      <button className={styles.updateBtn} style={{position:'absolute',top:24,right:24}} onClick={() => {
-                        setUpdateName(team.name);
-                        setUpdateAvatar(team.avatar || '');
-                        setUpdateLocation(team.location || '');
-                        setUpdateDescription(team.description || '');
-                        setShowUpdateModal(true);
-                      }}>Update</button>
-                    )}
-                  </div>
-                  {/* Join Requests Button above slots (only for owner) */}
-                  {isOwner && (
-                    <div style={{display:'flex',justifyContent:'center',marginBottom:12}}>
-                      <button
-                        className={styles.joinReqBtn}
-                        style={{padding:'6px 16px',fontSize:13,borderRadius:8,background:'#f3f4f6',color:'#2563eb',border:'1.5px solid #2563eb',fontWeight:600,cursor:'pointer',boxShadow:'0 1px 4px #2563eb11'}}
-                        onClick={() => {
-                          fetchJoinRequests();
-                          setShowJoinRequestsModal(true);
-                        }}
-                      >
-                        View Join Requests
-                      </button>
-                    </div>
-                  )}
-                  <div className={styles.slotsGrid}>
-                    {Array.from({ length: 8 }).map((_, idx) => {
-                      const slot = team.slots && team.slots[idx] ? team.slots[idx] : { status: 'empty' };
-                      const width = 196, height = 245;
-                      return (
-                        <div
-                          key={idx}
-                          className={styles.slotCard + ' ' + slot.status}
+                      <div style={{display:'flex',justifyContent:'center',marginBottom:12}}>
+                        <button
+                          className={styles.joinReqBtn}
+                          style={{padding:'6px 16px',fontSize:13,borderRadius:8,background:'#f3f4f6',color:'#2563eb',border:'1.5px solid #2563eb',fontWeight:600,cursor:'pointer',boxShadow:'0 1px 4px #2563eb11'}}
                           onClick={() => {
-                            if (slot.status === 'empty' && isOwner) setInviteModal({ open: true, slotIndex: idx });
-                            if (slot.status === 'filled' && isOwner && slot.user && slot.user._id !== authUser._id) setRemoveModal({ open: true, slotIndex: idx, user: slot.user });
-                          }}
-                          style={{
-                            ...(slot.status === 'empty' && isOwner ? { cursor: 'pointer', opacity: 0.85 } : {}),
-                            ...(slot.status === 'filled' && isOwner && slot.user && slot.user._id !== authUser._id ? { cursor: 'pointer' } : {}),
-                            width, minWidth: width, maxWidth: width, height, minHeight: height, maxHeight: height,
-                            display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
-                            position: 'relative',
+                            fetchJoinRequests();
+                            setShowJoinRequestsModal(true);
                           }}
                         >
-                          {slot.status === 'filled' && slot.user ? (
-                            <>
-                              <img src={slot.user.avatar || '/avatar.jpg'} alt="user" className={styles.memberAvatar} style={{width:84,height:84}} />
-                              <div className={styles.memberName}>{slot.user.username}</div>
-                              {team.owner._id === slot.user._id && <span className={styles.ownerTag}>Owner</span>}
-                            </>
-                          ) : slot.status === 'pending' ? (
-                            <div className={styles.slotPending} style={{display:'flex',flexDirection:'column',alignItems:'center',justifyContent:'center',gap:8}}>
-                              <span>Pending...</span>
-                            </div>
-                          ) : (
-                            <div className={styles.slotEmpty} style={{fontSize:34, color:'#bbb', display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center'}}>
-                              <span style={{fontSize:50, lineHeight:1, fontWeight:300}}>+</span>
-                              <span style={{fontSize:14, marginTop:6, color:'#aaa'}}>Invite Player</span>
-                            </div>
-                          )}
-                          {slot.status === 'filled' && slot.user && slot.user._id === authUser._id && !isOwner && (
-                            <button
-                              className={styles.rejectBtn}
-                              style={{fontSize:12,padding:'2px 10px',borderRadius:6,background:'#eee',color:'#b71c1c',border:'none',cursor:'pointer',marginTop:8}}
-                              onClick={async e => {
-                                e.stopPropagation();
-                                await axiosInstance.post('/myteam/remove-member', { teamId: team._id, slotIndex: idx });
-                                fetchTeam();
-                              }}
-                            >Leave Team</button>
-                          )}
-                        </div>
-                      );
-                    })}
-                  </div>
-                  <div style={{display:'flex',justifyContent:'center',gap:16,marginTop:32}}>
-                    {isOwner ? (
-                      <>
-                        <button className={styles.actionBtn} onClick={() => { setShowCreateChallengeModal(true); fetchChallengeFutsals(); }}>Create Challenge</button>
+                          View Join Requests
+                        </button>
+                      </div>
+                    )}
+                    <div className={styles.slotsGrid}>
+                      {Array.from({ length: 8 }).map((_, idx) => {
+                        const slot = team.slots && team.slots[idx] ? team.slots[idx] : { status: 'empty' };
+                        const width = 196, height = 245;
+                        return (
+                          <div
+                            key={idx}
+                            className={styles.slotCard + ' ' + slot.status}
+                            onClick={() => {
+                              if (slot.status === 'empty' && isOwner) setInviteModal({ open: true, slotIndex: idx });
+                              if (slot.status === 'filled' && isOwner && slot.user && slot.user._id !== authUser._id) setRemoveModal({ open: true, slotIndex: idx, user: slot.user });
+                            }}
+                            style={{
+                              ...(slot.status === 'empty' && isOwner ? { cursor: 'pointer', opacity: 0.85 } : {}),
+                              ...(slot.status === 'filled' && isOwner && slot.user && slot.user._id !== authUser._id ? { cursor: 'pointer' } : {}),
+                              width, minWidth: width, maxWidth: width, height, minHeight: height, maxHeight: height,
+                              display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
+                              position: 'relative',
+                            }}
+                          >
+                            {slot.status === 'filled' && slot.user ? (
+                              <>
+                                <img src={slot.user.avatar || '/avatar.jpg'} alt="user" className={styles.memberAvatar} style={{width:84,height:84}} />
+                                <div className={styles.memberName}>{slot.user.username}</div>
+                                {team.owner._id === slot.user._id && <span className={styles.ownerTag}>Owner</span>}
+                              </>
+                            ) : slot.status === 'pending' ? (
+                              <div className={styles.slotPending} style={{display:'flex',flexDirection:'column',alignItems:'center',justifyContent:'center',gap:8}}>
+                                <span>Pending...</span>
+                              </div>
+                            ) : (
+                              <div className={styles.slotEmpty} style={{fontSize:34, color:'#bbb', display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center'}}>
+                                <span style={{fontSize:50, lineHeight:1, fontWeight:300}}>+</span>
+                                <span style={{fontSize:14, marginTop:6, color:'#aaa'}}>Invite Player</span>
+                              </div>
+                            )}
+                            {slot.status === 'filled' && slot.user && slot.user._id === authUser._id && !isOwner && (
+                              <button
+                                className={styles.rejectBtn}
+                                style={{fontSize:12,padding:'2px 10px',borderRadius:6,background:'#eee',color:'#b71c1c',border:'none',cursor:'pointer',marginTop:8}}
+                                onClick={async e => {
+                                  e.stopPropagation();
+                                  await axiosInstance.post('/myteam/remove-member', { teamId: team._id, slotIndex: idx });
+                                  fetchTeam();
+                                }}
+                              >Leave Team</button>
+                            )}
+                          </div>
+                        );
+                      })}
+                    </div>
+                    <div style={{display:'flex',justifyContent:'center',gap:16,marginTop:32}}>
+                      {isOwner ? (
+                        <>
+                          <button className={styles.actionBtn} onClick={() => { setShowCreateChallengeModal(true); fetchChallengeFutsals(); }}>Create Challenge</button>
+                          <button className={styles.actionBtn} onClick={() => setShowUpcomingMatches(v => !v)}>
+                            {showUpcomingMatches ? 'Hide Upcoming Matches' : 'Upcoming Matches'}
+                          </button>
+                        </>
+                      ) : (
                         <button className={styles.actionBtn} onClick={() => setShowUpcomingMatches(v => !v)}>
                           {showUpcomingMatches ? 'Hide Upcoming Matches' : 'Upcoming Matches'}
                         </button>
-                      </>
-                    ) : (
-                      <button className={styles.actionBtn} onClick={() => setShowUpcomingMatches(v => !v)}>
-                        {showUpcomingMatches ? 'Hide Upcoming Matches' : 'Upcoming Matches'}
-                      </button>
-                    )}
-                  </div>
+                      )}
+                    </div>
 
-                  {/* Render open challenges in the main content area instead of a modal */}
-                  <div style={{margin:'32px 0'}}>
-                    <h2 style={{fontWeight:700,marginBottom:12,fontSize:'1.3rem',color:'#2563eb'}}>Open Team Challenges</h2>
-                    <div style={{display:'flex',flexDirection:'column',gap:12}}>
-                      {filteredChallenges.length === 0 ? (
-                        <div style={{color:'#999',fontSize:15}}>No open challenges found. Create one to get started!</div>
-                      ) : (
-                        filteredChallenges.map(challenge => (
-                          <div key={challenge._id} style={{display:'flex',alignItems:'center',justifyContent:'space-between',padding:'14px 18px',borderRadius:10,background:'#f9f9f9',boxShadow:'0 1px 4px rgba(0,0,0,0.07)',cursor:'pointer'}}>
-                            <div style={{display:'flex',alignItems:'center',gap:14}}>
-                              <img src={challenge.challengerTeamAvatar} alt="team" style={{width:40,height:40,borderRadius:8,objectFit:'cover'}} />
-                              <div style={{fontWeight:600,fontSize:16}}>{challenge.challengerTeamName}</div>
-                              <div style={{color:'#666',fontSize:15,marginLeft:14}}>{challenge.futsalName}</div>
-                              <div style={{color:'#666',fontSize:15,marginLeft:14}}>{challenge.date} {challenge.time}</div>
+                    {/* Render open challenges in the main content area instead of a modal */}
+                    <div style={{margin:'32px 0'}}>
+                      <h2 style={{fontWeight:700,marginBottom:12,fontSize:'1.3rem',color:'#2563eb'}}>Open Team Challenges</h2>
+                      <div style={{display:'flex',flexDirection:'column',gap:12}}>
+                        {filteredChallenges.length === 0 ? (
+                          <div style={{color:'#999',fontSize:15}}>No open challenges found. Create one to get started!</div>
+                        ) : (
+                          filteredChallenges.map(challenge => (
+                            <div key={challenge._id} style={{display:'flex',alignItems:'center',justifyContent:'space-between',padding:'14px 18px',borderRadius:10,background:'#f9f9f9',boxShadow:'0 1px 4px rgba(0,0,0,0.07)',cursor:'pointer'}}>
+                              <div style={{display:'flex',alignItems:'center',gap:14}}>
+                                <img src={challenge.challengerTeamAvatar} alt="team" style={{width:40,height:40,borderRadius:8,objectFit:'cover'}} />
+                                <div style={{fontWeight:600,fontSize:16}}>{challenge.challengerTeamName}</div>
+                                <div style={{color:'#666',fontSize:15,marginLeft:14}}>{challenge.futsalName}</div>
+                                <div style={{color:'#666',fontSize:15,marginLeft:14}}>{challenge.date} {challenge.time}</div>
+                              </div>
+                              <button className={styles.actionBtn} style={{fontSize:15,padding:'8px 22px'}} disabled={loading} onClick={() => handleAcceptChallenge(challenge.slotId, team._id)}>
+                                {loading ? 'Joining...' : 'Join & Pay Half'}
+                              </button>
                             </div>
-                            <button className={styles.actionBtn} style={{fontSize:15,padding:'8px 22px'}} disabled={loading} onClick={() => handleAcceptChallenge(challenge.slotId, team._id)}>
-                              {loading ? 'Joining...' : 'Join & Pay Half'}
-                            </button>
+                          ))
+                        )}
+                      </div>
+                    </div>
+
+                    {/* Upcoming Matches Modal */}
+                    {showUpcomingMatches && (
+                      <div className={styles.inviteModalOverlay}>
+                        <div className={styles.inviteModal} style={{minWidth:340,maxWidth:600}}>
+                          <h2 style={{fontWeight:700,marginBottom:12,fontSize:'1.3rem',color:'#16a34a'}}>Upcoming Matches</h2>
+                          <button className={styles.closeBtn} onClick={() => setShowUpcomingMatches(false)}>×</button>
+                          <button className={styles.actionBtn} style={{marginBottom:12}} onClick={fetchUpcomingMatches}>Refresh</button>
+                          <div style={{display:'flex',flexDirection:'column',gap:12}}>
+                            {upcomingMatches.length === 0 ? (
+                              <div style={{color:'#999',fontSize:15}}>No upcoming matches yet.</div>
+                            ) : (
+                              upcomingMatches.map(match => (
+                                <div key={match._id} style={{display:'flex',alignItems:'center',justifyContent:'space-between',padding:'14px 18px',borderRadius:10,background:'#f0fdf4',boxShadow:'0 1px 4px rgba(0,0,0,0.07)',cursor:'pointer'}}>
+                                  <div style={{display:'flex',alignItems:'center',gap:14}}>
+                                    <div style={{fontWeight:600,fontSize:16}}>Team A: {match.challenge?.challenger?.name || 'TBD'}</div>
+                                    <div style={{fontWeight:600,fontSize:16,marginLeft:14}}>Team B: {match.challenge?.opponent?.name || 'TBD'}</div>
+                                    <div style={{color:'#666',fontSize:15,marginLeft:14}}>{match.date} {match.time}</div>
+                                    <div style={{color:'#666',fontSize:15,marginLeft:14}}>{match.futsal?.name || 'Unknown Futsal'}</div>
+                                  </div>
+                                </div>
+                              ))
+                            )}
                           </div>
-                        ))
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Create Challenge Modal: Step 1 - Futsal Selection */}
+                    {showCreateChallengeModal && !selectedFutsal && (
+                      <div className={styles.modalOverlay}>
+                        <div className={styles.modalContent}>
+                          <h2>Select Futsal for Challenge</h2>
+                          <input
+                            type="text"
+                            placeholder="Search futsal..."
+                            value={futsalSearch}
+                            onChange={e => setFutsalSearch(e.target.value)}
+                            style={{ width: '100%', padding: 10, marginBottom: 16, borderRadius: 8, border: '1px solid #ddd' }}
+                          />
+                          <div style={{ maxHeight: 300, overflowY: 'auto', display: 'flex', flexWrap: 'wrap', gap: 16 }}>
+                            {filteredFutsals.map(futsal => (
+                              <div
+                                key={futsal._id}
+                                onClick={() => { setSelectedFutsal(futsal._id); fetchChallengeSlots(futsal._id); }}
+                                style={{
+                                  border: '1.5px solid #eee',
+                                  borderRadius: 12,
+                                  padding: 16,
+                                  minWidth: 220,
+                                  cursor: 'pointer',
+                                  background: '#fafbfc',
+                                  display: 'flex',
+                                  alignItems: 'center',
+                                  gap: 12
+                                }}
+                              >
+                                <img src={futsal.futsalPhoto || '/default-futsal.jpg'} alt="icon" style={{ width: 40, height: 40, borderRadius: 8, objectFit: 'cover' }} />
+                                <div>
+                                  <div style={{ fontWeight: 700, fontSize: 16 }}>{futsal.name}</div>
+                                  <div style={{ color: '#888', fontSize: 13 }}>{futsal.location}</div>
+                                </div>
+                              </div>
+                            ))}
+                          </div>
+                          <button onClick={() => setShowCreateChallengeModal(false)} className={styles.actionBtn} style={{ marginTop: 16 }}>Close</button>
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Create Challenge Modal */}
+                    {showCreateChallengeModal && selectedFutsal && (
+                      <div className={styles.modalOverlay}>
+                        <div className={styles.modalContent}>
+                          <h2>Select Slot for Challenge</h2>
+                          <div style={{ marginBottom: 16 }}>
+                            <label htmlFor="challenge-date" style={{ fontWeight: 600, marginRight: 8 }}>Date:</label>
+                            <input
+                              id="challenge-date"
+                              type="date"
+                              value={challengeDate}
+                              min={new Date().toISOString().split('T')[0]}
+                              onChange={e => {
+                                setChallengeDate(e.target.value);
+                                fetchChallengeSlots(selectedFutsal, e.target.value);
+                              }}
+                              style={{ padding: 8, borderRadius: 6, border: '1px solid #ddd' }}
+                            />
+                          </div>
+                          {challengeSlots.length === 0 ? (
+                            <div>No available slots found.</div>
+                          ) : (
+                            <table style={{ width: '100%', borderCollapse: 'collapse', marginTop: 16 }}>
+                              <thead>
+                                <tr style={{ background: '#f3f4f6' }}>
+                                  <th style={{ padding: 8 }}>Date</th>
+                                  <th style={{ padding: 8 }}>Time</th>
+                                  <th style={{ padding: 8 }}>Players</th>
+                                  <th style={{ padding: 8 }}>Action</th>
+                                </tr>
+                              </thead>
+                              <tbody>
+                                {challengeSlots.map((slot, idx) => (
+                                  <tr key={slot._id} style={{ borderBottom: '1px solid #eee' }}>
+                                    <td style={{ padding: 8 }}>{slot.date}</td>
+                                    <td style={{ padding: 8 }}>{slot.time}</td>
+                                    <td style={{ padding: 8 }}>{slot.players?.length || 0} / {slot.maxPlayers}</td>
+                                    <td style={{ padding: 8 }}>
+                                      <button
+                                        onClick={async () => {
+                                          // Call backend to create challenge and trigger payment
+                                          await handleRequestChallenge(slot._id);
+                                        }}
+                                        className={styles.actionBtn}
+                                        style={{marginTop:0}}
+                                      >Create Challenge</button>
+                                    </td>
+                                  </tr>
+                                ))}
+                              </tbody>
+                            </table>
+                          )}
+                          <button onClick={() => setShowCreateChallengeModal(false)} className={styles.actionBtn} style={{marginTop:16}}>Close</button>
+                        </div>
+                      </div>
+                    )}
+                  </>
+                ) : (
+                  <div className={styles.createTeamBox} style={{
+                    maxWidth: 400,
+                    margin: '48px auto',
+                    background: '#fff',
+                    borderRadius: 18,
+                    boxShadow: '0 2px 16px 0 #0001',
+                    padding: '2.5rem 2rem',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    alignItems: 'center',
+                    gap: 24
+                  }}>
+                    <div style={{textAlign:'center',marginBottom:8}}>
+                      <h2 style={{fontWeight:700,marginBottom:8,fontSize:'1.6rem',color:'#222'}}>Find Your Futsal Team</h2>
+                      <div style={{color:'#888',fontSize:'1rem',fontWeight:400}}>Join a team to play, connect, and have fun!</div>
+                    </div>
+                    <button className={styles.actionBtn} style={{width:'100%',maxWidth:320,justifyContent:'flex-start',gap:12,fontWeight:500,fontSize:'1.08rem',padding:'12px 20px',borderRadius:12,background:'#f5f7fa',color:'#222',boxShadow:'0 1px 4px #0001'}} onClick={() => setShowAvailableTeams(true)}>
+                      <span role="img" aria-label="join" style={{fontSize:'1.3em'}}>🔍</span> Join Available Teams
+                    </button>
+                    <button className={styles.actionBtn} style={{width:'100%',maxWidth:320,justifyContent:'flex-start',gap:12,fontWeight:500,fontSize:'1.08rem',padding:'12px 20px',borderRadius:12,background:'#f5f7fa',color:'#222',boxShadow:'0 1px 4px #0001'}} onClick={() => setShowTeamInvitesModal(true)}>
+                      <span role="img" aria-label="invites" style={{fontSize:'1.3em'}}>📩</span> See Invitations Received
+                    </button>
+                    <div style={{width:'100%',maxWidth:320,marginTop:8}}>
+                      <div style={{textAlign:'center',color:'#aaa',fontSize:'0.98rem',margin:'18px 0 8px'}}>or</div>
+                      <button className={styles.actionBtn} style={{width:'100%',justifyContent:'center',fontWeight:600,fontSize:'1.08rem',padding:'12px 20px',borderRadius:12,background:'#222',color:'#fff',boxShadow:'0 1px 4px #0001',marginBottom:18}} onClick={() => setShowUpdateModal(true)}>
+                        <span role="img" aria-label="create" style={{fontSize:'1.3em'}}>➕</span> Create a Team
+                      </button>
+                      {/* Show create form only if showUpdateModal is true */}
+                      {showUpdateModal && (
+                        <div style={{marginTop:12}}>
+                          <form onSubmit={async e => {
+                            e.preventDefault();
+                            setLoading(true);
+                            await axiosInstance.post('/myteam/create', { name: updateName, description: updateDescription });
+                            setLoading(false);
+                            setShowUpdateModal(false);
+                            setUpdateName('');
+                            setUpdateDescription('');
+                            fetchTeam();
+                          }} style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+                            <input value={updateName} onChange={e => setUpdateName(e.target.value)} placeholder="Team Name" required />
+                            <textarea value={updateDescription} onChange={e => setUpdateDescription(e.target.value)} placeholder="Team Description" rows={3} style={{resize:'vertical'}} />
+                            <button type="submit" className={styles.acceptBtn}>Create Team</button>
+                          </form>
+                        </div>
                       )}
                     </div>
                   </div>
-
-                  {/* Upcoming Matches Modal */}
-                  {showUpcomingMatches && (
-                    <div className={styles.inviteModalOverlay}>
-                      <div className={styles.inviteModal} style={{minWidth:340,maxWidth:600}}>
-                        <h2 style={{fontWeight:700,marginBottom:12,fontSize:'1.3rem',color:'#16a34a'}}>Upcoming Matches</h2>
-                        <button className={styles.closeBtn} onClick={() => setShowUpcomingMatches(false)}>×</button>
-                        <button className={styles.actionBtn} style={{marginBottom:12}} onClick={fetchUpcomingMatches}>Refresh</button>
-                        <div style={{display:'flex',flexDirection:'column',gap:12}}>
-                          {upcomingMatches.length === 0 ? (
-                            <div style={{color:'#999',fontSize:15}}>No upcoming matches yet.</div>
-                          ) : (
-                            upcomingMatches.map(match => (
-                              <div key={match._id} style={{display:'flex',alignItems:'center',justifyContent:'space-between',padding:'14px 18px',borderRadius:10,background:'#f0fdf4',boxShadow:'0 1px 4px rgba(0,0,0,0.07)',cursor:'pointer'}}>
-                                <div style={{display:'flex',alignItems:'center',gap:14}}>
-                                  <div style={{fontWeight:600,fontSize:16}}>Team A: {match.challenge?.challenger?.name || 'TBD'}</div>
-                                  <div style={{fontWeight:600,fontSize:16,marginLeft:14}}>Team B: {match.challenge?.opponent?.name || 'TBD'}</div>
-                                  <div style={{color:'#666',fontSize:15,marginLeft:14}}>{match.date} {match.time}</div>
-                                  <div style={{color:'#666',fontSize:15,marginLeft:14}}>{match.futsal?.name || 'Unknown Futsal'}</div>
-                                </div>
-                              </div>
-                            ))
-                          )}
-                        </div>
-                      </div>
-                    </div>
-                  )}
-
-                  {/* Create Challenge Modal: Step 1 - Futsal Selection */}
-                  {showCreateChallengeModal && !selectedFutsal && (
-                    <div className={styles.modalOverlay}>
-                      <div className={styles.modalContent}>
-                        <h2>Select Futsal for Challenge</h2>
-                        <input
-                          type="text"
-                          placeholder="Search futsal..."
-                          value={futsalSearch}
-                          onChange={e => setFutsalSearch(e.target.value)}
-                          style={{ width: '100%', padding: 10, marginBottom: 16, borderRadius: 8, border: '1px solid #ddd' }}
-                        />
-                        <div style={{ maxHeight: 300, overflowY: 'auto', display: 'flex', flexWrap: 'wrap', gap: 16 }}>
-                          {filteredFutsals.map(futsal => (
-                            <div
-                              key={futsal._id}
-                              onClick={() => { setSelectedFutsal(futsal._id); fetchChallengeSlots(futsal._id); }}
-                              style={{
-                                border: '1.5px solid #eee',
-                                borderRadius: 12,
-                                padding: 16,
-                                minWidth: 220,
-                                cursor: 'pointer',
-                                background: '#fafbfc',
-                                display: 'flex',
-                                alignItems: 'center',
-                                gap: 12
-                              }}
-                            >
-                              <img src={futsal.futsalPhoto || '/default-futsal.jpg'} alt="icon" style={{ width: 40, height: 40, borderRadius: 8, objectFit: 'cover' }} />
-                              <div>
-                                <div style={{ fontWeight: 700, fontSize: 16 }}>{futsal.name}</div>
-                                <div style={{ color: '#888', fontSize: 13 }}>{futsal.location}</div>
-                              </div>
-                            </div>
-                          ))}
-                        </div>
-                        <button onClick={() => setShowCreateChallengeModal(false)} className={styles.actionBtn} style={{ marginTop: 16 }}>Close</button>
-                      </div>
-                    </div>
-                  )}
-
-                  {/* Create Challenge Modal */}
-                  {showCreateChallengeModal && selectedFutsal && (
-                    <div className={styles.modalOverlay}>
-                      <div className={styles.modalContent}>
-                        <h2>Select Slot for Challenge</h2>
-                        <div style={{ marginBottom: 16 }}>
-                          <label htmlFor="challenge-date" style={{ fontWeight: 600, marginRight: 8 }}>Date:</label>
-                          <input
-                            id="challenge-date"
-                            type="date"
-                            value={challengeDate}
-                            min={new Date().toISOString().split('T')[0]}
-                            onChange={e => {
-                              setChallengeDate(e.target.value);
-                              fetchChallengeSlots(selectedFutsal, e.target.value);
-                            }}
-                            style={{ padding: 8, borderRadius: 6, border: '1px solid #ddd' }}
-                          />
-                        </div>
-                        {challengeSlots.length === 0 ? (
-                          <div>No available slots found.</div>
-                        ) : (
-                          <table style={{ width: '100%', borderCollapse: 'collapse', marginTop: 16 }}>
-                            <thead>
-                              <tr style={{ background: '#f3f4f6' }}>
-                                <th style={{ padding: 8 }}>Date</th>
-                                <th style={{ padding: 8 }}>Time</th>
-                                <th style={{ padding: 8 }}>Players</th>
-                                <th style={{ padding: 8 }}>Action</th>
-                              </tr>
-                            </thead>
-                            <tbody>
-                              {challengeSlots.map((slot, idx) => (
-                                <tr key={slot._id} style={{ borderBottom: '1px solid #eee' }}>
-                                  <td style={{ padding: 8 }}>{slot.date}</td>
-                                  <td style={{ padding: 8 }}>{slot.time}</td>
-                                  <td style={{ padding: 8 }}>{slot.players?.length || 0} / {slot.maxPlayers}</td>
-                                  <td style={{ padding: 8 }}>
-                                    <button
-                                      onClick={async () => {
-                                        // Call backend to create challenge and trigger payment
-                                        await handleRequestChallenge(slot._id);
-                                      }}
-                                      className={styles.actionBtn}
-                                      style={{marginTop:0}}
-                                    >Create Challenge</button>
-                                  </td>
-                                </tr>
-                              ))}
-                            </tbody>
-                          </table>
-                        )}
-                        <button onClick={() => setShowCreateChallengeModal(false)} className={styles.actionBtn} style={{marginTop:16}}>Close</button>
-                      </div>
-                    </div>
-                  )}
-                </>
-              ) : (
-                <div className={styles.createTeamBox} style={{
-                  maxWidth: 400,
-                  margin: '48px auto',
-                  background: '#fff',
-                  borderRadius: 18,
-                  boxShadow: '0 2px 16px 0 #0001',
-                  padding: '2.5rem 2rem',
-                  display: 'flex',
-                  flexDirection: 'column',
-                  alignItems: 'center',
-                  gap: 24
-                }}>
-                  <div style={{textAlign:'center',marginBottom:8}}>
-                    <h2 style={{fontWeight:700,marginBottom:8,fontSize:'1.6rem',color:'#222'}}>Find Your Futsal Team</h2>
-                    <div style={{color:'#888',fontSize:'1rem',fontWeight:400}}>Join a team to play, connect, and have fun!</div>
-                  </div>
-                  <button className={styles.actionBtn} style={{width:'100%',maxWidth:320,justifyContent:'flex-start',gap:12,fontWeight:500,fontSize:'1.08rem',padding:'12px 20px',borderRadius:12,background:'#f5f7fa',color:'#222',boxShadow:'0 1px 4px #0001'}} onClick={() => setShowAvailableTeams(true)}>
-                    <span role="img" aria-label="join" style={{fontSize:'1.3em'}}>🔍</span> Join Available Teams
-                  </button>
-                  <button className={styles.actionBtn} style={{width:'100%',maxWidth:320,justifyContent:'flex-start',gap:12,fontWeight:500,fontSize:'1.08rem',padding:'12px 20px',borderRadius:12,background:'#f5f7fa',color:'#222',boxShadow:'0 1px 4px #0001'}} onClick={() => setShowTeamInvitesModal(true)}>
-                    <span role="img" aria-label="invites" style={{fontSize:'1.3em'}}>📩</span> See Invitations Received
-                  </button>
-                  <div style={{width:'100%',maxWidth:320,marginTop:8}}>
-                    <div style={{textAlign:'center',color:'#aaa',fontSize:'0.98rem',margin:'18px 0 8px'}}>or</div>
-                    <button className={styles.actionBtn} style={{width:'100%',justifyContent:'center',fontWeight:600,fontSize:'1.08rem',padding:'12px 20px',borderRadius:12,background:'#222',color:'#fff',boxShadow:'0 1px 4px #0001',marginBottom:18}} onClick={() => setShowUpdateModal(true)}>
-                      <span role="img" aria-label="create" style={{fontSize:'1.3em'}}>➕</span> Create a Team
-                    </button>
-                    {/* Show create form only if showUpdateModal is true */}
-                    {showUpdateModal && (
-                      <div style={{marginTop:12}}>
-                        <form onSubmit={async e => {
-                          e.preventDefault();
-                          setLoading(true);
-                          await axiosInstance.post('/myteam/create', { name: updateName, description: updateDescription });
-                          setLoading(false);
-                          setShowUpdateModal(false);
-                          setUpdateName('');
-                          setUpdateDescription('');
-                          fetchTeam();
-                        }} style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
-                          <input value={updateName} onChange={e => setUpdateName(e.target.value)} placeholder="Team Name" required />
-                          <textarea value={updateDescription} onChange={e => setUpdateDescription(e.target.value)} placeholder="Team Description" rows={3} style={{resize:'vertical'}} />
-                          <button type="submit" className={styles.acceptBtn}>Create Team</button>
-                        </form>
-                      </div>
-                    )}
-                  </div>
-                </div>
-              )}
-            </>
-          )}
-        </main>
+                )}
+              </>
+            )}
+          </main>
+        </div>
       </div>
+
       {inviteModal.open && (
         <InviteModal
           friends={friends}

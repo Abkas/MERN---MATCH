@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import styles from '../css/PUpcomingMatch.module.css'
+import sidebarStyles from '../css/OSidebar.module.css'
 import { Link, useNavigate } from 'react-router-dom'
 import { LogOut, User, Clock, Users, MapPin } from 'lucide-react'
 import { useAuthStore } from '../../store/useAuthStore'
@@ -7,7 +8,6 @@ import { axiosInstance } from '../../lib/axios'
 import toast from 'react-hot-toast'
 import { getSlotTimeStatusAndSync } from '../../utils/slotTimeStatus'
 import FutsalNavbar from '../../components/FutsalNavbar'
-import OrganizerSidebar from '../../components/OrganizerSidebar';
 import PlayerSidebar from '../../components/PlayerSidebar';
 import Modal from 'react-modal';
 
@@ -114,120 +114,121 @@ const PUpcomingMatchesPage = () => {
     };
 
     return (
-        <div className={styles.body}>
+        <div className={styles.body} style={{ width: '100vw', margin: 0, padding: 0 }}>
             <FutsalNavbar />
-            <div className={styles.container} style={{marginTop: '88px'}}>
-                {isOrganizer ? <OrganizerSidebar /> : <PlayerSidebar />}
-                <main className={styles.mainContent} style={{marginLeft: '250px', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'flex-start'}}>
-                    <h1 className={styles.pageTitle}>
-                        <span>Upcoming Matches</span>
-                        <span className={styles.matchCount}>
-                            <Clock size={22} />
-                            {joinedSlots.length > 0 ? `${joinedSlots.length} match${joinedSlots.length > 1 ? 'es' : ''}` : ''}
-                        </span>
-                    </h1>
-                    {loading ? (
-                        <div className={styles.loading}>Loading your matches...</div>
-                    ) : joinedSlots.length === 0 ? (
-                        <div className={styles.noMatches}>
-                            <img src="/firstpage/logo.png" alt="No matches" />
-                            <p>You haven't joined any matches yet.</p>
-                            <Link to="/bookfutsal" className={styles.findMatchesBtn}>
-                                Find Matches
-                            </Link>
-                        </div>
-                    ) : (
-                        <div className={styles.matchesGrid}>
-                            {joinedSlots.map((slot) => {
-                                const timeStatus = getSlotTimeStatusAndSync(slot, slot.date);
-                                let statusLabel = '';
-                                let statusClass = '';
+            <div className={styles.container} style={{ width: '100vw', margin: 0, padding: 0, display: 'flex', alignItems: 'stretch', minHeight: '100vh' }}>
+                <div style={{ height: '100vh', minHeight: '100%', position: 'sticky', top: 0, left: 0, zIndex: 100 }}>
+                    <PlayerSidebar style={{ marginTop: 0, height: '100%', minHeight: '100vh' }} />
+                </div>
+                <div style={{ width: '100%', display: 'flex', justifyContent: 'center' }}>
+                    <main className={styles.content} style={{ width: '100%', maxWidth: '1200px', padding: '0 20px', margin: '0 auto', display: 'flex', flexDirection: 'column', alignItems: 'center', minHeight: 'calc(100vh - 65px)', marginTop: '88px' }}>
+                        <h1 className={styles.pageTitle}>Upcoming Matches</h1>
+                        {loading ? (
+                            <div className={styles.loading}>Loading your matches...</div>
+                        ) : joinedSlots.length === 0 ? (
+                            <div className={styles.noMatches}>
+                                <img src="/firstpage/logo.png" alt="No matches" />
+                                <p>You haven't joined any matches yet.</p>
+                                <Link to="/bookfutsal" className={styles.findMatchesBtn}>
+                                    Find Matches
+                                </Link>
+                            </div>
+                        ) : (
+                            <div className={styles.matchesGrid}>
+                                {joinedSlots.map((slot) => {
+                                    const timeStatus = getSlotTimeStatusAndSync(slot, slot.date);
+                                    let statusLabel = '';
+                                    let statusClass = '';
 
-                                let userTeam = null;
-                                if (authUser && slot.teamA && slot.teamA.some(u => (u._id || u) === authUser._id)) userTeam = 'A';
-                                if (authUser && slot.teamB && slot.teamB.some(u => (u._id || u) === authUser._id)) userTeam = 'B';
+                                    let userTeam = null;
+                                    if (authUser && slot.teamA && slot.teamA.some(u => (u._id || u) === authUser._id)) userTeam = 'A';
+                                    if (authUser && slot.teamB && slot.teamB.some(u => (u._id || u) === authUser._id)) userTeam = 'B';
 
-                                if (timeStatus === 'ended') {
-                                    statusLabel = 'Ended';
-                                    statusClass = styles.statusEnded;
-                                } else if (timeStatus === 'playing') {
-                                    statusLabel = 'Playing';
-                                    statusClass = styles.statusPlaying;
-                                } else if (timeStatus === 'soon') {
-                                    statusLabel = 'Starting Soon';
-                                    statusClass = styles.statusSoon;
-                                } else {
-                                    statusLabel = slot.status || 'Upcoming';
-                                    statusClass = styles[`status${(slot.status || 'Upcoming').charAt(0).toUpperCase() + (slot.status || 'Upcoming').slice(1)}`] || '';
-                                }
+                                    if (timeStatus === 'ended') {
+                                        statusLabel = 'Ended';
+                                        statusClass = styles.statusEnded;
+                                    } else if (timeStatus === 'playing') {
+                                        statusLabel = 'Playing';
+                                        statusClass = styles.statusPlaying;
+                                    } else if (timeStatus === 'soon') {
+                                        statusLabel = 'Starting Soon';
+                                        statusClass = styles.statusSoon;
+                                    } else {
+                                        statusLabel = slot.status || 'Upcoming';
+                                        statusClass = styles[`status${(slot.status || 'Upcoming').charAt(0).toUpperCase() + (slot.status || 'Upcoming').slice(1)}`] || '';
+                                    }
 
-                                return (
-                                    <div key={slot._id} className={styles.matchCard}>
-                                        <div className={styles.matchHeader}>
-                                            <div className={styles.venueInfo}>
-                                                <img src={slot.futsal?.futsalPhoto || "/FUTSALHOME/logo.png"} alt="futsal-logo" />
-                                                <h3>{slot.futsal?.name || 'Unknown Futsal'}</h3>
+                                    return (
+                                        <div key={slot._id} className={styles.matchCard}>
+                                            <div className={styles.matchHeader}>
+                                                <div className={styles.venueInfo}>
+                                                    <img src={slot.futsal?.futsalPhoto || "/FUTSALHOME/logo.png"} alt="futsal-logo" />
+                                                    <h3>{slot.futsal?.name || 'Unknown Futsal'}</h3>
+                                                </div>
+                                                <span className={`${styles.status} ${statusClass}`}>{statusLabel}</span>
                                             </div>
-                                            <span className={`${styles.status} ${statusClass}`}>{statusLabel}</span>
+                                            <div className={styles.matchDetails}>
+                                                <div className={styles.detailItem}>
+                                                    <Clock size={18} />
+                                                    <span>{slot.time || 'Time not set'}</span>
+                                                </div>
+                                                <div className={styles.detailItem}>
+                                                    <Users size={18} />
+                                                    <span>{slot.currentPlayers || 0}/{slot.maxPlayers || 10} Players</span>
+                                                </div>
+                                                <div className={styles.detailItem}>
+                                                    <span style={{ color: '#000' }}>रु{slot.price || 0} per player</span>
+                                                </div>
+                                                <div className={styles.detailItem}>
+                                                    <MapPin size={18} />
+                                                    <span>{slot.futsal?.location || 'Location not set'}</span>
+                                                </div>
+                                                <div className={styles.detailItem}>
+                                                    <span style={{fontWeight:600, color:userTeam==='A'?'#2563eb':userTeam==='B'?'#b91c1c':'#888'}}>
+                                                        {userTeam ? `Your Team: Team ${userTeam}` : 'No Team Assigned'}
+                                                    </span>
+                                                </div>
+                                            </div>
+                                            <div className={styles.matchActions}>
+                                                <button
+                                                    className={styles.viewDetailsBtn}
+                                                    onClick={() => handleViewFutsal(slot.futsal?._id)}
+                                                    disabled={!slot.futsal?._id}
+                                                >
+                                                    View Details
+                                                </button>
+                                                <button
+                                                    className={styles.cancelBtn}
+                                                    onClick={() => handleCancelBooking(slot._id)}
+                                                    disabled={timeStatus === 'playing' || timeStatus === 'ended'}
+                                                >
+                                                    Cancel Booking
+                                                </button>
+                                                <button
+                                                    className={styles.viewDetailsBtn}
+                                                    style={{ background: '#2563eb', color: '#fff', marginLeft: 8 }}
+                                                    onClick={() => handleOpenPing(slot)}
+                                                    disabled={timeStatus === 'ended'}
+                                                >
+                                                    Ping
+                                                </button>
+                                            </div>
                                         </div>
-                                        <div className={styles.matchDetails}>
-                                            <div className={styles.detailItem}>
-                                                <Clock size={18} />
-                                                <span>{slot.time || 'Time not set'}</span>
-                                            </div>
-                                            <div className={styles.detailItem}>
-                                                <Users size={18} />
-                                                <span>{slot.currentPlayers || 0}/{slot.maxPlayers || 10} Players</span>
-                                            </div>
-                                            <div className={styles.detailItem}>
-                                                <span style={{ color: '#000' }}>रु{slot.price || 0} per player</span>
-                                            </div>
-                                            <div className={styles.detailItem}>
-                                                <MapPin size={18} />
-                                                <span>{slot.futsal?.location || 'Location not set'}</span>
-                                            </div>
-                                            <div className={styles.detailItem}>
-                                                <span style={{fontWeight:600, color:userTeam==='A'?'#2563eb':userTeam==='B'?'#b91c1c':'#888'}}>
-                                                    {userTeam ? `Your Team: Team ${userTeam}` : 'No Team Assigned'}
-                                                </span>
-                                            </div>
-                                        </div>
-                                        <div className={styles.matchActions}>
-                                            <button
-                                                className={styles.viewDetailsBtn}
-                                                onClick={() => handleViewFutsal(slot.futsal?._id)}
-                                                disabled={!slot.futsal?._id}
-                                            >
-                                                View Details
-                                            </button>
-                                            <button
-                                                className={styles.cancelBtn}
-                                                onClick={() => handleCancelBooking(slot._id)}
-                                                disabled={timeStatus === 'playing' || timeStatus === 'ended'}
-                                            >
-                                                Cancel Booking
-                                            </button>
-                                            <button
-                                                className={styles.viewDetailsBtn}
-                                                style={{ background: '#2563eb', color: '#fff', marginLeft: 8 }}
-                                                onClick={() => handleOpenPing(slot)}
-                                                disabled={timeStatus === 'ended'}
-                                            >
-                                                Ping
-                                            </button>
-                                        </div>
-                                    </div>
-                                );
-                            })}
-                        </div>
-                    )}
-                </main>
+                                    );
+                                })}
+                            </div>
+                        )}
+                    </main>
+                </div>
             </div>
+
+            {/* Ping Modal */}
             <Modal
                 isOpen={pingModal.open}
                 onRequestClose={handleClosePing}
-                ariaHideApp={false}
-                style={{ content: { maxWidth: 400, margin: 'auto', borderRadius: 12, padding: 32 } }}
+                contentLabel="Ping Players"
+                className={styles.modal}
+                overlayClassName={styles.modalOverlay}
             >
                 <h2 style={{ fontWeight: 700, fontSize: 20, marginBottom: 18 }}>Send a Ping Message</h2>
                 <textarea
