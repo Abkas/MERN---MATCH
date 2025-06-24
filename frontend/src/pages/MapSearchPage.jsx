@@ -434,10 +434,8 @@ export default function MapSearchPage() {
   const slotLabels = ['1', '2', '3', '4', '5', '6', '7', '8+'];
   const distanceLabels = ['1', '2', '4', '6', '8', '10', 'No limit'];
   const priceLabels = ['100', '150', '200', '250', '300', '350', '400+'];
-
   // Helper to get label for slider value
   const getSliderLabel = (labels, value, max) => {
-    if (value === 1) return '100'; // Always show 100 for the first/default value
     const idx = Math.min(Math.floor(((value - 1) / (max - 1)) * (labels.length - 1)), labels.length - 1);
     return labels[idx];
   };
