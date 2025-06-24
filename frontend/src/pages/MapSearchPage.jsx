@@ -26,7 +26,7 @@ function haversineDistance(lat1, lon1, lat2, lon2) {
 }
 
 const defaultFilters = {
-  distance: 1, // km (initial value)
+  distance: 9999, // Start with no distance limit by default
   price: 9999, // max price (default no limit)
   slot: 1, // min slot 1
 };
@@ -150,12 +150,16 @@ export default function MapSearchPage() {
       if ((typeof lat !== 'number' || typeof lng !== 'number') && f.mapLink) {
         [lat, lng] = extractLatLngFromMapLink(f.mapLink);
         extracted = true;
-      }
-      if (typeof lat !== 'number' || typeof lng !== 'number') {
+      }      if (typeof lat !== 'number' || typeof lng !== 'number') {
         console.log(`[FILTER] Exclude '${f.name}': Invalid coordinates (lat:`, lat, ', lng:', lng, ', extracted:', extracted, ', mapLink:', f.mapLink, ')');
         return false;
       }
       const dist = haversineDistance(userLocation.lat, userLocation.lng, lat, lng);
+      // If distance filter is 9999, include all futsals regardless of distance
+      if (filters.distance === 9999) {
+        console.log(`[FILTER] Include '${f.name}': Distance ${dist.toFixed(2)}km, but no distance limit applied`);
+        return true;
+      }
       if (dist > filters.distance) {
         console.log(`[FILTER] Exclude '${f.name}': Distance ${dist.toFixed(2)}km > filter ${filters.distance}km`);
         return false;
@@ -165,7 +169,6 @@ export default function MapSearchPage() {
     });
     setFilteredFutsals(filtered);
   }, [futsals, filters.distance, userLocation]);
-
   // Always update user marker and center on user location change
   useEffect(() => {
     if (!map || !userLocation) return;
@@ -186,17 +189,22 @@ export default function MapSearchPage() {
       },
       zIndex: 9999,
     });
+    
+    // If distance is 9999 (no limit), don't show the circle
     if (map._userCircle) map._userCircle.setMap(null);
-    map._userCircle = new window.google.maps.Circle({
-      strokeColor: '#4285F4',
-      strokeOpacity: 0.3,
-      strokeWeight: 1,
-      fillColor: '#4285F4',
-      fillOpacity: 0.15,
-      map,
-      center: userLocation,
-      radius: filters.distance * 1000,
-    });
+    
+    if (filters.distance !== 9999) {
+      map._userCircle = new window.google.maps.Circle({
+        strokeColor: '#4285F4',
+        strokeOpacity: 0.3,
+        strokeWeight: 1,
+        fillColor: '#4285F4',
+        fillOpacity: 0.15,
+        map,
+        center: userLocation,
+        radius: filters.distance * 1000,
+      });
+    }
   }, [map, userLocation, filters.distance]);
 
   // Helper to extract lat/lng from Google Maps link
@@ -325,12 +333,22 @@ export default function MapSearchPage() {
       }));
       console.log('Slots rendered at end:', rendered);
     }
-  }, [showFilteredSlots, filteredFutsals, allSlots]);
-
-  const handleDistance = (e) => {
-    const distance = parseInt(e.target.value, 10);
+  }, [showFilteredSlots, filteredFutsals, allSlots]);  const handleDistance = (e) => {
+    const value = parseInt(e.target.value, 10);
+    // Map slider values to specific distances
+    let distance;
+    switch(value) {
+      case 1: distance = 1; break;
+      case 2: distance = 2; break;
+      case 3: distance = 4; break;
+      case 4: distance = 6; break;
+      case 5: distance = 8; break;
+      case 6: distance = 10; break;
+      case 7: distance = 9999; break; // No limit
+      default: distance = 1;
+    }
     setFilters((prev) => ({ ...prev, distance }));
-  };  const handlePrice = (e) => {
+  };const handlePrice = (e) => {
     const value = parseInt(e.target.value, 10);
     // Convert slider value (1-7) to actual price
     let price;
@@ -394,10 +412,9 @@ export default function MapSearchPage() {
       setJoinSlotLoading(false);
     }
   }
-
   // Slot, distance, and price labels for sliders
   const slotLabels = ['1', '2', '3', '4', '5', '6', '7', '8+'];
-  const distanceLabels = ['1', '2', '3', '4', '5', '6', '7', '8+'];
+  const distanceLabels = ['1', '2', '4', '6', '8', '10', 'No limit'];
   const priceLabels = ['100', '150', '200', '250', '300', '350', '400+'];
 
   // Helper to get label for slider value
@@ -432,6 +449,28 @@ export default function MapSearchPage() {
     if (typeof lat !== 'number' || typeof lng !== 'number') return null;
     return haversineDistance(userLocation.lat, userLocation.lng, lat, lng);
   }
+  // Helper to get slider value from distance
+  const getDistanceSliderValue = (distance) => {
+    switch(distance) {
+      case 1: return 1;
+      case 2: return 2;
+      case 4: return 3;
+      case 6: return 4;
+      case 8: return 5;
+      case 10: return 6;
+      case 9999: return 7; // No limit
+      default:
+        // For values not exactly matching our predefined steps
+        if (distance > 10) return 7;
+        if (distance > 8) return 6;
+        if (distance > 6) return 5;
+        if (distance > 4) return 4;
+        if (distance > 2) return 3;
+        if (distance > 1) return 2;
+        return 1;
+    }
+  };
+
   // Helper to get slider value from price
   const getSliderValueFromPrice = (price) => {
     switch(price) {
@@ -512,16 +551,15 @@ export default function MapSearchPage() {
               );
             })}
           </div>
-        </div>
-        {/* Distance Slider */}
+        </div>        {/* Distance Slider */}
         <div className="slider-group">
-          <label>Distance: <span style={{color:'#e53935'}}>{getSliderLabel(distanceLabels, filters.distance, 8)} km</span></label>
+          <label>Distance: <span style={{color:'#e53935'}}>{filters.distance === 9999 ? 'No limit' : `${filters.distance} km`}</span></label>
           <div className="slider-container">
             <input
               type="range"
               min="1"
-              max="8"
-              value={filters.distance}
+              max="7"
+              value={getDistanceSliderValue(filters.distance)}
               onChange={handleDistance}
               className="modern-slider"
             />
