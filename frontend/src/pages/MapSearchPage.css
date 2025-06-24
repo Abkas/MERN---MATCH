@@ -56,14 +56,18 @@ input[type="range"].modern-slider {
   width: 100%;
   height: 6px;
   border-radius: 4px;
-  background: linear-gradient(90deg, #2563eb 0%, #4f8cff 100%); /* bluish gradient */
+  background: #e3e8ef; /* Light gray background for unselected part */
   outline: none;
   accent-color: #2563eb;
   margin: 0;
   transition: background 0.2s;
+  -webkit-appearance: none;
+  appearance: none;
+  position: relative;
 }
 input[type="range"].modern-slider::-webkit-slider-thumb {
   -webkit-appearance: none;
+  appearance: none;
   appearance: none;
   width: 22px;
   height: 22px;
@@ -73,13 +77,14 @@ input[type="range"].modern-slider::-webkit-slider-thumb {
   box-shadow: 0 2px 8px #2563eb33;
   cursor: pointer;
   transition: border 0.2s;
+  margin-top: -8px; /* Center the thumb on the track */
 }
 input[type="range"].modern-slider:focus::-webkit-slider-thumb {
   border: 3px solid #1976d2;
 }
 input[type="range"].modern-slider::-moz-range-thumb {
-  width: 22px;
-  height: 22px;
+  width: 16px;
+  height: 16px;
   border-radius: 50%;
   background: #fff;
   border: 3px solid #2563eb;
@@ -91,14 +96,15 @@ input[type="range"].modern-slider:focus::-moz-range-thumb {
   border: 3px solid #1976d2;
 }
 input[type="range"].modern-slider::-ms-thumb {
-  width: 22px;
-  height: 22px;
+  width: 16px;
+  height: 16px;
   border-radius: 50%;
   background: #fff;
   border: 3px solid #2563eb;
   box-shadow: 0 2px 8px #2563eb33;
   cursor: pointer;
   transition: border 0.2s;
+  margin-top: 0; /* Center the thumb on the track */
 }
 input[type="range"].modern-slider:focus::-ms-thumb {
   border: 3px solid #1976d2;
@@ -115,12 +121,32 @@ input[type="range"].modern-slider:focus::-ms-thumb {
 input[type="range"].modern-slider::-webkit-slider-runnable-track {
   height: 6px;
   border-radius: 4px;
+  background: linear-gradient(to right, #2563eb 0%, #4f8cff var(--progress, 50%), #e3e8ef var(--progress, 50%), #e3e8ef 100%);
+}
+input[type="range"].modern-slider::-moz-range-track {
+  height: 6px;
+  border-radius: 4px;
+  background: #e3e8ef;
+}
+input[type="range"].modern-slider::-ms-track {
+  height: 6px;
+  border-radius: 4px;
+  background: transparent;
+  border-color: transparent;
+  color: transparent;
 }
 input[type="range"].modern-slider::-ms-fill-lower {
   background: #2563eb;
+  border-radius: 4px;
 }
 input[type="range"].modern-slider::-ms-fill-upper {
-  background: #4f8cff;
+  background: #e3e8ef;
+  border-radius: 4px;
+}
+input[type="range"].modern-slider::-moz-range-progress {
+  background: linear-gradient(90deg, #2563eb 0%, #4f8cff 100%);
+  height: 6px;
+  border-radius: 4px;
 }
 
 .futsal-card-modal {

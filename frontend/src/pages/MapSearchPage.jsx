@@ -333,7 +333,19 @@ export default function MapSearchPage() {
       }));
       console.log('Slots rendered at end:', rendered);
     }
-  }, [showFilteredSlots, filteredFutsals, allSlots]);  const handleDistance = (e) => {
+  }, [showFilteredSlots, filteredFutsals, allSlots]);  // Helper to update slider progress
+  const updateSliderProgress = (e) => {
+    const slider = e.target;
+    const min = parseFloat(slider.min) || 0;
+    const max = parseFloat(slider.max) || 100;
+    const val = parseFloat(slider.value) || 0;
+    const percentage = ((val - min) / (max - min)) * 100;
+    slider.style.setProperty('--progress', `${percentage}%`);
+  };
+
+  // Modified handler to update slider progress
+  const handleDistance = (e) => {
+    updateSliderProgress(e);
     const value = parseInt(e.target.value, 10);
     // Map slider values to specific distances
     let distance;
@@ -348,7 +360,10 @@ export default function MapSearchPage() {
       default: distance = 1;
     }
     setFilters((prev) => ({ ...prev, distance }));
-  };const handlePrice = (e) => {
+  };
+  
+  const handlePrice = (e) => {
+    updateSliderProgress(e);
     const value = parseInt(e.target.value, 10);
     // Convert slider value (1-7) to actual price
     let price;
@@ -366,6 +381,7 @@ export default function MapSearchPage() {
   };
 
   const handleSlot = (e) => {
+    updateSliderProgress(e);
     const slot = parseInt(e.target.value, 10);
     setFilters((prev) => ({ ...prev, slot }));
   };
@@ -496,6 +512,26 @@ export default function MapSearchPage() {
   useEffect(() => {
     console.log('Current filter:', filters, 'Selected date:', selectedDate);
   }, [filters, selectedDate]);
+
+  // Initialize slider progress on component mount
+  useEffect(() => {
+    const initSliders = () => {
+      const sliders = document.querySelectorAll('input[type="range"].modern-slider');
+      sliders.forEach(slider => {
+        const min = parseFloat(slider.min) || 0;
+        const max = parseFloat(slider.max) || 100;
+        const val = parseFloat(slider.value) || 0;
+        const percentage = ((val - min) / (max - min)) * 100;
+        slider.style.setProperty('--progress', `${percentage}%`);
+      });
+    };
+    
+    // Initialize once component is mounted
+    initSliders();
+    
+    // Also initialize when filters change (in case sliders are re-rendered)
+    return () => initSliders();
+  }, [filters]);
 
   return (
     <div className="map-search-page">
