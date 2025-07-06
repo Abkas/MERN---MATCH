@@ -5,7 +5,7 @@ import styles from '../pages/css/FutsalHome.module.css';
 import { useAuthStore } from '../store/useAuthStore';
 
 const FutsalNavbar = () => {
-  const { authUser } = useAuthStore();
+  const { User } = useAuthStore();
   const navigate = useNavigate();
   const location = useLocation();
   const [menuOpen, setMenuOpen] = useState(false);
@@ -71,12 +71,33 @@ const FutsalNavbar = () => {
         </div>
         <div className={styles.matchPoint}>MatchPoint</div>
         <ul className={`${styles.navLinks} ${menuOpen ? styles.showMenu : ''}`}>
-          <li><Link to="/futsalhome" className={isActive('/futsalhome') ? styles.active : ''} onClick={closeMenu}>Home</Link></li>
-          <li><Link to="/bookfutsal" className={isActive('/bookfutsal') ? styles.active : ''} onClick={closeMenu}>Book Futsal</Link></li>
-          <li><Link to="/tournaments" className={isActive('/tournaments') ? styles.active : ''} onClick={closeMenu}>Tournaments</Link></li>
-          <li><Link to="/quickmatch" className={isActive('/quickmatch') ? styles.active : ''} onClick={closeMenu}>Quick Match</Link></li>
-          <li><Link to="/map-search" className={isActive('/map-search') ? styles.active : ''} onClick={closeMenu}>Map Search</Link></li>
-        </ul>
+  <li>
+    <Link to="/futsalhome" className={isActive('/futsalhome') ? styles.active : ''} onClick={closeMenu}>
+      Home
+    </Link>
+  </li>
+  <li>
+    <Link to="/bookfutsal" className={isActive('/bookfutsal') ? styles.active : ''} onClick={closeMenu}>
+      Book Futsal
+    </Link>
+  </li>
+  {/* <li>
+    <Link to="/tournaments" className={isActive('/tournaments') ? styles.active : ''} onClick={closeMenu}>
+      Tournaments
+    </Link>
+  </li>
+  <li>
+    <Link to="/quickmatch" className={isActive('/quickmatch') ? styles.active : ''} onClick={closeMenu}>
+      Quick Match
+    </Link>
+  </li> */}
+  <li>
+    <Link to="/map-search" className={isActive('/map-search') ? styles.active : ''} onClick={closeMenu}>
+      Map Search
+    </Link>
+  </li>
+</ul>
+
         <div className={styles.navIcons}>
           <div className={styles.notification} onClick={() => setNotifOpen((v) => !v)} ref={notifRef}>
             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
